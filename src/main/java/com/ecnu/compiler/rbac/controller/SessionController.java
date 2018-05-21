@@ -16,21 +16,21 @@
  */
 package com.ecnu.compiler.rbac.controller;
 
-import com.ecnu.compiler.rbac.mapper.UserMapper;
+import com.ecnu.compiler.rbac.service.SessionService;
+import com.ecnu.compiler.utils.domain.HttpRespCode;
+import com.ecnu.compiler.utils.domain.Resp;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
-import com.ecnu.compiler.rbac.service.SessionService;
-import com.ecnu.compiler.utils.domain.HttpRespCode;
-import com.ecnu.compiler.utils.domain.Resp;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
 
 /**
  * 会话控制器
+ *
  *
  * @author Michael Chen
  */
