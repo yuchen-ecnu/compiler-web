@@ -18,6 +18,7 @@
     <!--     Fonts and icons     -->
     <link href="http://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons" />
+    <script src="../js/global-config.js"></script>
 </head>
 
 <body>
@@ -68,8 +69,10 @@
                                                 <i class="material-icons">email</i>
                                             </span>
                                             <div class="form-group label-floating">
-                                                <label class="control-label">Email address</label>
-                                                <input type="email" class="form-control">
+                                                <label class="control-label">Email address
+                                                    <star>*</star>
+                                                </label>
+                                                <input type="email" class="form-control" email="true" required="true" id="email">
                                             </div>
                                         </div>
                                         <div class="input-group">
@@ -77,13 +80,15 @@
                                                 <i class="material-icons">lock_outline</i>
                                             </span>
                                             <div class="form-group label-floating">
-                                                <label class="control-label">Password</label>
-                                                <input type="password" class="form-control">
+                                                <label class="control-label">Password
+                                                    <star>*</star>
+                                                </label>
+                                                <input type="password" class="form-control" name="password" required="true" id="pwd">
                                             </div>
                                         </div>
                                     </div>
                                     <div class="footer text-center">
-                                        <button type="submit" class="btn btn-rose btn-simple btn-wd btn-lg">Let's go</button>
+                                        <button type="button" class="btn btn-rose btn-simple btn-wd btn-lg" id="btn_login">Let's go</button>
                                     </div>
                                 </div>
                             </form>
@@ -148,6 +153,8 @@
 <script src="../../assets/js/material-dashboard.js"></script>
 <!-- Material Dashboard DEMO methods, don't include it in your project! -->
 <script src="../../assets/js/demo.js"></script>
+<!--Global Configure -->
+<script src="../js/global-config.js"></script>
 <script type="text/javascript">
     $().ready(function() {
         demo.checkFullPageBackgroundImage();
@@ -155,7 +162,39 @@
         setTimeout(function() {
             // after 1000 ms we add the class animated to the login/register card
             $('.card').removeClass('card-hidden');
-        }, 700)
+        }, 700);
+
+        $("#btn_login").on("click",function(){
+            $.ajax({
+                url: base_url + api_login,
+                type : "post",
+                dataType : "json",
+                headers: {'Content-type': 'application/json;charset=UTF-8'},
+                data : JSON.stringify({
+                    email : $("#email").val(),
+                    pwd : $("#pwd").val()
+                }),
+                success : function(data){
+                    swal({
+                        title: "Login Success",
+                        text: "You clicked the button!",
+                        timer: 2000,
+                        showConfirmButton: false,
+                        type: "success"
+                    }).then(function () {},
+                    function (reason) {
+                        location.href = base_url + url_dashboard;
+                    });
+                },
+                error : function(data){
+                    swal({ title: "Password Error",
+                        text: "Email or password error,please check and retry.",
+                        timer: 2000,
+                        showConfirmButton: false
+                    });
+                }
+            })
+        });
     });
 </script>
 

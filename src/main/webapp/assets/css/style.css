@@ -172,10 +172,11 @@ ul.navbar-nav {
 .navbar-inverse ul.navbar-nav li a:focus { color: #fff; outline: 0; opacity: 1; }
 
 .navbar-brand {
-	width: 300px;
+	width: 260px;
 	height: 43px;
 	background: url(../img/logo.png) left center no-repeat;
 	text-indent: -99999px;
+	background-size: 260px 43px !important;
 }
 
 .navbar-toggle {

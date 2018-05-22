@@ -42,6 +42,8 @@
             <mvc:mapping path="/**"/>
             <mvc:exclude-mapping path="/"/>
             <mvc:exclude-mapping path="/*.html"/>
+            <mvc:exclude-mapping path="/pages/**"/>
+            <mvc:exclude-mapping path="/examples/**"/>
             <mvc:exclude-mapping path="/assets/**"/>
             <mvc:exclude-mapping path="/session/**"/>
             <bean class="com.ecnu.compiler.rbac.interceptor.SessionRequiredInterceptor">

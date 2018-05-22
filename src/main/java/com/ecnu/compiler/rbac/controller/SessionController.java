@@ -16,14 +16,15 @@
  */
 package com.ecnu.compiler.rbac.controller;
 
+import com.ecnu.compiler.rbac.domain.User;
 import com.ecnu.compiler.rbac.service.SessionService;
+import com.ecnu.compiler.utils.domain.Constants;
 import com.ecnu.compiler.utils.domain.HttpRespCode;
 import com.ecnu.compiler.utils.domain.Resp;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.util.ObjectUtils;
+import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
 import javax.servlet.http.HttpSession;
@@ -38,15 +39,24 @@ import javax.servlet.http.HttpSession;
 @RequestMapping(value = "/session")
 public class SessionController {
     @Resource
-    protected SessionService sessionService;
+    private SessionService sessionService;
 
     /**
      *  登录
      */
-    @RequestMapping(value = "/login/", method = RequestMethod.GET)
-    public ResponseEntity<Resp> login() {
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(new Resp(HttpRespCode.SUCCESS,sessionService.getUsers()));
+    @RequestMapping(value = "/login/", method = RequestMethod.POST)
+    public ResponseEntity<Resp> login(@RequestBody User userParam) {
+        //params error
+        if(ObjectUtils.isEmpty(userParam)||!userParam.isValid()){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Resp());
+        }
+        User user = sessionService.checkLogin(userParam);
+        if(ObjectUtils.isEmpty(user)){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new Resp());
+        }else{
+            user.setPwd("");
+            return ResponseEntity.status(HttpStatus.OK).body(new Resp(HttpRespCode.SUCCESS,user));
+        }
     }
 
     /**
@@ -56,5 +66,24 @@ public class SessionController {
     public ResponseEntity<Resp> logout(HttpSession session) {
         session.invalidate();
         return ResponseEntity.status(HttpStatus.OK).body(new Resp(HttpRespCode.SUCCESS));
+    }
+
+    /**
+     * 注册账户
+     */
+    @RequestMapping(value = "/register/", method = RequestMethod.POST)
+    public ResponseEntity<Resp> register(@RequestBody User userParam,HttpSession session) {
+        //params error
+        if(ObjectUtils.isEmpty(userParam)||!userParam.isValid()){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Resp());
+        }
+        User user = sessionService.registerUser(userParam);
+        if(ObjectUtils.isEmpty(user)){
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(new Resp());
+        }else{
+            user.setPwd("");
+            session.setAttribute(Constants.USER_ONLINE,user);
+            return ResponseEntity.status(HttpStatus.OK).body(new Resp(HttpRespCode.SUCCESS,user));
+        }
     }
 }
