@@ -86,9 +86,6 @@
                                     <a href="learn-overview.html">Overview</a>
                                 </li>
                                 <li>
-                                    <a href="RE-learn.html">RE</a>
-                                </li>
-                                <li>
                                     <a href="Lexer-learn.html">Lexer</a>
                                 </li>
                                 <li>
@@ -317,7 +314,7 @@
                                             </div>
                                         </div>
                                         <div class="col-md-6 col-md-offset-1">
-                                            <div id="worldMap" class="map"></div>
+                                            <div id="colouredRoundedLineChart" class="ct-chart"></div>
                                         </div>
                                     </div>
                                 </div>
@@ -471,6 +468,9 @@
         demo.initDashboardPageCharts();
 
         demo.initVectorMap();
+
+        var straightLinesChart = new Chartist.Line('#straightLinesChart', dataStraightLinesChart, optionsStraightLinesChart);
+        md.startAnimationForLineChart(straightLinesChart);
     });
 </script>
 
