@@ -32,7 +32,6 @@ public class SessionRequiredInterceptor extends HandlerInterceptorAdapter {
         if(ObjectUtils.isEmpty(session)
                 || ObjectUtils.isEmpty(session.getAttribute(Constants.USER_ONLINE))){
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
-            response.sendRedirect(request.getContextPath() + Constants.URL_LOGIN);
             return false;
         }
 

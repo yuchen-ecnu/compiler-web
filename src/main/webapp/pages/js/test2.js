@@ -28,7 +28,20 @@ var data = {
     nodes: nodes,
     edges: edges
 };
-var options = {};
+var options = {
+    nodes: {
+        shape: 'circle',
+        size: 20,
+        font: {
+            size: 16
+        },
+        borderWidth: 2
+    },
+    edges: {
+        width: 2,
+        shadow:true
+    }
+};
 var network = new vis.Network(container, data, options);
 
 /***
