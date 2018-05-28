@@ -69,4 +69,18 @@ public class CommonController {
             return ResponseEntity.status(HttpStatus.OK).body(new Resp(HttpRespCode.SUCCESS,dfa));
         }
     }
+
+    @RequestMapping(value = "/re2dfa/", method = RequestMethod.GET)
+    public ResponseEntity<Resp> Text2SymbolTable(@RequestParam("re") String re) {
+        //params error
+        if(ObjectUtils.isEmpty(re)){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Resp());
+        }
+        DfaVO dfa = commonService.RE2DFA(re);
+        if(ObjectUtils.isEmpty(dfa)){
+            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(new Resp());
+        }else{
+            return ResponseEntity.status(HttpStatus.OK).body(new Resp(HttpRespCode.SUCCESS,dfa));
+        }
+    }
 }

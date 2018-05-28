@@ -62,4 +62,6 @@ public class LexicalController {
             return ResponseEntity.status(HttpStatus.OK).body(new Resp(HttpRespCode.SUCCESS, list));
         }
     }
+
+
 }
