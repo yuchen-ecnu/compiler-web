@@ -558,13 +558,22 @@
                 type: "warning"
             })
         }
-        highLight(txt,re)
+        match(txt)
     });
-    //color 高亮显示的颜色
-    function highLight(txt,re) {
-        //g （全文查找出现的所有 pattern） i （忽略大小写）
-        var hlValue = new RegExp(re,"gi");
-        $("#re-output").html(txt.replace(hlValue,'<strong><font class="text-danger">$&</font></strong>'));
+
+    function match(txt) {
+        var regex = new RegExp(document.getElementById("re-expression").value, "gi");
+        var result = txt.match(regex);
+        var res = "";
+        if (null==result || 0 === result.length) {
+            $("#re-output").html("（没有匹配）");
+            return;
+        }
+        else {
+            res += "共找到 " + result.length + " 处匹配：\r\n";
+            for (var i=0;i < result.length;++i)res = res + result[i] + "\r\n";
+        }
+        $("#re-output").html(res);
     }
 </script>
 </html>
