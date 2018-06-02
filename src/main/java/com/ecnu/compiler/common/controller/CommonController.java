@@ -19,8 +19,9 @@ package com.ecnu.compiler.common.controller;
 import com.ecnu.compiler.common.domain.DfaVO;
 import com.ecnu.compiler.common.domain.NfaVO;
 import com.ecnu.compiler.common.service.CommonService;
-import com.ecnu.compiler.component.lexer.domain.DFA;
-import com.ecnu.compiler.component.lexer.domain.NFA;
+import com.ecnu.compiler.component.storage.SymbolTable;
+import com.ecnu.compiler.lexical.domain.LexerParam;
+import com.ecnu.compiler.lexical.service.LexicalService;
 import com.ecnu.compiler.utils.domain.HttpRespCode;
 import com.ecnu.compiler.utils.domain.Resp;
 import org.springframework.http.HttpStatus;
@@ -39,6 +40,8 @@ import javax.annotation.Resource;
 public class CommonController {
     @Resource
     private CommonService commonService;
+    @Resource
+    private LexicalService lexicalService;
 
     /**
      *  登录
@@ -70,17 +73,17 @@ public class CommonController {
         }
     }
 
-    @RequestMapping(value = "/re2dfa/", method = RequestMethod.GET)
-    public ResponseEntity<Resp> Text2SymbolTable(@RequestParam("re") String re) {
+    @RequestMapping(value = "/lexer/", method = RequestMethod.POST)
+    public ResponseEntity<Resp> text2symboltable(@RequestBody LexerParam lexerParam) {
         //params error
-        if(ObjectUtils.isEmpty(re)){
+        if(ObjectUtils.isEmpty(lexerParam.getTxt())||ObjectUtils.isEmpty(lexerParam.getLan())){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Resp());
         }
-        DfaVO dfa = commonService.RE2DFA(re);
-        if(ObjectUtils.isEmpty(dfa)){
+        SymbolTable sb = lexicalService.generateSymbolTable(lexerParam.getTxt(),lexerParam.getLan());
+        if(ObjectUtils.isEmpty(sb)){
             return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(new Resp());
         }else{
-            return ResponseEntity.status(HttpStatus.OK).body(new Resp(HttpRespCode.SUCCESS,dfa));
+            return ResponseEntity.status(HttpStatus.OK).body(new Resp(HttpRespCode.SUCCESS,sb));
         }
     }
 }

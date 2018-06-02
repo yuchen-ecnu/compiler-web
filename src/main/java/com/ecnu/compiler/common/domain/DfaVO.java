@@ -61,14 +61,14 @@ public class DfaVO {
     }
 
     private void transform(DFA dfa){
-        this.startState = new NodeVO(dfa.getStartDfaState());
+        this.startState = new NodeVO(dfa.getStartState());
         this.endState = new ArrayList<>();
-        for(State s : dfa.getEndStates()){
+        for(State s : dfa.getEndStateList()){
             NodeVO node = new NodeVO(s);
             this.endState.add(node);
         }
         this.stateList = new ArrayList<>();
         this.edgeList = new ArrayList<>();
-        Utils.travelGraph(stateList,edgeList,dfa.getStartDfaState());
+        Utils.travelGraph(stateList,edgeList,dfa.getStartState());
     }
 }

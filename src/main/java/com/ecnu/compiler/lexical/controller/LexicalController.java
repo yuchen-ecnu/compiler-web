@@ -20,9 +20,6 @@ import com.ecnu.compiler.lexical.domain.Regex;
 import com.ecnu.compiler.lexical.service.LexicalService;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import com.ecnu.compiler.rbac.domain.User;
-import com.ecnu.compiler.rbac.service.SessionService;
-import com.ecnu.compiler.utils.domain.Constants;
 import com.ecnu.compiler.utils.domain.HttpRespCode;
 import com.ecnu.compiler.utils.domain.Resp;
 import org.springframework.http.HttpStatus;
@@ -31,7 +28,6 @@ import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpSession;
 import java.util.List;
 
 /**
@@ -55,7 +51,7 @@ public class LexicalController {
         if(ObjectUtils.isEmpty(language)){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Resp());
         }
-        List<Regex> list = lexicalService.getRegexsFromTargetLaguage(language);
+        List<Regex> list = lexicalService.getRegrexsFromTargetLanguage(language);
         if(ObjectUtils.isEmpty(list)){
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new Resp());
         }else{
