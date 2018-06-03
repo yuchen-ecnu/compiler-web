@@ -14,11 +14,10 @@
  *
  *   @author Michael Chen
  */
-package com.ecnu.compiler.rbac.controller;
+package com.ecnu.compiler.history.controller;
 
+import com.ecnu.compiler.history.service.HistoryService;
 import com.ecnu.compiler.rbac.domain.User;
-import com.ecnu.compiler.rbac.service.SessionService;
-import com.ecnu.compiler.rbac.service.UserService;
 import com.ecnu.compiler.rbac.utils.UserUtils;
 import com.ecnu.compiler.utils.domain.HttpRespCode;
 import com.ecnu.compiler.utils.domain.Resp;
@@ -30,7 +29,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpSession;
 
 /**
  * 用户控制器，用于处理用户账户内信息处理
@@ -38,22 +36,22 @@ import javax.servlet.http.HttpSession;
  * @author Michael Chen
  */
 @RestController
-@RequestMapping(value = "/user")
-public class UserController {
+@RequestMapping(value = "/history")
+public class HistoryController {
     @Resource
-    private UserService userServices;
-
+    private HistoryService historyService;
     /**
-     *  获取用户自定义的编译器
+     *  获取用户的操作历史记录
      */
-    @RequestMapping(value = "/compiler/", method = RequestMethod.GET)
-    public ResponseEntity<Resp> getUserCompiler() {
+    @RequestMapping(value = "/list/", method = RequestMethod.GET)
+    public ResponseEntity<Resp> getUserHistory() {
         User user = UserUtils.getCurrentUser();
         if(ObjectUtils.isEmpty(user)){
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new Resp());
         }
         return ResponseEntity.status(HttpStatus.OK)
-                .body(new Resp(HttpRespCode.SUCCESS,userServices.getUserCompilers(user.getId())));
+                .body(new Resp(HttpRespCode.SUCCESS,historyService.getUserHistory(user.getId())));
     }
+
 
 }

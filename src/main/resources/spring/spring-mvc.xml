@@ -50,7 +50,7 @@
             <mvc:exclude-mapping path="/common/**"/>
             <bean class="com.ecnu.compiler.rbac.interceptor.SessionRequiredInterceptor">
                 <property name="mappingURL"
-                          value="^/compiler/(common|user|lexical)/.*$"/>
+                          value="^/compiler/(common|user|lexical|history)/.*$"/>
             </bean>
         </mvc:interceptor>
     </mvc:interceptors>

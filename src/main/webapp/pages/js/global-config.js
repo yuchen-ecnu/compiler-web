@@ -6,6 +6,7 @@ var api_re2dfa = "common/re2dfa/";
 var api_lexer = "common/lexer/";
 var api_user_compiler = "user/compiler/";
 var api_system_compiler = "common/system/compiler/";
+var api_user_history = "history/list/";
 
 var url_dashboard = "pages/dashboard.html";
 var url_login = "pages/login/login.html";

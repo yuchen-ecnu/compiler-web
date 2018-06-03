@@ -1,6 +1,7 @@
 package com.ecnu.compiler.rbac.domain;
 
 import com.baomidou.mybatisplus.activerecord.Model;
+import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableName;
 
 import java.io.Serializable;
@@ -14,6 +15,7 @@ public class Compiler extends Model<Compiler> {
     private String introduce;
     private int usedTime;
     private Timestamp gmtCreated;
+    @TableField(update="now()")
     private Timestamp gmtModified;
 
     public int getId() {

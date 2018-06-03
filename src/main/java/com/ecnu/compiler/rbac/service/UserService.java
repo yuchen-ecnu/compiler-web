@@ -13,9 +13,9 @@ public class UserService {
     @Resource
     private CompilerMapper compilerMapper;
 
-    public List<Compiler> getUserCompilers(int userId) {
+    public List<Compiler> getUserCompilers(int uid) {
         return compilerMapper.selectList(
-                new EntityWrapper<Compiler>().eq("user_id",userId)
+                new EntityWrapper<Compiler>().eq("user_id", uid)
         );
     }
 }

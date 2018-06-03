@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ecnu.compiler.history.mapper.HistoryMapper">
+    <select id="getUserHistory" resultMap="userHistory">
+        select * from history WHERE user_id = ${uid}
+    </select>
+
+    <select id="selectUser" resultMap="userResult">
+        select * from user WHERE id = #{userId}
+    </select>
+
+    <select id="selectCompiler" resultMap="compilerResult">
+        select * from compiler WHERE id = #{compilerId}
+    </select>
+
+    <resultMap id="userResult" type="com.ecnu.compiler.rbac.domain.User">
+        <id column="id" property="id"/>
+        <result column="nick_name" property="nickName"/>
+    </resultMap>
+
+    <resultMap id="compilerResult" type="com.ecnu.compiler.rbac.domain.Compiler">
+        <id column="id" property="id"/>
+        <result column="compiler_name" property="compilerName"/>
+    </resultMap>
+
+    <resultMap type="com.ecnu.compiler.rbac.domain.History" id="userHistory">
+        <id column="id" property="id"/>
+        <result column="compile_text" property="compileText"/>
+        <result column="operator" property="operator"/>
+        <result column="gmt_created" property="gmtCreated"/>
+        <association  property="user" javaType="com.ecnu.compiler.rbac.domain.User" select="selectUser" column="user_id"/>
+        <association  property="compiler" javaType="com.ecnu.compiler.rbac.domain.Compiler" select="selectCompiler" column="compiler_id"/>
+    </resultMap>
+</mapper>
