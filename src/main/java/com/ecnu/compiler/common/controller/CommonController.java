@@ -22,6 +22,8 @@ import com.ecnu.compiler.common.service.CommonService;
 import com.ecnu.compiler.component.storage.SymbolTable;
 import com.ecnu.compiler.lexical.domain.LexerParam;
 import com.ecnu.compiler.lexical.service.LexicalService;
+import com.ecnu.compiler.rbac.domain.User;
+import com.ecnu.compiler.rbac.utils.UserUtils;
 import com.ecnu.compiler.utils.domain.HttpRespCode;
 import com.ecnu.compiler.utils.domain.Resp;
 import org.springframework.http.HttpStatus;
@@ -85,5 +87,11 @@ public class CommonController {
         }else{
             return ResponseEntity.status(HttpStatus.OK).body(new Resp(HttpRespCode.SUCCESS,sb));
         }
+    }
+
+    @RequestMapping(value = "/system/compiler/", method = RequestMethod.GET)
+    public ResponseEntity<Resp> getSystemCompilers() {
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new Resp(HttpRespCode.SUCCESS,commonService.getSystemCompilers()));
     }
 }

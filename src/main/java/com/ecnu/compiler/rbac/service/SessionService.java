@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
 import com.ecnu.compiler.rbac.domain.User;
 import com.ecnu.compiler.rbac.mapper.UserMapper;
+import com.ecnu.compiler.rbac.utils.UserUtils;
 import com.ecnu.compiler.utils.domain.Constants;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;
@@ -19,13 +20,6 @@ public class SessionService {
     @Resource
     private UserMapper userMapper;
 
-    public List<User> getUsers(){
-        return userMapper.selectPage(
-                new Page<User>(2,10)
-                ,new EntityWrapper<User>()
-        );
-    }
-
     /**
      * check user login request
      * @return user info || null if invalidate
@@ -36,7 +30,10 @@ public class SessionService {
        );
        if(ObjectUtils.isEmpty(users)){ return null; }
        User user = users.get(0);
-       return user.checkPassword(userParam.getPwd())?user:null;
+       if(user.checkPassword(userParam.getPwd())){
+           UserUtils.registerCurrentUser(user);
+           return user;
+       }else { return null; }
     }
 
     public User registerUser(User userParam) {
