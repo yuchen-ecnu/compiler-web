@@ -75,19 +75,7 @@ public class CommonController {
         }
     }
 
-    @RequestMapping(value = "/lexer/", method = RequestMethod.POST)
-    public ResponseEntity<Resp> text2symboltable(@RequestBody LexerParam lexerParam) {
-        //params error
-        if(ObjectUtils.isEmpty(lexerParam.getTxt())||ObjectUtils.isEmpty(lexerParam.getLan())){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Resp());
-        }
-        SymbolTable sb = lexicalService.generateSymbolTable(lexerParam.getTxt(),lexerParam.getLan());
-        if(ObjectUtils.isEmpty(sb)){
-            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(new Resp());
-        }else{
-            return ResponseEntity.status(HttpStatus.OK).body(new Resp(HttpRespCode.SUCCESS,sb));
-        }
-    }
+
 
     @RequestMapping(value = "/system/compiler/", method = RequestMethod.GET)
     public ResponseEntity<Resp> getSystemCompilers() {

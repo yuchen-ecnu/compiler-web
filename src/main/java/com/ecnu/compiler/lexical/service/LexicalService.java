@@ -1,6 +1,7 @@
 package com.ecnu.compiler.lexical.service;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.ecnu.CompilerBuilder;
+import com.ecnu.compiler.common.domain.DfaVO;
 import com.ecnu.compiler.component.lexer.domain.DFA;
 import com.ecnu.compiler.component.lexer.domain.RE;
 import com.ecnu.compiler.component.storage.SymbolTable;
@@ -11,6 +12,7 @@ import com.ecnu.compiler.controller.Compiler;
 import com.ecnu.compiler.lexical.domain.Regex;
 import com.ecnu.compiler.lexical.mapper.LexicalMapper;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
@@ -57,6 +59,14 @@ public class LexicalService {
             System.out.println("now status is: " + compiler.getStatus().getText());
         }
         return compiler.getSymbolTable();
+    }
+
+    public DfaVO getDFAbyRegexId(Integer id){
+        Regex regex = lexicalMapper.selectById(id);
+        RE regularExpression = new RE("lexical", regex.getRegex());
+        DFA dfa = regularExpression.getDFAIndirect();
+        if(ObjectUtils.isEmpty(dfa)) { return null; }
+        return  new DfaVO(dfa);
     }
 
     public void getLexicalAnalyzeTable(String code){
