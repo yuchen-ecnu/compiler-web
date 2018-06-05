@@ -39,7 +39,7 @@ public class CommonService {
      */
     public DfaVO RE2DFA(String re){
         RE regularExpression = new RE("common",re);
-        DFA dfa = regularExpression.getDFAIndirect();
+        DFA dfa = regularExpression.getDFADirectly();
         if(ObjectUtils.isEmpty(dfa)) { return null; }
         return  new DfaVO(dfa);
     }
