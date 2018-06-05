@@ -43,9 +43,7 @@ public class CommonController {
     @Resource
     private LexicalService lexicalService;
 
-    /**
-     *  登录
-     */
+
     @RequestMapping(value = "/re2nfa/", method = RequestMethod.GET)
     public ResponseEntity<Resp> RE2NFA(@RequestParam("re") String re) {
         //params error

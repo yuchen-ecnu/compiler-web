@@ -32,9 +32,9 @@ public class LexicalService {
         //创建一种随便的语言
         int languageId = 0;
         List<Regex> regexs= getRegrexsFromTargetLanguage(language);
-        List<String> reStrList = new ArrayList<>();
+        List<RE> reStrList = new ArrayList<>();
         for(Regex r:regexs){
-            reStrList.add(r.getRegex());
+            reStrList.add(new RE(r.getName(),r.getRegex()));
         }
         List<String> productionStrList = new ArrayList<>();
         //配置Config
