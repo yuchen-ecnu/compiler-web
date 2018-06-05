@@ -45,12 +45,18 @@ public class SessionController {
      *  登录
      */
     @RequestMapping(value = "/login/", method = RequestMethod.POST)
-    public ResponseEntity<Resp> login(@RequestBody User user) {
-        if(!user.isValid()){
+    public ResponseEntity<Resp> login(@RequestBody User userParam) {
+        if(!userParam.isValid()){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Resp());
         }
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(new Resp(HttpRespCode.SUCCESS,sessionService.checkLogin(user)));
+        User user  = sessionService.checkLogin(userParam);
+        if(user == null){
+            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE)
+                    .body(new Resp(HttpRespCode.USER_PASS_NOT_MATCH));
+        }else{
+            return ResponseEntity.status(HttpStatus.OK)
+                    .body(new Resp(HttpRespCode.SUCCESS,user));
+        }
     }
 
     /**

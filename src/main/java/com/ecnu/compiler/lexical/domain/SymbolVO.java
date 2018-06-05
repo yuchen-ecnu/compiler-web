@@ -1,7 +1,6 @@
 package com.ecnu.compiler.lexical.domain;
 
 import com.ecnu.compiler.component.storage.domain.Token;
-import sun.jvm.hotspot.debugger.cdbg.Sym;
 
 public class SymbolVO {
     private int id;

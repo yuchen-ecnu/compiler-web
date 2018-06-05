@@ -225,9 +225,6 @@
                                             <select id='sel-lan' class="selectpicker"
                                                     data-style="btn btn-primary btn-round" title="Choose Language"
                                                     data-size="7">
-                                                <option disabled>Choose Language</option>
-                                                <option value="c_cpp" selected>C/C++</option>
-                                                <option value="java">JAVA</option>
                                             </select>
                                         </div>
                                         <div class="col-md-6">
@@ -416,6 +413,40 @@
             })
         }
     });
+
+    //获取用户可选择的语法器
+    $.ajax({
+        url: base_url + api_compiler_select,
+        type : "get",
+        dataType : "json",
+        headers: {'Content-type': 'application/json;charset=UTF-8'},
+        success : function(res){
+            if(res.resCode === '200'){
+                var arr = res.data;
+                var selector = $("#sel-lan");
+                selector.append("<option disabled>Default Compiler</option>");
+                $.each(arr, function(index, compiler) {
+                    if(compiler.userId === -1){
+                        selector.append("<option value="+compiler.id+">"+compiler.compilerName+"</option>");
+                    }
+                });
+                selector.append("<option disabled>Your Compiler</option>");
+                $.each(arr, function(index, compiler) {
+                    if(compiler.userId !== -1){
+                        selector.append("<option value="+compiler.id+">"+compiler.compilerName+"</option>");
+                    }
+                });
+                selector.selectpicker('refresh');
+            }
+        },
+        error : function(data){
+            swal({ title: "Get System Compilers Error",
+                text: "Please refresh page and retry.",
+                timer: 2000,
+                showConfirmButton: false
+            }).then(function () {}, function (reason) {});
+        }
+    })
 </script>
 
 <script type="text/javascript">

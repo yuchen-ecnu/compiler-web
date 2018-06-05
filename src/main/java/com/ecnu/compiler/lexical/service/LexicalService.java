@@ -1,7 +1,6 @@
 package com.ecnu.compiler.lexical.service;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.ecnu.CompilerBuilder;
-import com.ecnu.LanguageBuilder;
 import com.ecnu.compiler.common.domain.DfaVO;
 import com.ecnu.compiler.component.lexer.domain.DFA;
 import com.ecnu.compiler.component.lexer.domain.RE;
@@ -18,7 +17,6 @@ import com.ecnu.compiler.lexical.domain.SymbolVO;
 import com.ecnu.compiler.lexical.mapper.LexicalMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
-import sun.jvm.hotspot.debugger.cdbg.Sym;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;

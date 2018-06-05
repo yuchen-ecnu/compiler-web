@@ -19,10 +19,10 @@ package com.ecnu.compiler.common.controller;
 import com.ecnu.compiler.common.domain.DfaVO;
 import com.ecnu.compiler.common.domain.NfaVO;
 import com.ecnu.compiler.common.service.CommonService;
-import com.ecnu.compiler.component.storage.SymbolTable;
-import com.ecnu.compiler.lexical.domain.LexerParam;
 import com.ecnu.compiler.lexical.service.LexicalService;
+import com.ecnu.compiler.rbac.domain.Compiler;
 import com.ecnu.compiler.rbac.domain.User;
+import com.ecnu.compiler.rbac.service.UserService;
 import com.ecnu.compiler.rbac.utils.UserUtils;
 import com.ecnu.compiler.utils.domain.HttpRespCode;
 import com.ecnu.compiler.utils.domain.Resp;
@@ -32,6 +32,8 @@ import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  *
@@ -42,6 +44,8 @@ import javax.annotation.Resource;
 public class CommonController {
     @Resource
     private CommonService commonService;
+    @Resource
+    private UserService userService;
     @Resource
     private LexicalService lexicalService;
 
@@ -74,6 +78,19 @@ public class CommonController {
     }
 
 
+
+    @RequestMapping(value = "/compiler/option/", method = RequestMethod.GET)
+    public ResponseEntity<Resp> getCompilers() {
+        List<Compiler> systemCompilers = commonService.getSystemCompilers();
+        User user = UserUtils.getCurrentUser();
+        List<Compiler> userCompilers = new ArrayList<>();
+        if(user !=null&&user.getId()!=null){
+            userCompilers = userService.getUserCompilers(user.getId());
+        }
+        systemCompilers.addAll(userCompilers);
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new Resp(HttpRespCode.SUCCESS,systemCompilers));
+    }
 
     @RequestMapping(value = "/system/compiler/", method = RequestMethod.GET)
     public ResponseEntity<Resp> getSystemCompilers() {

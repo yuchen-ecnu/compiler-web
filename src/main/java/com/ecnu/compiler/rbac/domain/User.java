@@ -14,7 +14,7 @@ import java.sql.Timestamp;
  */
 @TableName("user")
 public class User  extends Model<User> {
-    private int id;
+    private Integer id;
     private String nickName;
     private String pwd;
     private String email;
@@ -25,11 +25,11 @@ public class User  extends Model<User> {
     private Timestamp gmtModified;
     private Timestamp lastLogin;
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

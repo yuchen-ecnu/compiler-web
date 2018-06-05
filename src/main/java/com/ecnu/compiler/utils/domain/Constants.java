@@ -3,7 +3,7 @@ package com.ecnu.compiler.utils.domain;
 public class Constants {
     /**session key*/
     public static final String USER_ONLINE = "user_online";
-    public static final int SYSTEM_ID = 2;
+    public static final int SYSTEM_ID = -1;
 
     /**user type*/
     public static final int USER_COMMON = 0;

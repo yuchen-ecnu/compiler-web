@@ -83,14 +83,19 @@ public class LexicalController {
         }
     }
 
+    /**
+     * 词法分析器
+     * @param id
+     * @param text
+     * @return
+     */
     @RequestMapping(value = "/lexer/", method = RequestMethod.GET)
-    public ResponseEntity<Resp> text2symboltable(@RequestParam("id") int id, @RequestParam("text") String text) {
+    public ResponseEntity<Resp> text2SymbolTable(@RequestParam("id") int id, @RequestParam("text") String text) {
         //params error
         if(ObjectUtils.isEmpty(id)||ObjectUtils.isEmpty(text)){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Resp());
         }
         ErrorList errorList = new ErrorList();
-        List<Regex> regexList = new ArrayList<>();
         SymbolTableVO symbolTable = lexicalService.generateSymbolTable(id, text, errorList);
         if(errorList.getErrorMsgList().size() == 0){
             return ResponseEntity.status(HttpStatus.OK).body(new Resp(HttpRespCode.SUCCESS,symbolTable));
