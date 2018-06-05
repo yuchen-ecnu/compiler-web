@@ -17,9 +17,12 @@ package com.ecnu.compiler.lexical.controller;
  */
 
 import com.ecnu.compiler.common.domain.DfaVO;
+import com.ecnu.compiler.component.storage.ErrorList;
 import com.ecnu.compiler.component.storage.SymbolTable;
 import com.ecnu.compiler.lexical.domain.LexerParam;
 import com.ecnu.compiler.lexical.domain.Regex;
+import com.ecnu.compiler.lexical.domain.SymbolTableVO;
+import com.ecnu.compiler.lexical.domain.SymbolVO;
 import com.ecnu.compiler.lexical.service.LexicalService;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -31,6 +34,7 @@ import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -79,17 +83,20 @@ public class LexicalController {
         }
     }
 
-    @RequestMapping(value = "/lexer/", method = RequestMethod.POST)
-    public ResponseEntity<Resp> text2symboltable(@RequestBody LexerParam lexerParam) {
+    @RequestMapping(value = "/lexer/", method = RequestMethod.GET)
+    public ResponseEntity<Resp> text2symboltable(@RequestParam("id") int id, @RequestParam("text") String text) {
         //params error
-        if(ObjectUtils.isEmpty(lexerParam.getTxt())||ObjectUtils.isEmpty(lexerParam.getLan())){
+        if(ObjectUtils.isEmpty(id)||ObjectUtils.isEmpty(text)){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Resp());
         }
-        SymbolTable sb = lexicalService.generateSymbolTable(lexerParam.getTxt(),lexerParam.getLan());
-        if(ObjectUtils.isEmpty(sb)){
-            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(new Resp());
+        ErrorList errorList = new ErrorList();
+        List<Regex> regexList = new ArrayList<>();
+        SymbolTableVO symbolTable = lexicalService.generateSymbolTable(id, text, errorList);
+        if(errorList.getErrorMsgList().size() == 0){
+            return ResponseEntity.status(HttpStatus.OK).body(new Resp(HttpRespCode.SUCCESS,symbolTable));
         }else{
-            return ResponseEntity.status(HttpStatus.OK).body(new Resp(HttpRespCode.SUCCESS,sb));
+            return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED)
+                    .body(new Resp(HttpRespCode.METHOD_NOT_ALLOWED,errorList.getErrorMsgList()));
         }
     }
 
