@@ -14,51 +14,44 @@
  *
  *   @author Michael Chen
  */
-package com.ecnu.compiler.rbac.controller;
+package com.ecnu.compiler.history.controller;
 
+import com.ecnu.compiler.history.service.HistoryService;
 import com.ecnu.compiler.rbac.domain.User;
-import com.ecnu.compiler.rbac.service.SessionService;
+import com.ecnu.compiler.rbac.utils.UserUtils;
 import com.ecnu.compiler.utils.domain.HttpRespCode;
 import com.ecnu.compiler.utils.domain.Resp;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpSession;
 
 /**
- * 会话控制器
+ * 用户控制器，用于处理用户账户内信息处理
  *
  * @author Michael Chen
  */
 @RestController
-@RequestMapping(value = "/session")
-public class SessionController {
+@RequestMapping(value = "/history")
+public class HistoryController {
     @Resource
-    private SessionService sessionService;
-
+    private HistoryService historyService;
     /**
-     *  登录
+     *  获取用户的操作历史记录
      */
-    @RequestMapping(value = "/login/", method = RequestMethod.POST)
-    public ResponseEntity<Resp> login(@RequestBody User user) {
-        if(!user.isValid()){
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Resp());
+    @RequestMapping(value = "/list/", method = RequestMethod.GET)
+    public ResponseEntity<Resp> getUserHistory() {
+        User user = UserUtils.getCurrentUser();
+        if(ObjectUtils.isEmpty(user)){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new Resp());
         }
         return ResponseEntity.status(HttpStatus.OK)
-                .body(new Resp(HttpRespCode.SUCCESS,sessionService.checkLogin(user)));
+                .body(new Resp(HttpRespCode.SUCCESS,historyService.getUserHistory(user.getId())));
     }
 
-    /**
-     *  登出
-     */
-    @RequestMapping(value = "/logout/", method = RequestMethod.GET)
-    public ResponseEntity<Resp> logout(HttpSession session) {
-        session.invalidate();
-        return ResponseEntity.status(HttpStatus.OK).body(new Resp(HttpRespCode.SUCCESS));
-    }
+
 }

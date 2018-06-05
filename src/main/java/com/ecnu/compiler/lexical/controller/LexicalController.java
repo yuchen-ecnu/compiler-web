@@ -16,6 +16,9 @@ package com.ecnu.compiler.lexical.controller;
  *   @author Handsome Zhao
  */
 
+import com.ecnu.compiler.common.domain.DfaVO;
+import com.ecnu.compiler.component.storage.SymbolTable;
+import com.ecnu.compiler.lexical.domain.LexerParam;
 import com.ecnu.compiler.lexical.domain.Regex;
 import com.ecnu.compiler.lexical.service.LexicalService;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -59,5 +62,35 @@ public class LexicalController {
         }
     }
 
+    /**
+     *  根据正则表达式ID获取DFA
+     */
+    @RequestMapping(value = "/rid2dfa/", method = RequestMethod.GET)
+    public ResponseEntity<Resp> getDfaFromRegexById(@RequestParam("id") Integer id){
+        //params error
+        if(ObjectUtils.isEmpty(id)){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Resp());
+        }
+        DfaVO dfaVO = lexicalService.getDFAbyRegexId(id);
+        if(ObjectUtils.isEmpty(dfaVO)){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new Resp());
+        }else{
+            return ResponseEntity.status(HttpStatus.OK).body(new Resp(HttpRespCode.SUCCESS, dfaVO));
+        }
+    }
+
+    @RequestMapping(value = "/lexer/", method = RequestMethod.POST)
+    public ResponseEntity<Resp> text2symboltable(@RequestBody LexerParam lexerParam) {
+        //params error
+        if(ObjectUtils.isEmpty(lexerParam.getTxt())||ObjectUtils.isEmpty(lexerParam.getLan())){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Resp());
+        }
+        SymbolTable sb = lexicalService.generateSymbolTable(lexerParam.getTxt(),lexerParam.getLan());
+        if(ObjectUtils.isEmpty(sb)){
+            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(new Resp());
+        }else{
+            return ResponseEntity.status(HttpStatus.OK).body(new Resp(HttpRespCode.SUCCESS,sb));
+        }
+    }
 
 }

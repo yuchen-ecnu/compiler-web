@@ -1,6 +1,7 @@
 package com.ecnu.compiler.rbac.domain;
 
 import com.baomidou.mybatisplus.activerecord.Model;
+import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableName;
 import org.springframework.util.DigestUtils;
 import org.springframework.util.ObjectUtils;
@@ -20,6 +21,7 @@ public class User  extends Model<User> {
     private Integer userType;
     private Integer volume;
     private Timestamp gmtCreated;
+    @TableField(update="now()")
     private Timestamp gmtModified;
     private Timestamp lastLogin;
 

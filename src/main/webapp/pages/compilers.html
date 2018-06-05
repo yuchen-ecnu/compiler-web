@@ -219,54 +219,11 @@
                                                 <th>Type</th>
                                                 <th>Intro</th>
                                                 <th class="text-center">Used-times</th>
+                                                <th class="text-center">Created</th>
+                                                <th class="text-center">Modified</th>
                                                 <th class="text-right">Actions</th>
                                             </thead>
-                                            <tbody>
-                                            <tr>
-                                                <td class="text-center">1</td>
-                                                <td>C</td>
-                                                <td>系统预置</td>
-                                                <td>C语言编译器</td>
-                                                <td class="text-center">36,738</td>
-                                                <td class="td-actions text-right">
-                                                    <button type="button" rel="tooltip" class="btn btn-success" title="Edit">
-                                                        <i class="material-icons">edit</i>
-                                                    </button>
-                                                    <button type="button" rel="tooltip" class="btn btn-info" title="Compile Now">
-                                                        <i class="material-icons">send</i>
-                                                    </button>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td class="text-center">2</td>
-                                                <td>C++</td>
-                                                <td>系统预置</td>
-                                                <td>C++语言编译器</td>
-                                                <td class="text-center">23,789</td>
-                                                <td class="td-actions text-right">
-                                                    <button type="button" rel="tooltip" class="btn btn-success" title="Edit">
-                                                        <i class="material-icons">edit</i>
-                                                    </button>
-                                                    <button type="button" rel="tooltip" class="btn btn-info" title="Compile Now">
-                                                        <i class="material-icons">send</i>
-                                                    </button>
-                                                </td>
-                                            </tr>
-                                            <tr>
-                                                <td class="text-center">3</td>
-                                                <td>JAVA</td>
-                                                <td>系统预置</td>
-                                                <td>JAVA语言编译器</td>
-                                                <td class="text-center">56,142</td>
-                                                <td class="td-actions text-right">
-                                                    <button type="button" rel="tooltip" class="btn btn-success" title="Edit">
-                                                        <i class="material-icons">edit</i>
-                                                    </button>
-                                                    <button type="button" rel="tooltip" class="btn btn-info" title="Compile Now">
-                                                        <i class="material-icons">send</i>
-                                                    </button>
-                                                </td>
-                                            </tr>
+                                            <tbody id="system-compiler">
                                             </tbody>
                                         </table>
                                     </div>
@@ -280,7 +237,7 @@
                                 </div>
                                 <div class="card-content">
                                     <h4 class="card-title">Your Compilers</h4>
-                                    <div class="table-responsive">
+                                    <div class="table-responsive" id="user-table">
                                         <table class="table">
                                             <thead class="text-primary">
                                                 <tr>
@@ -294,47 +251,7 @@
                                                     <th class="text-right">Actions</th>
                                                 </tr>
                                             </thead>
-                                            <tbody>
-                                                <tr>
-                                                    <td class="text-center">1</td>
-                                                    <td>Python</td>
-                                                    <td>自定义</td>
-                                                    <td>My python compiler</td>
-                                                    <td class="text-center">36,738</td>
-                                                    <td class="text-center">2018/05/12 12:00</td>
-                                                    <td class="text-center">2018/05/12 12:00</td>
-                                                    <td class="td-actions text-right">
-                                                        <button type="button" rel="tooltip" class="btn btn-success" title="Edit">
-                                                            <i class="material-icons">edit</i>
-                                                        </button>
-                                                        <button type="button" rel="tooltip" class="btn btn-info" title="Compile Now">
-                                                            <i class="material-icons">send</i>
-                                                        </button>
-                                                        <button type="button" rel="tooltip" class="btn btn-danger btn-round" title="Delete">
-                                                            <i class="material-icons">close</i>
-                                                        </button>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="text-center">1</td>
-                                                    <td>PHP</td>
-                                                    <td>自定义</td>
-                                                    <td>My PHP compiler</td>
-                                                    <td class="text-center">36,738</td>
-                                                    <td class="text-center">2018/05/12 12:00</td>
-                                                    <td class="text-center">2018/05/12 12:00</td>
-                                                    <td class="td-actions text-right">
-                                                        <button type="button" rel="tooltip" class="btn btn-success" title="Edit">
-                                                            <i class="material-icons">edit</i>
-                                                        </button>
-                                                        <button type="button" rel="tooltip" class="btn btn-info" title="Compile Now">
-                                                            <i class="material-icons">send</i>
-                                                        </button>
-                                                        <button type="button" rel="tooltip" class="btn btn-danger btn-round" title="Delete">
-                                                            <i class="material-icons">close</i>
-                                                        </button>
-                                                    </td>
-                                                </tr>
+                                            <tbody id="user-compiler">
                                             </tbody>
                                         </table>
                                     </div>
@@ -398,5 +315,92 @@
 <script src="../assets/js/material-dashboard.js"></script>
 <!-- Material Dashboard DEMO methods, don't include it in your project! -->
 <script src="../assets/js/demo.js"></script>
-
+<!--Global Configure -->
+<script src="js/global-config.js"></script>
+<script type="text/javascript">
+    $().ready(function() {
+        $.ajax({
+            url: base_url + api_user_compiler,
+            type : "get",
+            dataType : "json",
+            success : function(res){
+                if(res.resCode === '200'){
+                    var arr = res.data;
+                    var sHtml = "";
+                    $.each(arr, function(index, compiler) {
+                        sHtml += "<tr><td class=\"text-center\">"+index+"</td>";
+                        sHtml += "<td>"+compiler.compilerName+"</td>";
+                        sHtml += "<td>自定义</td>";
+                        sHtml += "<td>"+compiler.introduce+"</td>";
+                        sHtml += "<td class=\"text-center\">"+compiler.usedTime+"</td>";
+                        sHtml += "<td class=\"text-center\">"+ts2String(compiler.gmtCreated)+"</td>";
+                        sHtml += "<td class=\"text-center\">"+ts2String(compiler.gmtModified)+"</td>";
+                        sHtml += "<td class=\"td-actions text-right\">\n" +
+                            "<button type=\"button\" rel=\"tooltip\" class=\"btn btn-success\" title=\"Edit\">\n" +
+                            "<i class=\"material-icons\">edit</i>\n" +
+                            "</button>\n" +
+                            "<button type=\"button\" rel=\"tooltip\" class=\"btn btn-info\" title=\"Compile Now\">\n" +
+                            "<i class=\"material-icons\">send</i>\n" +
+                            "</button>\n" +
+                            "</td></tr>";
+                    });
+                    $("#user-compiler").html(sHtml);
+                }
+            },
+            error : function(data){
+                console.log(data);
+                if(data.status === 401){
+                    $("#user-table").html("<div class=\"tim-typo\"><h3>Please login to build your own compiler!" +
+                        "&nbsp;&nbsp;&nbsp;<button id='login-btn' class=\"btn btn-success\">Login</button></h3></div>");
+                    $("#login-btn").click(function () {
+                        location.href = base_url + url_login;
+                    });
+                    return;
+                }
+                swal({ title: "Get User Compilers Error",
+                    text: "Please check you login status or refresh page.",
+                    timer: 2000,
+                    showConfirmButton: false
+                }).then(function () {}, function (reason) {});
+            }
+        });
+        $.ajax({
+            url: base_url + api_system_compiler,
+            type : "get",
+            dataType : "json",
+            headers: {'Content-type': 'application/json;charset=UTF-8'},
+            success : function(res){
+                if(res.resCode === '200'){
+                    var arr = res.data;
+                    var sHtml = "";
+                    $.each(arr, function(index, compiler) {
+                        sHtml += "<tr><td class=\"text-center\">"+index+"</td>";
+                        sHtml += "<td>"+compiler.compilerName+"</td>";
+                        sHtml += "<td>系统预置</td>";
+                        sHtml += "<td>"+compiler.introduce+"</td>";
+                        sHtml += "<td class=\"text-center\">"+compiler.usedTime+"</td>";
+                          sHtml += "<td class=\"text-center\">"+ts2String(compiler.gmtCreated)+"</td>";
+                        sHtml += "<td class=\"text-center\">"+ts2String(compiler.gmtModified)+"</td>";
+                        sHtml += "<td class=\"td-actions text-right\">\n" +
+                            "<button type=\"button\" rel=\"tooltip\" class=\"btn btn-success\" title=\"Edit\">\n" +
+                            "<i class=\"material-icons\">edit</i>\n" +
+                            "</button>\n" +
+                            "<button type=\"button\" rel=\"tooltip\" class=\"btn btn-info\" title=\"Compile Now\">\n" +
+                            "<i class=\"material-icons\">send</i>\n" +
+                            "</button>\n" +
+                            "</td></tr>";
+                    });
+                    $("#system-compiler").html(sHtml);
+                }
+            },
+            error : function(data){
+                swal({ title: "Get System Compilers Error",
+                    text: "Please refresh page and retry.",
+                    timer: 2000,
+                    showConfirmButton: false
+                }).then(function () {}, function (reason) {});
+            }
+        })
+    });
+</script>
 </html>
