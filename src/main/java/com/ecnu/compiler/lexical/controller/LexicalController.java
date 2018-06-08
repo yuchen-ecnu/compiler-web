@@ -97,7 +97,7 @@ public class LexicalController {
         }
         ErrorList errorList = new ErrorList();
         SymbolTableVO symbolTable = lexicalService.generateSymbolTable(id, text, errorList);
-        if(errorList.getErrorMsgList().size() == 0){
+        if(errorList.getErrorMsgList().size() == 0 && symbolTable != null){
             return ResponseEntity.status(HttpStatus.OK).body(new Resp(HttpRespCode.SUCCESS,symbolTable));
         }else{
             return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED)

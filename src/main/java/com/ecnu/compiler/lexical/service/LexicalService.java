@@ -68,7 +68,11 @@ public class LexicalService {
             compiler.next();
         }
         errorList = compiler.getErrorList();
-        List<Token> list = compiler.getSymbolTable().getTokens();
+        SymbolTable sb = compiler.getSymbolTable();
+        if(sb == null){
+            return null;
+        }
+        List<Token> list = sb.getTokens();
         int tokensListSize = list.size();
         List<SymbolVO> listVO = new ArrayList<>();
         for(int i = 0; i < tokensListSize; i++){
