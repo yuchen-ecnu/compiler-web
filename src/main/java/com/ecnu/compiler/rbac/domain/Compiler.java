@@ -7,30 +7,35 @@ import com.baomidou.mybatisplus.annotations.TableName;
 import java.io.Serializable;
 import java.sql.Timestamp;
 
+/**
+ * @author michaelchen
+ */
 @TableName("compiler")
 public class Compiler extends Model<Compiler> {
-    private int id;
-    private int userId;
+    private Integer id;
+    private Integer userId;
     private String compilerName;
     private String introduce;
-    private int usedTime;
+    private Integer usedTime;
+    private Integer lexerModel;
+    private Integer parserModel;
     private Timestamp gmtCreated;
     @TableField(update="now()")
     private Timestamp gmtModified;
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
-    public int getUserId() {
+    public Integer getUserId() {
         return userId;
     }
 
-    public void setUserId(int userId) {
+    public void setUserId(Integer userId) {
         this.userId = userId;
     }
 
@@ -40,6 +45,22 @@ public class Compiler extends Model<Compiler> {
 
     public void setCompilerName(String compilerName) {
         this.compilerName = compilerName;
+    }
+
+    public Integer getLexerModel() {
+        return lexerModel;
+    }
+
+    public void setLexerModel(Integer lexerModel) {
+        this.lexerModel = lexerModel;
+    }
+
+    public Integer getParserModel() {
+        return parserModel;
+    }
+
+    public void setParserModel(Integer parserModel) {
+        this.parserModel = parserModel;
     }
 
     public Timestamp getGmtCreated() {
@@ -66,11 +87,11 @@ public class Compiler extends Model<Compiler> {
         this.introduce = introduce;
     }
 
-    public int getUsedTime() {
+    public Integer getUsedTime() {
         return usedTime;
     }
 
-    public void setUsedTime(int usedTime) {
+    public void setUsedTime(Integer usedTime) {
         this.usedTime = usedTime;
     }
 

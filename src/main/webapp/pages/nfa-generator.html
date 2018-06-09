@@ -590,16 +590,7 @@
                 }
             },
             error: function (data) {
-                swal({
-                    title: "Generating Failed",
-                    text: "Please check your regular expression and then retry.",
-                    timer: 2000,
-                    showConfirmButton: false,
-                    type: "error"
-                }).then(function () {
-                    },
-                    function (reason) {
-                    });
+                toast("Generating Failed","Please check your regular expression and then retry.");
             }
         })
     });

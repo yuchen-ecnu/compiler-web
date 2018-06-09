@@ -246,7 +246,19 @@
                                         <h4>Procedure</h4>
                                     </div>
                                     <div class="form-group label-floating">
-                                        <p id="re-output" style="min-height:250px"></p>
+                                        <div>
+                                            <button class="btn btn-primary btn-xs">x-Small</button>
+                                            <button class="btn btn-primary btn-xs">x-Small</button>
+                                            <button class="btn btn-primary btn-xs">x-Small</button>
+                                            <button class="btn btn-primary btn-xs">x-Small</button>
+                                        </div>
+                                        <div>
+                                            <button class="btn btn-primary btn-xs">x-Small</button>
+                                            <button class="btn btn-primary btn-xs">x-Small</button>
+                                            <button class="btn btn-primary btn-xs">x-Small</button>
+                                            <button class="btn btn-primary btn-xs">x-Small</button>
+                                            <button class="btn btn-primary btn-xs">x-Small</button>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -378,40 +390,50 @@
                 timer: 2000,
                 showConfirmButton: false,
                 type: "warning"
-            })
-        } else {
-            $.ajax({
-                url: base_url + api_lexer,
-                type: "post",
-                dataType: "json",
-                headers: {'Content-type': 'application/json;charset=UTF-8'},
-                data: JSON.stringify({
-                    txt: txt,
-                    lan: lan==='c_cpp'?'c/c++':'java'
-                }),
-                success: function (data) {
-                    console.log(data);
-                    $("#tableBody").html("<tr>\n" +
-                        "<td>1</td>\n" +
-                        "<td>identify</td>\n" +
-                        "<td>id1</td>\n" +
-                        "<td class=\"text-right\">\n" +
-                        "<a href=\"#\" class=\"btn btn-simple btn-warning btn-icon edit\"><i\n" +
-                        "class=\"material-icons\">dvr</i></a>\n" +
-                        "</td>\n" +
-                        "</tr>");
-
-                },
-                error: function (data) {
-                    swal({
-                        title: "Generator Error",
-                        text: "Please check you code and retry.",
-                        timer: 2000,
-                        showConfirmButton: false
-                    });
-                }
-            })
+            });
+            return;
         }
+        if (lan === "" || lan === undefined) {
+            swal({
+                title: "Empty Warn",
+                text: "Please choose a compiler.",
+                timer: 2000,
+                showConfirmButton: false,
+                type: "warning"
+            });
+            return;
+        }
+        $.ajax({
+            url: base_url + api_lexer,
+            type: "post",
+            dataType: "json",
+            headers: {'Content-type': 'application/json;charset=UTF-8'},
+            data: JSON.stringify({
+                txt: txt,
+                lan: lan
+            }),
+            success: function (data) {
+                console.log(data);
+                $("#tableBody").html("<tr>\n" +
+                    "<td>1</td>\n" +
+                    "<td>identify</td>\n" +
+                    "<td>id1</td>\n" +
+                    "<td class=\"text-right\">\n" +
+                    "<a href=\"#\" class=\"btn btn-simple btn-warning btn-icon edit\"><i\n" +
+                    "class=\"material-icons\">dvr</i></a>\n" +
+                    "</td>\n" +
+                    "</tr>");
+
+            },
+            error: function (data) {
+                swal({
+                    title: "Generator Error",
+                    text: "Please check you code and retry.",
+                    timer: 2000,
+                    showConfirmButton: false
+                });
+            }
+        })
     });
 
     //获取用户可选择的语法器

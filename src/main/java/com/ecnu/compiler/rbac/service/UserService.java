@@ -1,8 +1,8 @@
 package com.ecnu.compiler.rbac.service;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.ecnu.compiler.lexical.mapper.CompilerMapper;
 import com.ecnu.compiler.rbac.domain.Compiler;
-import com.ecnu.compiler.rbac.mapper.CompilerMapper;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;

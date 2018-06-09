@@ -16,6 +16,7 @@
  */
 package com.ecnu.compiler.common.controller;
 
+import com.ecnu.compiler.common.domain.CompilerConfiguration;
 import com.ecnu.compiler.common.domain.DfaVO;
 import com.ecnu.compiler.common.domain.NfaVO;
 import com.ecnu.compiler.common.service.CommonService;
@@ -96,5 +97,18 @@ public class CommonController {
     public ResponseEntity<Resp> getSystemCompilers() {
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new Resp(HttpRespCode.SUCCESS,commonService.getSystemCompilers()));
+    }
+
+    @RequestMapping(value = "/system/configuration/", method = RequestMethod.GET)
+    public ResponseEntity<Resp> getSystemCompilerConfiguration(@RequestParam("id")Integer id) {
+        if(ObjectUtils.isEmpty(id)){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Resp());
+        }
+        CompilerConfiguration cf = commonService.getSystemCompilerConfiguration(id);
+        if(ObjectUtils.isEmpty(cf)){
+            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(new Resp());
+        }
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new Resp(HttpRespCode.SUCCESS,cf));
     }
 }

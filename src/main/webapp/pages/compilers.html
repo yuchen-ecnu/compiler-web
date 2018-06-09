@@ -354,11 +354,7 @@
                     });
                     return;
                 }
-                swal({ title: "Get User Compilers Error",
-                    text: "Please check you login status or refresh page.",
-                    timer: 2000,
-                    showConfirmButton: false
-                }).then(function () {}, function (reason) {});
+                toast("error","Get User Compilers Error","Please check you login status or refresh page.");
             }
         });
         $.ajax({
@@ -379,9 +375,10 @@
                           sHtml += "<td class=\"text-center\">"+ts2String(compiler.gmtCreated)+"</td>";
                         sHtml += "<td class=\"text-center\">"+ts2String(compiler.gmtModified)+"</td>";
                         sHtml += "<td class=\"td-actions text-right\">\n" +
+                            "<a href=\'compiler-builder.html?id="+compiler.id+"\'>" +
                             "<button type=\"button\" rel=\"tooltip\" class=\"btn btn-success\" title=\"Edit\">\n" +
                             "<i class=\"material-icons\">edit</i>\n" +
-                            "</button>\n" +
+                            "</button></a>\n" +
                             "<button type=\"button\" rel=\"tooltip\" class=\"btn btn-info\" title=\"Compile Now\">\n" +
                             "<i class=\"material-icons\">send</i>\n" +
                             "</button>\n" +
@@ -391,11 +388,7 @@
                 }
             },
             error : function(data){
-                swal({ title: "Get System Compilers Error",
-                    text: "Please refresh page and retry.",
-                    timer: 2000,
-                    showConfirmButton: false
-                }).then(function () {}, function (reason) {});
+                toast("error","Get System Compilers Error","Please refresh page and retry.");
             }
         })
     });

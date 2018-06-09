@@ -1,14 +1,16 @@
 package com.ecnu.compiler.lexical.domain;
 
+import org.springframework.util.ObjectUtils;
+
 public class LexerParam {
-    String lan;
+    Integer lan;
     String txt;
 
-    public String getLan() {
+    public Integer getLan() {
         return lan;
     }
 
-    public void setLan(String lan) {
+    public void setLan(Integer lan) {
         this.lan = lan;
     }
 
@@ -18,5 +20,9 @@ public class LexerParam {
 
     public void setTxt(String txt) {
         this.txt = txt;
+    }
+
+    public boolean isVaild() {
+        return !(ObjectUtils.isEmpty(lan)||ObjectUtils.isEmpty(txt));
     }
 }

@@ -13,6 +13,4 @@ public class Constants {
     public static final int VOLUME_COMMON = 5;
     public static final int VOLUME_STANDARD_VIP = 20;
 
-    /**URL*/
-    public static final String URL_LOGIN = "/pages/login/login.html";
 }

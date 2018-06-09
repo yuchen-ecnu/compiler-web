@@ -1,12 +1,18 @@
 package com.ecnu.compiler.common.service;
 
-import com.ecnu.compiler.common.domain.DfaVO;
-import com.ecnu.compiler.common.domain.NfaVO;
+import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.ecnu.compiler.common.domain.*;
+import com.ecnu.compiler.common.mapper.CFGMapper;
 import com.ecnu.compiler.component.lexer.domain.DFA;
 import com.ecnu.compiler.component.lexer.domain.NFA;
 import com.ecnu.compiler.component.lexer.domain.RE;
+import com.ecnu.compiler.lexical.domain.Regex;
+import com.ecnu.compiler.lexical.mapper.CompilerMapper;
+import com.ecnu.compiler.lexical.mapper.RegexMapper;
 import com.ecnu.compiler.rbac.domain.Compiler;
+import com.ecnu.compiler.rbac.domain.User;
 import com.ecnu.compiler.rbac.service.UserService;
+import com.ecnu.compiler.rbac.utils.UserUtils;
 import com.ecnu.compiler.utils.domain.Constants;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
@@ -19,6 +25,15 @@ public class CommonService {
 
     @Resource
     private UserService userService;
+
+    @Resource
+    private CompilerMapper compilerMapper;
+    @Resource
+    private RegexMapper regexMapper;
+    @Resource
+    private CFGMapper cfgMapper;
+    @Resource
+    private AGMapper agMapper;
     /**
      * RE 转 NFA
      * @param re regular expression
@@ -46,9 +61,29 @@ public class CommonService {
 
     /**
      * 获取系统预置Compiler
-     * @return
      */
     public List<Compiler> getSystemCompilers() {
         return userService.getUserCompilers(Constants.SYSTEM_ID);
+    }
+
+    public CompilerConfiguration getSystemCompilerConfiguration(int id) {
+        Compiler compiler = compilerMapper.selectById(id);
+        if(ObjectUtils.isEmpty(compiler)){ return null; }
+        User user = UserUtils.getCurrentUser();
+        if(compiler.getUserId()!= Constants.SYSTEM_ID
+                && user!=null && user.getId()!=compiler.getUserId()){
+            return null;
+        }
+        List<Regex> reList = regexMapper.selectList(
+                new EntityWrapper<Regex>().eq("compiler_id",compiler.getId())
+        );
+        List<Cfg> cfgList = cfgMapper.selectList(
+                new EntityWrapper<Cfg>().eq("compiler_id",compiler.getId())
+        );
+        List<Ag> agList = agMapper.selectList(
+                new EntityWrapper<Ag>().eq("compiler_id",compiler.getId())
+        );
+
+        return new CompilerConfiguration(compiler,reList,cfgList,agList);
     }
 }

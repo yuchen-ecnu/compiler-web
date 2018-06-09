@@ -531,13 +531,7 @@
     $("#confirm-btn").on("click", function () {
         var re = $("#re-expression").val();
         if (re === "" || re === undefined) {
-            swal({
-                title: "Empty Warn",
-                text: "Please input regular expression.",
-                timer: 2000,
-                showConfirmButton: false,
-                type: "warning"
-            });
+            toast("warning","Empty Warn","Please input regular expression.");
             return;
         }
         // ask for DFA
@@ -592,16 +586,7 @@
                 }
             },
             error: function (data) {
-                swal({
-                    title: "Generating Failed",
-                    text: "Please check your regular expression and then retry.",
-                    timer: 2000,
-                    showConfirmButton: false,
-                    type: "error"
-                }).then(function () {
-                    },
-                    function (reason) {
-                    });
+                toast("error","Generating Failed","Please check your regular expression and then retry.");
             }
         })
     });

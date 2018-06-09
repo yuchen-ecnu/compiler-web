@@ -4,7 +4,6 @@ import com.ecnu.CompilerBuilder;
 import com.ecnu.compiler.common.domain.DfaVO;
 import com.ecnu.compiler.component.lexer.domain.DFA;
 import com.ecnu.compiler.component.lexer.domain.RE;
-import com.ecnu.compiler.component.storage.ErrorList;
 import com.ecnu.compiler.component.storage.SymbolTable;
 import com.ecnu.compiler.component.storage.domain.Token;
 import com.ecnu.compiler.constant.Config;
@@ -14,7 +13,7 @@ import com.ecnu.compiler.controller.Compiler;
 import com.ecnu.compiler.lexical.domain.Regex;
 import com.ecnu.compiler.lexical.domain.SymbolTableVO;
 import com.ecnu.compiler.lexical.domain.SymbolVO;
-import com.ecnu.compiler.lexical.mapper.LexicalMapper;
+import com.ecnu.compiler.lexical.mapper.RegexMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
@@ -27,20 +26,18 @@ import java.util.Map;
 @Service
 public class LexicalService {
     @Resource
-    private LexicalMapper lexicalMapper;
+    private RegexMapper regexMapper;
 
     public List<Regex> getRegrexsFromTargetLanguage(String language){
-        return lexicalMapper.selectList(
+        return regexMapper.selectList(
                 new EntityWrapper<Regex>().eq("language", language));
     }
 
-    public SymbolTableVO generateSymbolTable(int id, String text, ErrorList errorList){
-        List<Regex> regexesList = lexicalMapper.selectList(
+    public SymbolTableVO generateSymbolTable(int id, String text){
+        List<Regex> regexList = regexMapper.selectList(
                 new EntityWrapper<Regex>().eq("compiler_id", id));
         List<RE> reStrList = new ArrayList<>();
-        int listSize = regexesList.size();
-        for(int i = 0; i < listSize; i++){
-            Regex reg = regexesList.get(i);
+        for (Regex reg : regexList) {
             reStrList.add(new RE(reg.getName(), reg.getRegex()));
         }
 
@@ -48,17 +45,7 @@ public class LexicalService {
         config.setExecuteType(Constants.EXECUTE_STAGE_BY_STAGE);
 
         CompilerBuilder compilerBuilder = new CompilerBuilder();
-        if (!compilerBuilder.checkLanguage(id)){
-            //只用于词法分析，暂时用不到最后一个参数，故传空列表
-            //这里第二个参数要求传入baselanguage:c/c++/java
-            //数据库里c++与c放在一起，故先确定用1表示c和c++ 2表示java
-            String baseLanguage;
-            if(id == 1)
-                baseLanguage = Constants.LANGUAGE_CPLUS;
-            else
-                baseLanguage = Constants.LANGUAGE_JAVA;
-            compilerBuilder.prepareLanguage(id, baseLanguage, reStrList, new ArrayList<String>());
-        }
+        compilerBuilder.prepareLanguage(id, reStrList, new ArrayList<String>());
 
         Compiler compiler = compilerBuilder.getCompilerInstance(id, config);
         //初始化编译器
@@ -67,7 +54,6 @@ public class LexicalService {
         while (compiler.getStatus() != StatusCode.STAGE_PARSER){
             compiler.next();
         }
-        errorList = compiler.getErrorList();
         SymbolTable sb = compiler.getSymbolTable();
         if(sb == null){
             return null;
@@ -79,11 +65,11 @@ public class LexicalService {
             listVO.add(new SymbolVO(list.get(i), i + 1));
         }
 
-        return new SymbolTableVO(listVO, regexesList);
+        return new SymbolTableVO(listVO, regexList,compiler.getErrorList());
     }
 
     public DfaVO getDFAbyRegexId(Integer id){
-        Regex regex = lexicalMapper.selectById(id);
+        Regex regex = regexMapper.selectById(id);
         RE regularExpression = new RE("lexical", regex.getRegex());
         DFA dfa = regularExpression.getDFAIndirect();
         if(ObjectUtils.isEmpty(dfa)) { return null; }

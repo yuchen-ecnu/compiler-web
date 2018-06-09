@@ -85,24 +85,15 @@ public class LexicalController {
 
     /**
      * 词法分析器
-     * @param id
-     * @param text
-     * @return
      */
-    @RequestMapping(value = "/lexer/", method = RequestMethod.GET)
-    public ResponseEntity<Resp> text2SymbolTable(@RequestParam("id") int id, @RequestParam("text") String text) {
+    @RequestMapping(value = "/lexer/", method = RequestMethod.POST)
+    public ResponseEntity<Resp> text2SymbolTable(@RequestBody LexerParam lexerParam) {
         //params error
-        if(ObjectUtils.isEmpty(id)||ObjectUtils.isEmpty(text)){
+        if(!lexerParam.isVaild()){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Resp());
         }
-        ErrorList errorList = new ErrorList();
-        SymbolTableVO symbolTable = lexicalService.generateSymbolTable(id, text, errorList);
-        if(errorList.getErrorMsgList().size() == 0 && symbolTable != null){
-            return ResponseEntity.status(HttpStatus.OK).body(new Resp(HttpRespCode.SUCCESS,symbolTable));
-        }else{
-            return ResponseEntity.status(HttpStatus.METHOD_NOT_ALLOWED)
-                    .body(new Resp(HttpRespCode.METHOD_NOT_ALLOWED,errorList.getErrorMsgList()));
-        }
+        SymbolTableVO symbolTable = lexicalService.generateSymbolTable(lexerParam.getLan(), lexerParam.getTxt());
+        return ResponseEntity.status(HttpStatus.OK).body(new Resp(HttpRespCode.SUCCESS,symbolTable));
     }
 
 }
