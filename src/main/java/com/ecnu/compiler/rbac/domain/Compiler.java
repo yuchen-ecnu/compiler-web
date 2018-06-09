@@ -15,6 +15,7 @@ public class Compiler extends Model<Compiler> {
     private Integer id;
     private Integer userId;
     private String compilerName;
+    private String languageName;
     private String introduce;
     private Integer usedTime;
     private Integer lexerModel;
@@ -33,6 +34,14 @@ public class Compiler extends Model<Compiler> {
 
     public Integer getUserId() {
         return userId;
+    }
+
+    public String getLanguageName() {
+        return languageName;
+    }
+
+    public void setLanguageName(String languageName) {
+        this.languageName = languageName;
     }
 
     public void setUserId(Integer userId) {
