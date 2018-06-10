@@ -38,7 +38,7 @@ public class LexicalService {
                 new EntityWrapper<Regex>().eq("compiler_id", id));
         List<RE> reStrList = new ArrayList<>();
         for (Regex reg : regexList) {
-            reStrList.add(new RE(reg.getName(), reg.getRegex()));
+            reStrList.add(new RE(reg.getName(), reg.getRegex(),reg.getType()));
         }
 
         Config config = new Config();
@@ -70,7 +70,7 @@ public class LexicalService {
 
     public DfaVO getDFAbyRegexId(Integer id){
         Regex regex = regexMapper.selectById(id);
-        RE regularExpression = new RE("lexical", regex.getRegex());
+        RE regularExpression = new RE("lexical", regex.getRegex(),regex.getType());
         DFA dfa = regularExpression.getDFAIndirect();
         if(ObjectUtils.isEmpty(dfa)) { return null; }
         return  new DfaVO(dfa);
@@ -79,14 +79,14 @@ public class LexicalService {
     public void getLexicalAnalyzeTable(String code){
         SymbolTable symbolTable = new SymbolTable();
         Map<String, DFA> map = new HashMap<String, DFA>();
-        map.put("x2", new RE("x2", "aab").getDFAIndirect());
-        map.put("x3", new RE("x3", "if").getDFAIndirect());
+        map.put("x2", new RE("x2", "aab",2).getDFAIndirect());
+        map.put("x3", new RE("x3", "if",2).getDFAIndirect());
         List<String> list = new ArrayList<>();
         list.add("aab");
         list.add("if");
         list.add("aab");
         list.add("aab");
-        symbolTable.build(map, list);
+        //symbolTable.build(map, list);
 
     }
 }
