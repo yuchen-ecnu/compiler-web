@@ -200,102 +200,92 @@
             </nav>
             <div class="content">
                 <div class="container-fluid">
-                    <div class="header text-center">
-                        <h3 class="title">Material Dashboard Heading</h3>
-                        <p class="category">Created using Roboto Font Family</p>
-                    </div>
                     <div class="row">
-                        <div class="col-md-12">
+                        <div class="col-md-6">
                             <div class="card">
+                                <div class="card-header card-header-icon" data-background-color="blue">
+                                    <i class="material-icons">language</i>
+                                </div>
                                 <div class="card-content">
-                                    <div id="typography">
+                                    <div>
                                         <div class="card-title">
-                                            <h2>Typography</h2>
+                                            <h4>Pending Text</h4>
                                         </div>
-                                        <div class="row">
-                                            <div class="tim-typo">
-                                                <h1>
-                                                    <span class="tim-note">Header 1</span>The Life of Material Kit </h1>
+                                        <div class="form-group label-floating">
+                                            <pre id="editor" style="min-height:200px"></pre>
+                                        </div>
+
+                                        <div class="form-group label-floating">
+                                            <div class="col-md-6">
+                                                <select id='sel-lan' class="selectpicker"
+                                                        data-style="btn btn-primary btn-round" title="Choose Language"
+                                                        data-size="7">
+                                                    <option disabled>Choose Language</option>
+                                                    <option value="c_cpp" selected>C/C++</option>
+                                                    <option value="java">JAVA</option>
+                                                </select>
                                             </div>
-                                            <div class="tim-typo">
-                                                <h2>
-                                                    <span class="tim-note">Header 2</span>The Life of Material Kit</h2>
-                                            </div>
-                                            <div class="tim-typo">
-                                                <h3>
-                                                    <span class="tim-note">Header 3</span>The Life of Material Kit</h3>
-                                            </div>
-                                            <div class="tim-typo">
-                                                <h4>
-                                                    <span class="tim-note">Header 4</span>The Life of Material Kit</h4>
-                                            </div>
-                                            <div class="tim-typo">
-                                                <h5>
-                                                    <span class="tim-note">Header 5</span>The Life of Material Kit</h5>
-                                            </div>
-                                            <div class="tim-typo">
-                                                <h6>
-                                                    <span class="tim-note">Header 6</span>The Life of Material Kit</h6>
-                                            </div>
-                                            <div class="tim-typo">
-                                                <p>
-                                                    <span class="tim-note">Paragraph</span>
-                                                    I will be the leader of a company that ends up being worth billions of dollars, because I got the answers. I understand culture. I am the nucleus. I think that’s a responsibility that I have, to push possibilities, to show people, this is the level that things could be at.</p>
-                                            </div>
-                                            <div class="tim-typo">
-                                                <span class="tim-note">Quote</span>
-                                                <blockquote>
-                                                    <p>
-                                                        I will be the leader of a company that ends up being worth billions of dollars, because I got the answers. I understand culture. I am the nucleus. I think that’s a responsibility that I have, to push possibilities, to show people, this is the level that things could be at.
-                                                    </p>
-                                                    <small>
-                                                        Kanye West, Musician
-                                                    </small>
-                                                </blockquote>
-                                            </div>
-                                            <div class="tim-typo">
-                                                <span class="tim-note">Muted Text</span>
-                                                <p class="text-muted">
-                                                    I will be the leader of a company that ends up being worth billions of dollars, because I got the answers...
-                                                </p>
-                                            </div>
-                                            <div class="tim-typo">
-                                                <span class="tim-note">Primary Text</span>
-                                                <p class="text-primary">
-                                                    I will be the leader of a company that ends up being worth billions of dollars, because I got the answers... </p>
-                                            </div>
-                                            <div class="tim-typo">
-                                                <span class="tim-note">Info Text</span>
-                                                <p class="text-info">
-                                                    I will be the leader of a company that ends up being worth billions of dollars, because I got the answers... </p>
-                                            </div>
-                                            <div class="tim-typo">
-                                                <span class="tim-note">Success Text</span>
-                                                <p class="text-success">
-                                                    I will be the leader of a company that ends up being worth billions of dollars, because I got the answers... </p>
-                                            </div>
-                                            <div class="tim-typo">
-                                                <span class="tim-note">Warning Text</span>
-                                                <p class="text-warning">
-                                                    I will be the leader of a company that ends up being worth billions of dollars, because I got the answers...
-                                                </p>
-                                            </div>
-                                            <div class="tim-typo">
-                                                <span class="tim-note">Danger Text</span>
-                                                <p class="text-danger">
-                                                    I will be the leader of a company that ends up being worth billions of dollars, because I got the answers... </p>
-                                            </div>
-                                            <div class="tim-typo">
-                                                <h2>
-                                                    <span class="tim-note">Small Tag</span>
-                                                    Header with small subtitle
-                                                    <br>
-                                                    <small>Use "small" tag for the headers</small>
-                                                </h2>
+                                            <div class="col-md-6">
+                                                <button type="button" class="btn btn-rose btn-fill" id="confirm-btn">
+                                                    Confirm
+                                                </button>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
+                            </div>
+                            <div class="card">
+                                <div class="card-header card-header-icon" data-background-color="blue">
+                                    <i class="material-icons">language</i>
+                                </div>
+                                <div class="card-content">
+                                    <div>
+                                        <div class="card-title">
+                                            <h4>Procedure</h4>
+                                        </div>
+                                        <div class="form-group label-floating">
+                                            <p id="re-output" style="min-height:250px"></p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card">
+                                <div class="card-header card-header-icon" data-background-color="purple">
+                                    <i class="material-icons">assignment</i>
+                                </div>
+                                <div class="card-content">
+                                    <h4 class="card-title">Symbol Table</h4>
+                                    <div class="toolbar">
+                                        <!--        Here you can write extra buttons/actions for the toolbar              -->
+                                    </div>
+                                    <div class="material-datatables">
+                                        <table id="datatables" class="table table-striped table-no-bordered table-hover"
+                                               cellspacing="0" width="100%" style="width:100%">
+                                            <thead>
+                                            <tr>
+                                                <th>#id</th>
+                                                <th>type</th>
+                                                <th>token</th>
+                                                <th class="disabled-sorting text-right">Actions</th>
+                                            </tr>
+                                            </thead>
+                                            <tfoot>
+                                            <tr>
+                                                <th>#id</th>
+                                                <th>type</th>
+                                                <th>token</th>
+                                                <th class="text-right">Actions</th>
+                                            </tr>
+                                            </tfoot>
+                                            <tbody id="tableBody">
+
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                                <!-- end content-->
                             </div>
                         </div>
                     </div>
@@ -345,5 +335,108 @@
 <script src="../assets/js/material-dashboard.js"></script>
 <!-- Material Dashboard DEMO methods, don't include it in your project! -->
 <script src="../assets/js/demo.js"></script>
+<!-- Code Highlight! -->
+<script src="../assets/src-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
+<!-- load ace language tools -->
+<script src="../assets/src-noconflict/ext-language_tools.js"></script>
+<!--Global Configure -->
+<script src="js/global-config.js"></script>
+<script type="text/javascript">
+    //初始化编辑器
+    var editor = ace.edit("editor");
+    editor.setTheme("ace/theme/twilight");
+    editor.session.setMode("ace/mode/c_cpp");
+    //启用提示菜单
+    ace.require("ace/ext/language_tools");
+    editor.setOptions({
+        enableBasicAutocompletion: true,
+        enableSnippets: true,
+        enableLiveAutocompletion: true
+    });
+</script>
 
+<script type="text/javascript">
+    $("#sel-lan").change(function () {
+        editor.session.setMode("ace/mode/" + $("#sel-lan").val());
+    });
+    $("#confirm-btn").click(function () {
+        var txt = editor.getValue();
+        var lan = $("#sel-lan").val();
+        if (txt === "" || txt === undefined) {
+            swal({
+                title: "Empty Warn",
+                text: "Please input pending text.",
+                timer: 2000,
+                showConfirmButton: false,
+                type: "warning"
+            })
+        } else {
+            $.ajax({
+                url: base_url + api_lexer,
+                type: "post",
+                dataType: "json",
+                headers: {'Content-type': 'application/json;charset=UTF-8'},
+                data: JSON.stringify({
+                    txt: txt,
+                    lan: lan==='c_cpp'?'c/c++':'java'
+                }),
+                success: function (data) {
+                    console.log(data);
+                    $("#tableBody").html("<tr>\n" +
+                        "<td>1</td>\n" +
+                        "<td>identify</td>\n" +
+                        "<td>id1</td>\n" +
+                        "<td class=\"text-right\">\n" +
+                        "<a href=\"#\" class=\"btn btn-simple btn-warning btn-icon edit\"><i\n" +
+                        "class=\"material-icons\">dvr</i></a>\n" +
+                        "</td>\n" +
+                        "</tr>");
+
+                },
+                error: function (data) {
+                    swal({
+                        title: "Generator Error",
+                        text: "Please check you code and retry.",
+                        timer: 2000,
+                        showConfirmButton: false
+                    });
+                }
+            })
+        }
+    });
+</script>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        //init Table
+        $('#datatables').DataTable({
+            "pagingType": "full_numbers",
+            "lengthMenu": [
+                [10, 25, 50, -1],
+                [10, 25, 50, "All"]
+            ],
+            responsive: true,
+            language: {
+                search: "_INPUT_",
+                searchPlaceholder: "Search records",
+            }
+
+        });
+        var table = $('#datatables').DataTable();
+
+        // Edit record
+        table.on('click', '.edit', function () {
+            $tr = $(this).closest('tr');
+
+            var data = table.row($tr).data();
+            showProcess(data);
+        });
+
+        $('.card .material-datatables label').addClass('form-group');
+    });
+
+    function showProcess(data) {
+        console.log('You press on Row: ' + data[0] + ' ' + data[1] + ' ' + data[2] + '\'s row.');
+    }
+</script>
 </html>
