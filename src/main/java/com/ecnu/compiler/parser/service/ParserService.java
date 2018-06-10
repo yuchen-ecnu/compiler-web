@@ -35,7 +35,7 @@ public class ParserService {
 
         List<RE> reStrList = new ArrayList<>();
         for (Regex reg : regexList) {
-            reStrList.add(new RE(reg.getName(), reg.getRegex()));
+            reStrList.add(new RE(reg.getName(),reg.getRegex(),reg.getType()));
         }
         List<String> cfgStrList = new ArrayList<>();
         for(Cfg cfg : cfgList){

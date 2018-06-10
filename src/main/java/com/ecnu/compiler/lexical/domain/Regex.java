@@ -22,6 +22,7 @@ public class Regex extends Model<Regex>{
     private Integer compilerId;
     private Timestamp gmtCreated;
     private Timestamp gmtModified;
+    private Integer type;
 
     public int getId() {
         return id;
@@ -69,6 +70,14 @@ public class Regex extends Model<Regex>{
 
     public void setGmtModified(Timestamp gmtModified) {
         this.gmtModified = gmtModified;
+    }
+
+    public Integer getType() {
+        return type;
+    }
+
+    public void setType(Integer type) {
+        this.type = type;
     }
 
     @Override
