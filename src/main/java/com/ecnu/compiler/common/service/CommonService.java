@@ -71,7 +71,7 @@ public class CommonService {
         if(ObjectUtils.isEmpty(compiler)){ return null; }
         User user = UserUtils.getCurrentUser();
         if(compiler.getUserId()!= Constants.SYSTEM_ID
-                && user!=null && user.getId()!=compiler.getUserId()){
+                && user!=null && !user.getId().equals(compiler.getUserId())){
             return null;
         }
         List<Regex> reList = regexMapper.selectList(

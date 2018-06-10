@@ -34,7 +34,7 @@ public class SymbolTableVO {
 //    public ErrorList getErrorList() {
 //        return errorList;
 //    }
-
+//
 //    public void setErrorList(ErrorList errorList) {
 //        this.errorList = errorList;
 //    }

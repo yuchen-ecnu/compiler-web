@@ -336,7 +336,7 @@
                                                 </table>
                                                 <div class="card-footer text-right">
                                                     <button type="button" class="btn btn-info btn-fill"
-                                                            onclick="addNewOne('re')">Add New One</button>
+                                                            onclick="addNewOne('RE')">Add New One</button>
                                                 </div>
                                             </div>
                                         </div>
@@ -366,7 +366,8 @@
                                                     <tbody id="cfg-content"/>
                                                 </table>
                                                 <div class="card-footer text-right">
-                                                    <button type="submit" class="btn btn-info btn-fill">Add New One</button>
+                                                    <button type="button" class="btn btn-info btn-fill"
+                                                            onclick="addNewOne('CFG')">Add New One</button>
                                                 </div>
                                             </div>
                                         </div>
@@ -396,7 +397,8 @@
                                                     <tbody id="ag-content"/>
                                                 </table>
                                                 <div class="card-footer text-right">
-                                                    <button type="submit" class="btn btn-info btn-fill">Add New One</button>
+                                                    <button type="button" class="btn btn-info btn-fill"
+                                                            onclick="addNewOne('AG')">Add New One</button>
                                                 </div>
                                             </div>
                                         </div>
@@ -407,7 +409,7 @@
 
                         <div>
                             <div class="card-footer text-center">
-                                <button type="submit" class="btn btn-rose btn-fill">Save All</button>
+                                <button type="submit" class="btn btn-rose btn-fill" onclick="saveToServer()">Save All</button>
                             </div>
                         </div>
                     </div>
@@ -457,7 +459,82 @@
 <script src="../assets/js/material-dashboard.js"></script>
 <!--Global Configure -->
 <script src="js/global-config.js"></script>
+
 <script type="text/javascript">
+    function saveToServer(){
+        // check
+        compiler.compilerName = $("#cname").val();
+        compiler.languageName = $("#lname").val();
+        compiler.introduce = $("#intro").val();
+        compiler.lexerModel = $("#le-sel").val();
+        compiler.parserModel = $("#pa-sel").val();
+        if(checkValid('compilerName',compiler.compilerName)
+            &&checkValid('languageName',compiler.languageName)
+            &&checkValid('introduce',compiler.introduce)
+            &&checkValid('lexerModel',compiler.lexerModel)
+            &&checkValid('parserModel',compiler.parserModel)){
+            return;
+        }
+
+        var str = api_save_compiler;
+        var id = getQueryString("id");
+        if(id == null || id===""){
+            str = api_create_compiler;
+        }
+        $.ajax({
+            url: base_url + str,
+            type: "post",
+            dataType: "json",
+            data: JSON.stringify({
+                id: id,
+                compiler: compiler,
+                re: reList.concat(newRE),
+                cfg: cfgList.concat(newCFG),
+                ag: agList.concat(newAG)
+            }),
+            success: function (res) {
+                if (res.resCode === '200') {
+
+                }
+            },
+            error: function (data) {
+                console.log(data);
+                if (data.status === 401) {
+                    $("#user-table").html("<div class=\"tim-typo\"><h3>Please login to build your own compiler!" +
+                        "&nbsp;&nbsp;&nbsp;<button id='login-btn' class=\"btn btn-success\">Login</button></h3></div>");
+                    $("#login-btn").click(function () {
+                        location.href = base_url + url_login;
+                    });
+                    return;
+                }
+                toast("warning", "Get Compiler's Configuration Error", "Please wait a moment and refresh the page.");
+            }
+        });
+    }
+
+    function checkValid(name,val){
+        if(val === null || val === undefined || val === ""){
+            swal({
+                title: "Empty Warn!",
+                text: 'Please enter :'+name+' and then retry!',
+                buttonsStyling: false,
+                confirmButtonClass: "btn btn-success",
+                type: "warning"
+            });
+            return false;
+        }else{
+            return true;
+        }
+    }
+</script>
+
+<script type="text/javascript">
+    var compiler,reList,cfgList,agList;
+    var newRE = [];
+    var newCFG = [];
+    var newAG = [];
+
+
     $().ready(function () {
         var id = getQueryString("id");
         if(id == null || id===""){
@@ -474,10 +551,10 @@
                 if (res.resCode === '200') {
                     console.log(res);
                     var data = res.data;
-                    var compiler = data.compiler;
-                    var reList = data.reList;
-                    var cfgList = data.cfgList;
-                    var agList = data.agList;
+                    compiler = data.compiler;
+                    reList = data.reList;
+                    cfgList = data.cfgList;
+                    agList = data.agList;
                     $("#cname").val(compiler.compilerName);
                     $("#lname").val(compiler.languageName);
                     $("#intro").val(compiler.introduce);
@@ -489,12 +566,15 @@
                     // init re list
                     var sHtml = "";
                     $.each(reList, function(index, re) {
-                        sHtml += "<tr><td class=\"text-center\">"+re.id+"</td>" +
+                        sHtml += "<tr id='RE"+re.id+"'><td class=\"text-center\">"+re.id+"</td>" +
                             "<td>"+re.name+"</td><td>"+re.regex+"</td>" +
                             "<td class=\"td-actions text-right\">" +
-                            "<button type=\"button\" rel=\"tooltip\" class=\"btn btn-success\" data-placement=\"left\" title=\"Edit\">" +
+                            "<button type=\"button\" rel=\"tooltip\" class=\"btn btn-success\" data-placement=\"left\" title=\"Edit\"" +
+                            " onclick=\"editItem('RE',\'"+re.name.replace("\"","\\\"").replace("\'","\\\'")+"\',\'"
+                            +re.regex.replace("\"","\\\"").replace("\'","\\\'")+"\',"+re.id+")\">" +
                             "<i class=\"material-icons\">edit</i></button>&nbsp;&nbsp;&nbsp;" +
-                            "<button type=\"button\" rel=\"tooltip\" class=\"btn btn-danger data-placement=\"left\" title=\"Delete\">" +
+                            "<button type=\"button\" rel=\"tooltip\" class=\"btn btn-danger data-placement=\"left\" title=\"Delete\"" +
+                            " onclick=\"deleteItem('RE',\'"+re.name.replace("\"","\\\"").replace("\'","\\\'")+"\',"+re.id+")\">" +
                             "<i class=\"material-icons\">close</i></button></td></tr>";
                     });
                     $("#re-content").html(sHtml);
@@ -502,24 +582,32 @@
                     //init cfg list
                     sHtml = "";
                     $.each(cfgList, function(index, cfg) {
-                        sHtml += "<div class=\"row\">" +
-                            "<label class=\"col-sm-2 label-on-left\">"+cfg.name+"</label>" +
-                            "<div class=\"col-sm-7\"><div class=\"form-group label-floating\">" +
-                            "<label class=\"control-label\"></label>" +
-                            "<input class=\"form-control\" type=\"text\" name=\"min_length\" minLength=\"1\" " +
-                            "value='"+cfg.content+"'/></div></div></div>";
+                        sHtml += "<tr id='CFG"+cfg.id+"'><td class=\"text-center\">"+cfg.id+"</td>" +
+                            "<td>"+cfg.cfgName+"</td><td>"+cfg.cfgContent+"</td>" +
+                            "<td class=\"td-actions text-right\">" +
+                            "<button type=\"button\" rel=\"tooltip\" class=\"btn btn-success\" data-placement=\"left\" title=\"Edit\""  +
+                            " onclick=\"editItem('CFG',\'"+cfg.cfgName.replace("\"","\\\"").replace("\'","\\\'")
+                            +"\',\'"+cfg.cfgContent.replace("\"","\\\"").replace("\'","\\\'")+"\',"+cfg.id+")\">" +
+                            "<i class=\"material-icons\">edit</i></button>&nbsp;&nbsp;&nbsp;" +
+                            "<button type=\"button\" rel=\"tooltip\" class=\"btn btn-danger data-placement=\"left\" title=\"Delete\"" +
+                            " onclick=\"deleteItem('CFG',\'"+cfg.cfgName.replace("\"","\\\"").replace("\'","\\\'")+"\',"+cfg.id+")\">" +
+                            "<i class=\"material-icons\">close</i></button></td></tr>";
                     });
                     $("#cfg-content").html(sHtml);
 
                     //init ag list
                     sHtml = "";
                     $.each(agList, function(index, ag) {
-                        sHtml += "<div class=\"row\">" +
-                            "<label class=\"col-sm-2 label-on-left\">"+ag.name+"</label>" +
-                            "<div class=\"col-sm-7\"><div class=\"form-group label-floating\">" +
-                            "<label class=\"control-label\"></label>" +
-                            "<input class=\"form-control\" type=\"text\" name=\"min_length\" minLength=\"1\" " +
-                            "value='"+ag.content+"'/></div></div></div>";
+                        sHtml += "<tr id='AG"+ag.id+"'><td class=\"text-center\">"+ag.id+"</td>" +
+                            "<td>"+ag.agName+"</td><td>"+ag.agContent+"</td>" +
+                            "<td class=\"td-actions text-right\">" +
+                            "<button type=\"button\" rel=\"tooltip\" class=\"btn btn-success\" data-placement=\"left\" title=\"Edit\"" +
+                            " onclick=\"editItem('AG',\'"+ag.agName.replace("\"","\\\"").replace("\'","\\\'")
+                            +"\',\'"+ag.agContent.replace("\"","\\\"").replace("\'","\\\'")+","+ag.id+")\">" +
+                            "<i class=\"material-icons\">edit</i></button>&nbsp;&nbsp;&nbsp;" +
+                            "<button type=\"button\" rel=\"tooltip\" class=\"btn btn-danger data-placement=\"left\" title=\"Delete\"" +
+                            " onclick=\"deleteItem('AG',\'"+ag.agName.replace("\"","\\\"").replace("\'","\\\'")+"\',"+ag.id+")\">" +
+                            "<i class=\"material-icons\">close</i></button></td></tr>";
                     });
                     $("#ag-content").html(sHtml);
                 }
@@ -546,44 +634,353 @@
         return null;
     }
 
-    function showDialog() {
-        swal({
-            title: 'Submit your Github username',
-            input: 'text',
-            inputAttributes: {
-                autocapitalize: 'off'
-            },
-            showCancelButton: true,
-            confirmButtonText: 'Look up',
-            showLoaderOnConfirm: true,
-            preConfirm: function(){
-                return $.ajax({
-                    url: base_url + api_add_re,
-                    type: "post",
-                    dataType: "json",
-                    data: JSON.stringify({
-                        name: "name",
-                        name: "lanId",
-                        content: "content"
-                    }),
-                    success: function (res) {
-
-                    }
-                });
-            }
-        });
-    }
-
-    function addNewOne(type){
-        switch (type) {
-            case 're':
-                showDialog();
+    function addToStorage(type, name, val) {
+        var sHtml;
+        switch (type){
+            case 'RE':
+                newRE.push({ name:name,regex:val });
+                sHtml = $("#re-content").html();
+                sHtml += "<tr id='RE"+name.replace("\"","\\\"").replace("\'","\\\'")
+                    +'-'+val.replace("\"","\\\"").replace("\'","\\\'")+"'><td class=\"text-center\">--</td>" +
+                    "<td>"+name+"</td><td>"+val+"</td>" +
+                    "<td class=\"td-actions text-right\">" +
+                    "<button type=\"button\" rel=\"tooltip\" class=\"btn btn-success\" data-placement=\"left\" title=\"Edit\"" +
+                    " onclick=\"editNewItem('RE',\'"+name.replace("\"","\\\"").replace("\'","\\\'")
+                    +"\',\'"+val.replace("\"","\\\"").replace("\'","\\\'")+"\')\">" +
+                    "<i class=\"material-icons\">edit</i></button>&nbsp;&nbsp;&nbsp;" +
+                    "<button type=\"button\" rel=\"tooltip\" class=\"btn btn-danger data-placement=\"left\" title=\"Delete\"" +
+                    " onclick=\"deleteNewItem('RE',\'"+name.replace("\"","\\\"").replace("\'","\\\'")
+                    +"\',\'"+val.replace("\"","\\\"").replace("\'","\\\'")+"\')\">" +
+                    "<i class=\"material-icons\">close</i></button></td></tr>";
+                $("#re-content").html(sHtml);
                 break;
-            case 'cfg':
+            case 'CFG':
+                newCFG.push({ cfgName:name,cfgContent:val });
+                sHtml = $("#cfg-content").html();
+                sHtml += "<tr id='CFG"+name.replace("\"","\\\"").replace("\'","\\\'")
+                    +'-'+val.replace("\"","\\\"").replace("\'","\\\'")+"'><td class=\"text-center\">--</td>" +
+                    "<td>"+name+"</td><td>"+val+"</td>" +
+                    "<td class=\"td-actions text-right\">" +
+                    "<button type=\"button\" rel=\"tooltip\" class=\"btn btn-success\" data-placement=\"left\" title=\"Edit\"" +
+                    " onclick=\"editNewItem('CFG',\'"+name.replace("\"","\\\"").replace("\'","\\\'")
+                    +"\',\'"+val.replace("\"","\\\"").replace("\'","\\\'")+"\')\">" +
+                    "<i class=\"material-icons\">edit</i></button>&nbsp;&nbsp;&nbsp;" +
+                    "<button type=\"button\" rel=\"tooltip\" class=\"btn btn-danger data-placement=\"left\" title=\"Delete\"" +
+                    " onclick=\"deleteItem('CFG',\'"+name.replace("\"","\\\"").replace("\'","\\\'")
+                    +"\',\'"+val.replace("\"","\\\"").replace("\'","\\\'")+"\')\">" +
+                    "<i class=\"material-icons\">close</i></button></td></tr>";
+                $("#cfg-content").html(sHtml);
                 break;
-            case 'ag':
+            case 'AG':
+                newAG.push({ cfgName:name,cfgContent:val });
+                sHtml = $("#ag-content").html();
+                sHtml += "<tr id='AG"+name.replace("\"","\\\"").replace("\'","\\\'")
+                    +'-'+val.replace("\"","\\\"").replace("\'","\\\'")+"'><td class=\"text-center\">--</td>" +
+                    "<td>"+name.replace("\"","\\\"").replace("\'","\\\'")+"</td><td>"+val.replace("\"","\\\"").replace("\'","\\\'")+"</td>" +
+                    "<td class=\"td-actions text-right\">" +
+                    "<button type=\"button\" rel=\"tooltip\" class=\"btn btn-success\" data-placement=\"left\" title=\"Edit\"" +
+                    " onclick=\"editNewItem('AG',\'"+name.replace("\"","\\\"").replace("\'","\\\'")
+                    +"\',\'"+val.replace("\"","\\\"").replace("\'","\\\'")+"\')\">" +
+                    "<i class=\"material-icons\">edit</i></button>&nbsp;&nbsp;&nbsp;" +
+                    "<button type=\"button\" rel=\"tooltip\" class=\"btn btn-danger data-placement=\"left\" title=\"Delete\"" +
+                    " onclick=\"deleteItem('AG',\'"+name.replace("\"","\\\"").replace("\'","\\\'")+"\',\'"
+                    +val.replace("\"","\\\"").replace("\'","\\\'")+"\')\">" +
+                    "<i class=\"material-icons\">close</i></button></td></tr>";
+                $("#ag-content").html(sHtml);
                 break;
         }
     }
+
+    //新增记录弹窗
+    function addNewOne(type){
+        swal({
+            title: 'Add new '+ type +' rules',
+            html: '<div class="form-group label-floating">' +
+            '<label class="control-label">Name</label>' +
+            '<input class="form-control" type="text" name="min_length" minLength="1" id="i-name"/></div>' +
+            '<div class="form-group label-floating">' +
+            '<label class="control-label">'+type+'</label>' +
+            '<input class="form-control" type="text" name="min_length" minLength="1" id="i-value"/></div>',
+            showCancelButton: true,
+            confirmButtonClass: 'btn btn-success',
+            cancelButtonClass: 'btn btn-danger',
+            buttonsStyling: false
+        }).then(function(result) {
+            addToStorage(type,$('#i-name').val(),$('#i-value').val());
+            swal({
+                type: 'success',
+                html: 'You created: <strong>' +
+                $('#i-name').val() +
+                '</strong> <br> Please remember to save after all operation.',
+                confirmButtonClass: 'btn btn-success',
+                buttonsStyling: false
+            }).then(function () {
+            });
+        }).catch(swal.noop)
+    }
+
+    function editItem(type,name,val,id){
+        name = $("#"+type+id+" td:nth-child(2)").html();
+        val = $("#"+type+id+" td:nth-child(3)").html();
+        swal({
+            title: 'Modify '+ type +' rules',
+            html: '<div class="form-group label-floating">' +
+            '<label class="control-label">Name</label>' +
+            '<input class="form-control" type="text" name="min_length" minLength="1" id="i-name" value="'+ name+'"/></div>' +
+            '<div class="form-group label-floating">' +
+            '<label class="control-label">'+type+'</label>' +
+            '<input class="form-control" type="text" name="min_length" minLength="1" id="i-value" value="'+val+'"/></div>',
+            showCancelButton: true,
+            confirmButtonClass: 'btn btn-success',
+            cancelButtonClass: 'btn btn-danger',
+            buttonsStyling: false
+        }).then(function(result) {
+            modifyFromStorage(type,id,$('#i-name').val(),$('#i-value').val());
+            swal({
+                type: 'success',
+                html: 'You modify: <strong>' +
+                $('#i-name').val() +
+                '</strong> <br> Please remember to save after all operations.',
+                confirmButtonClass: 'btn btn-success',
+                buttonsStyling: false
+            }).then(function () {
+            });
+        }).catch(swal.noop)
+    }
+
+    function deleteItem(type,name,id){
+        swal({
+            title: 'Are you sure?',
+            text: 'You will remove the '+type+': '+name+' !',
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, delete it!',
+            cancelButtonText: 'No, keep it',
+            confirmButtonClass: "btn btn-success",
+            cancelButtonClass: "btn btn-danger",
+            buttonsStyling: false
+        }).then(function() {
+            deleteFromStorage(type,id);
+            swal({
+                title: 'Deleted!',
+                text: 'Your '+type+':'+name+' has been deleted,please remember to click save after all operations.',
+                type: 'success',
+                confirmButtonClass: "btn btn-success",
+                buttonsStyling: false
+            })
+        }, function(dismiss) {
+            if (dismiss === 'cancel') {
+                swal({
+                    title: 'Cancelled',
+                    text: 'Your '+type+':'+name+' is safe :)',
+                    type: 'error',
+                    confirmButtonClass: "btn btn-info",
+                    buttonsStyling: false
+                })
+            }
+        })
+    }
+
+
+    /**
+     * 修改未同步的记录
+     */
+    function editNewItem(type,name,val){
+        name = $("#"+type+name+'-'+val+" td:nth-child(2)").html();
+        val = $("#"+type+name+'-'+val+" td:nth-child(3)").html();
+        swal({
+            title: 'Modify '+ type +' rules',
+            html: '<div class="form-group label-floating">' +
+            '<label class="control-label">Name</label>' +
+            '<input class="form-control" type="text" name="min_length" minLength="1" id="i-name" value="'+ name+'"/></div>' +
+            '<div class="form-group label-floating">' +
+            '<label class="control-label">'+type+'</label>' +
+            '<input class="form-control" type="text" name="min_length" minLength="1" id="i-value" value="'+val+'"/></div>',
+            showCancelButton: true,
+            confirmButtonClass: 'btn btn-success',
+            cancelButtonClass: 'btn btn-danger',
+            buttonsStyling: false
+        }).then(function(result) {
+            var var1 = $('#i-name').val();
+            var var2 = $('#i-value').val();
+            modifyFromNewStorage(type,name,val,var1,var2);
+            swal({
+                type: 'success',
+                html: 'You modify: <strong>' + var1 +'</strong><br> ' +
+                'Please remember to save after all operations.',
+                confirmButtonClass: 'btn btn-success',
+                buttonsStyling: false
+            }).then(function () {
+            });
+        }).catch(swal.noop)
+    }
+
+    function deleteNewItem(type,name,val){
+        swal({
+            title: 'Are you sure?',
+            text: 'You will remove the '+type+': '+name+' !',
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, delete it!',
+            cancelButtonText: 'No, keep it',
+            confirmButtonClass: "btn btn-success",
+            cancelButtonClass: "btn btn-danger",
+            buttonsStyling: false
+        }).then(function() {
+            deleteNewFromStorage(type,name,val);
+            swal({
+                title: 'Deleted!',
+                text: 'Your '+type+':'+name+' has been deleted,please remember to click save after all operations.',
+                type: 'success',
+                confirmButtonClass: "btn btn-success",
+                buttonsStyling: false
+            })
+        }, function(dismiss) {
+            if (dismiss === 'cancel') {
+                swal({
+                    title: 'Cancelled',
+                    text: 'Your '+type+':'+name+' is safe :)',
+                    type: 'error',
+                    confirmButtonClass: "btn btn-info",
+                    buttonsStyling: false
+                })
+            }
+        })
+    }
+
+    // 删除一个条目（原始数据）
+    function deleteFromStorage(type,id){
+        switch (type){
+            case 'RE':
+                $("#RE"+id).remove();
+                $.each(reList,function (index, item) {
+                    if(item.id === id){
+                        reList.splice(index,1);
+                        return false;
+                    }
+                });
+                break;
+            case 'CFG':
+                $("#CFG"+id).remove();
+                $.each(cfgList,function (index, item) {
+                    if(item.id === id){
+                        cfgList.splice(index,1);
+                        return false;
+                    }
+                });
+                break;
+            case 'AG':
+                $("#AG"+id).remove();
+                $.each(agList,function (index, item) {
+                    if(item.id === id){
+                        agList.splice(index,1);
+                        return false;
+                    }
+                });
+                break;
+        }
+    }
+
+    // 编辑一个条目（原始数据）
+    function modifyFromStorage(type,id,name,val){
+        $("#"+type+id+" td:nth-child(2)").html(name);
+        $("#"+type+id+" td:nth-child(3)").html(val);
+        switch (type){
+            case 'RE':
+                $.each(reList,function (index, re) {
+                    if(re.id === id){
+                        reList[index].name = name;
+                        reList[index].regex = val;
+                        return false;
+                    }
+                });
+                break;
+            case 'CFG':
+                $.each(cfgList,function (index, cfg) {
+                    if(cfg.id === id){
+                        cfgList[index].cfgName = name;
+                        cfgList[index].cfgContent = val;
+                        return false;
+                    }
+                });
+                break;
+            case 'AG':
+                $.each(agList,function (index, ag) {
+                    if(ag.id === id){
+                        agList[index].agName = name;
+                        agList[index].agContent = val;
+                        return false;
+                    }
+                });
+                break;
+        }
+    }
+
+    // 编辑一个条目（新添数据）
+    function modifyFromNewStorage(type,oname,oval,name,val){
+        $("#"+type+oname+'-'+oval+" td:nth-child(2)").html(name);
+        $("#"+type+oname+'-'+oval+" td:nth-child(3)").html(val);
+        switch (type){
+            case 'RE':
+                $.each(newRE,function (index, re) {
+                    if(re.name + '-' + re.regex === id){
+                        newRE[index].name = name;
+                        newRE[index].regex = val;
+                        return false;
+                    }
+                });
+                break;
+            case 'CFG':
+                $.each(newCFG,function (index, cfg) {
+                    if(cfg.cfgName + '-' + cfg.cfgContent === id){
+                        newCFG[index].cfgName = name;
+                        newCFG[index].cfgContent = val;
+                        return false;
+                    }
+                });
+                break;
+            case 'AG':
+                $.each(newAG,function (index, ag) {
+                    if(ag.agName + '-' + ag.agContent === id){
+                        newAG[index].agName = name;
+                        newAG[index].agContent = val;
+                        return false;
+                    }
+                });
+                break;
+        }
+    }
+
+    // 删除一个条目（新添数据）
+    function deleteNewFromStorage(type,name,val){
+        $("#"+type+name+'-'+val).remove();
+        switch (type){
+            case 'RE':
+                $.each(newRE,function (index, item) {
+                    if(item.name === name && item.regex === val){
+                        newRE.splice(index,1);
+                        return false;
+                    }
+                });
+                break;
+            case 'CFG':
+                $.each(newCFG,function (index, item) {
+                    if(item.cfgName === name && item.cfgContent === val){
+                        newCFG.splice(index,1);
+                        return false;
+                    }
+                });
+                break;
+            case 'AG':
+                $.each(newAG,function (index, item) {
+                    if(item.agName === name && item.agContent === val){
+                        newAG.splice(index,1);
+                        return false;
+                    }
+                });
+                break;
+        }
+    }
+
 </script>
 </html>
