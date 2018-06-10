@@ -17,6 +17,11 @@ public class EdgeVO {
         }
     }
 
+    public EdgeVO(int from, int to){
+        this.from = from;
+        this.to = to;
+    }
+
     public String getArrows() {
         return arrows;
     }
