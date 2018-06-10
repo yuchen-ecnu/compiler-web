@@ -4,6 +4,7 @@ var api_register = "session/register/";
 var api_re2nfa = "common/re2nfa/";
 var api_re2dfa = "common/re2dfa/";
 var api_lexer = "lexical/lexer/";
+var api_parser = "parser/parser/";
 var api_user_compiler = "user/compiler/";
 var api_system_compiler = "common/system/compiler/";
 var api_compiler_select = "common/compiler/option/";
