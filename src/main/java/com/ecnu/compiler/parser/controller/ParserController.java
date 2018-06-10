@@ -20,6 +20,7 @@ package com.ecnu.compiler.parser.controller;
 import com.ecnu.compiler.lexical.domain.LexerParam;
 import com.ecnu.compiler.lexical.domain.SymbolTableVO;
 import com.ecnu.compiler.parser.domain.ParserTableVO;
+import com.ecnu.compiler.parser.domain.ParserVO;
 import com.ecnu.compiler.parser.domain.TimeTableVO;
 import com.ecnu.compiler.parser.service.ParserService;
 import com.ecnu.compiler.utils.domain.HttpRespCode;
@@ -54,7 +55,7 @@ public class ParserController {
         if(!lexerParam.isVaild()){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Resp());
         }
-        TimeTableVO parserTable = parserService.generateParserTable(lexerParam.getLan(), lexerParam.getTxt());
-        return ResponseEntity.status(HttpStatus.OK).body(new Resp(HttpRespCode.SUCCESS,parserTable));
+        ParserVO parserVO = parserService.generateParserTable(lexerParam.getLan(), lexerParam.getTxt());
+        return ResponseEntity.status(HttpStatus.OK).body(new Resp(HttpRespCode.SUCCESS,parserVO));
     }
 }
