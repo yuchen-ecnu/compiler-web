@@ -15,7 +15,7 @@ public class SymbolVO {
 
     public SymbolVO(Token token, int id){
         this.id = id;
-        this.attr = (String)token.getAttrs().get(0);
+        this.attr = (String)token.getStr();
         this.type = token.getType();
     }
 

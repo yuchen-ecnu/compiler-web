@@ -7,12 +7,12 @@ import java.util.List;
 public class SymbolTableVO {
     private List<SymbolVO> symbolList;
     private List<Regex> regexList;
-    private ErrorList errorList;
+//    private ErrorList errorList;
 
     public SymbolTableVO(List<SymbolVO> symbolList, List<Regex> regexList, ErrorList errorList) {
         this.symbolList = symbolList;
         this.regexList = regexList;
-        this.errorList = errorList;
+//        this.errorList = errorList;
     }
 
     public List<SymbolVO> getSymbolList() {
@@ -31,11 +31,11 @@ public class SymbolTableVO {
         this.regexList = regexList;
     }
 
-    public ErrorList getErrorList() {
-        return errorList;
-    }
+//    public ErrorList getErrorList() {
+//        return errorList;
+//    }
 
-    public void setErrorList(ErrorList errorList) {
-        this.errorList = errorList;
-    }
+//    public void setErrorList(ErrorList errorList) {
+//        this.errorList = errorList;
+//    }
 }

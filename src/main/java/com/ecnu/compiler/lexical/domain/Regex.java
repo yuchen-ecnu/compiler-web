@@ -19,6 +19,8 @@ public class Regex extends Model<Regex>{
     private int id;
     private String name;
     private String regex;
+    private Integer priority;
+    private Integer type;
     private Integer compilerId;
     private Timestamp gmtCreated;
     private Timestamp gmtModified;
@@ -45,6 +47,22 @@ public class Regex extends Model<Regex>{
 
     public void setRegex(String regex) {
         this.regex = regex;
+    }
+
+    public Integer getPriority() {
+        return priority;
+    }
+
+    public void setPriority(Integer priority) {
+        this.priority = priority;
+    }
+
+    public Integer getType() {
+        return type;
+    }
+
+    public void setType(Integer type) {
+        this.type = type;
     }
 
     public Integer getCompilerId() {
