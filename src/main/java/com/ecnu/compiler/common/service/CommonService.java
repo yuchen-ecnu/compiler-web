@@ -40,7 +40,7 @@ public class CommonService {
      * @return {@link NFA}
      */
     public NfaVO RE2NFA(String re){
-        RE regularExpression = new RE("common",re);
+        RE regularExpression = new RE("common",re,2);
         NFA nfa = regularExpression.getNFA();
         if(ObjectUtils.isEmpty(nfa)) { return null; }
         return new NfaVO(nfa);
@@ -53,7 +53,7 @@ public class CommonService {
      * @return {@link DFA}
      */
     public DfaVO RE2DFA(String re){
-        RE regularExpression = new RE("common",re);
+        RE regularExpression = new RE("common",re,2);
         DFA dfa = regularExpression.getDFADirectly();
         if(ObjectUtils.isEmpty(dfa)) { return null; }
         return  new DfaVO(dfa);

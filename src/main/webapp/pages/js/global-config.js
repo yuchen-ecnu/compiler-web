@@ -15,6 +15,13 @@ var api_system_compiler_config = "common/system/configuration/";
 
 var url_dashboard = "pages/dashboard.html";
 var url_login = "pages/login/login.html";
+var colors = new Array(6);
+colors[0]="btn btn-primary btn-xs";
+colors[1]="btn btn-success btn-xs";
+colors[2]="btn btn-info btn-xs";
+colors[3]="btn btn-warning btn-xs";
+colors[4]="btn btn-danger btn-xs";
+colors[5]="btn btn-default btn-xs";
 
 function ts2String (time){
     var datetime = new Date();
@@ -35,3 +42,49 @@ function toast(type,title,text){
         showConfirmButton: false
     }).then(function () {}, function (reason) {});
 }
+
+function initTable() {
+    //init Table
+    $('#datatables').DataTable({
+        "pagingType": "full_numbers",
+        "lengthMenu": [
+            [10, 25, 50, -1],
+            [10, 25, 50, "All"]
+        ],
+        responsive: true,
+        language: {
+            search: "_INPUT_",
+            searchPlaceholder: "Search records",
+        }
+
+    });
+
+
+    var table = $('#datatables').DataTable();
+
+    // Edit record
+    table.on('click', '.edit', function () {
+        $tr = $(this).closest('tr');
+
+        var data = table.row($tr).data();
+        showProcess(data);
+    });
+
+    $('.card .material-datatables label').addClass('form-group');
+}
+
+function showProcess(data) {
+    console.log('You press on Row: ' + data[0] + ' ' + data[1] + ' ' + data[2] + '\'s row.');
+}
+
+$(document).ready(function() {
+    ToolTip.init({
+        delay: 400,
+        fadeDuration: 250,
+        fontSize: '0.8em',
+        theme: 'light',
+        textColor: '#757575',
+        shadowColor: '#000',
+        fontFamily: "'Roboto-Medium', 'Roboto-Regular', Arial"
+    });
+});
