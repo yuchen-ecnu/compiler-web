@@ -16,6 +16,7 @@
  */
 package com.ecnu.compiler.rbac.controller;
 
+import com.ecnu.compiler.common.domain.CompilerConfiguration;
 import com.ecnu.compiler.rbac.domain.User;
 import com.ecnu.compiler.rbac.service.SessionService;
 import com.ecnu.compiler.rbac.service.UserService;
@@ -25,6 +26,7 @@ import com.ecnu.compiler.utils.domain.Resp;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.ObjectUtils;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -54,6 +56,52 @@ public class UserController {
         }
         return ResponseEntity.status(HttpStatus.OK)
                 .body(new Resp(HttpRespCode.SUCCESS,userServices.getUserCompilers(user.getId())));
+    }
+
+    /**
+     *  修改用户自定义的编译器
+     */
+    @RequestMapping(value = "/compiler/modify/", method = RequestMethod.POST)
+    public ResponseEntity<Resp> modifyUserCompiler(@RequestBody CompilerConfiguration compilerConfiguration) {
+        //param check
+        if(!compilerConfiguration.isModifyValid()){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Resp());
+        }
+        // 校验用户权限
+        User user = UserUtils.getCurrentUser();
+        if(ObjectUtils.isEmpty(user)|| !user.getId().equals(compilerConfiguration.getCompiler().getUserId())){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new Resp());
+        }
+        boolean status = userServices.modifyUserCompiler(compilerConfiguration);
+        if(!status){
+            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(
+                    new Resp(HttpRespCode.COMPILER_MODIFIED_ERROR,new Resp())
+            );
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(new Resp(HttpRespCode.SUCCESS,new Resp()));
+    }
+
+    /**
+     * 新增用户自定义的编译器
+     */
+    @RequestMapping(value = "/compiler/new/", method = RequestMethod.POST)
+    public ResponseEntity<Resp> addUserCompiler(@RequestBody CompilerConfiguration compilerConfiguration) {
+        //param check
+        if(!compilerConfiguration.isNewValid()){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Resp());
+        }
+        User user = UserUtils.getCurrentUser();
+        if(ObjectUtils.isEmpty(user)){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new Resp());
+        }
+        compilerConfiguration.getCompiler().setUserId(user.getId());
+        boolean status = userServices.addUserCompiler(compilerConfiguration);
+        if(!status){
+            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(
+                    new Resp(HttpRespCode.COMPILER_ADD_ERROR,new Resp())
+            );
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(new Resp(HttpRespCode.SUCCESS,new Resp()));
     }
 
 }

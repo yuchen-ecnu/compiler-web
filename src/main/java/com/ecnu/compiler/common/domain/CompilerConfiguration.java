@@ -1,9 +1,8 @@
 package com.ecnu.compiler.common.domain;
 
-import com.ecnu.compiler.component.lexer.domain.RE;
-import com.ecnu.compiler.component.parser.domain.CFG;
 import com.ecnu.compiler.lexical.domain.Regex;
 import com.ecnu.compiler.rbac.domain.Compiler;
+import org.springframework.util.ObjectUtils;
 
 import java.util.List;
 
@@ -54,5 +53,22 @@ public class CompilerConfiguration {
 
     public void setAgList(List<Ag> agList) {
         this.agList = agList;
+    }
+
+    public boolean isNewValid(){
+        return !(ObjectUtils.isEmpty(compiler.getCompilerName())
+                ||ObjectUtils.isEmpty(compiler.getIntroduce())
+                ||ObjectUtils.isEmpty(compiler.getLanguageName())
+                ||ObjectUtils.isEmpty(compiler.getLexerModel())
+                ||ObjectUtils.isEmpty(compiler.getParserModel()));
+    }
+
+    public boolean isModifyValid(){
+        return !(ObjectUtils.isEmpty(compiler.getCompilerName())
+                ||ObjectUtils.isEmpty(compiler.getIntroduce())
+                ||ObjectUtils.isEmpty(compiler.getLanguageName())
+                ||ObjectUtils.isEmpty(compiler.getLexerModel())
+                ||ObjectUtils.isEmpty(compiler.getParserModel())
+                ||ObjectUtils.isEmpty(compiler.getId()));
     }
 }

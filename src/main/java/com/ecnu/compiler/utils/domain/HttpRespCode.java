@@ -81,6 +81,9 @@ public enum HttpRespCode implements Serializable {
     UPLOAD_IMAGE_ERROR("522", "图片上传失败"),
     TASK_RECORD_ADD_ERROR("523", "任务记录插入失败"),
     //以下可继续补充
+
+    COMPILER_MODIFIED_ERROR("500","请检查编译器状态及登陆状态"),
+    COMPILER_ADD_ERROR("500","请检查编译器参数状态及登陆状态")
     ;
 
 
@@ -123,4 +126,5 @@ public enum HttpRespCode implements Serializable {
                 ", time=" + time +
                 '}';
     }
+
 }

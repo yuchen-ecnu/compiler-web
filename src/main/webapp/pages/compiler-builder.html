@@ -468,11 +468,11 @@
         compiler.introduce = $("#intro").val();
         compiler.lexerModel = $("#le-sel").val();
         compiler.parserModel = $("#pa-sel").val();
-        if(checkValid('compilerName',compiler.compilerName)
+        if(!(checkValid('compilerName',compiler.compilerName)
             &&checkValid('languageName',compiler.languageName)
             &&checkValid('introduce',compiler.introduce)
             &&checkValid('lexerModel',compiler.lexerModel)
-            &&checkValid('parserModel',compiler.parserModel)){
+            &&checkValid('parserModel',compiler.parserModel))){
             return;
         }
 
@@ -486,13 +486,13 @@
             type: "post",
             dataType: "json",
             data: JSON.stringify({
-                id: id,
                 compiler: compiler,
                 re: reList.concat(newRE),
                 cfg: cfgList.concat(newCFG),
                 ag: agList.concat(newAG)
             }),
             success: function (res) {
+                console.log(res);
                 if (res.resCode === '200') {
 
                 }
@@ -500,6 +500,26 @@
             error: function (data) {
                 console.log(data);
                 if (data.status === 401) {
+                    swal({
+                        title: 'UNAUTHORIZED ERROR',
+                        text: "You need to login in to finish your operation!",
+                        type: 'warning',
+                        showCancelButton: true,
+                        confirmButtonClass: 'btn btn-success',
+                        cancelButtonClass: 'btn btn-danger',
+                        confirmButtonText: 'Login',
+                        // cancel
+                        buttonsStyling: false
+                    }).then(function() {
+                        swal({
+                            title: 'Redirecting!',
+                            text: 'Your will redirect to Login Page right now.',
+                            type: 'success',
+                            confirmButtonClass: "btn btn-success",
+                            buttonsStyling: false
+                        });
+                        location.href = base_url + url_login;
+                    });
                     $("#user-table").html("<div class=\"tim-typo\"><h3>Please login to build your own compiler!" +
                         "&nbsp;&nbsp;&nbsp;<button id='login-btn' class=\"btn btn-success\">Login</button></h3></div>");
                     $("#login-btn").click(function () {

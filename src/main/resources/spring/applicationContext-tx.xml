@@ -30,7 +30,8 @@
             <tx:method name="*" propagation="REQUIRED" />
         </tx:attributes>
     </tx:advice>
-
+    <tx:annotation-driven proxy-target-class="true"
+                          transaction-manager="transactionManager" />
     <!-- 定义aop切面，并织入事务通知 -->
     <aop:config>
         <aop:pointcut id="transactionPointcut" expression="execution(* com.ecnu.compiler.*.service.*.*(..))"/>

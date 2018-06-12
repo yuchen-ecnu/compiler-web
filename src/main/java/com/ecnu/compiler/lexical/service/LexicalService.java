@@ -1,5 +1,6 @@
 package com.ecnu.compiler.lexical.service;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.ecnu.CompilerBuilder;
 import com.ecnu.compiler.common.domain.DfaVO;
 import com.ecnu.compiler.component.lexer.domain.DFA;
@@ -24,7 +25,7 @@ import java.util.List;
 import java.util.Map;
 
 @Service
-public class LexicalService {
+public class LexicalService{
     @Resource
     private RegexMapper regexMapper;
 

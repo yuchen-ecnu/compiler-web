@@ -29,4 +29,10 @@
     <plugins>
         <plugin interceptor="org.jeeweb.interceptor.PerformanceInterceptor"></plugin>
     </plugins> -->
+    <plugins>
+        <plugin interceptor="com.chrhc.mybatis.autodate.interceptor.AutoDateInterceptor">
+            <property name="createDateColumn" value="gmt_created"/>
+            <property name="updateDateColumn" value="gmt_modified"/>
+        </plugin>
+    </plugins>
 </configuration>

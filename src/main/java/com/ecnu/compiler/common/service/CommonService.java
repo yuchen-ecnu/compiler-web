@@ -2,7 +2,7 @@ package com.ecnu.compiler.common.service;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.ecnu.compiler.common.domain.*;
-import com.ecnu.compiler.common.mapper.CFGMapper;
+import com.ecnu.compiler.parser.mapper.CFGMapper;
 import com.ecnu.compiler.component.lexer.domain.DFA;
 import com.ecnu.compiler.component.lexer.domain.NFA;
 import com.ecnu.compiler.component.lexer.domain.RE;
@@ -13,6 +13,7 @@ import com.ecnu.compiler.rbac.domain.Compiler;
 import com.ecnu.compiler.rbac.domain.User;
 import com.ecnu.compiler.rbac.service.UserService;
 import com.ecnu.compiler.rbac.utils.UserUtils;
+import com.ecnu.compiler.semantic.mapper.AGMapper;
 import com.ecnu.compiler.utils.domain.Constants;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;

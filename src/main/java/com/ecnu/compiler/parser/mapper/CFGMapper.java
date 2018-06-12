@@ -1,4 +1,4 @@
-package com.ecnu.compiler.common.mapper;
+package com.ecnu.compiler.parser.mapper;
 
 import com.baomidou.mybatisplus.mapper.BaseMapper;
 import com.ecnu.compiler.common.domain.Cfg;
