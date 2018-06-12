@@ -2,6 +2,7 @@ package com.ecnu.compiler.lexical.service;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.ecnu.CompilerBuilder;
+import com.ecnu.compiler.common.domain.Cfg;
 import com.ecnu.compiler.common.domain.DfaVO;
 import com.ecnu.compiler.component.lexer.domain.DFA;
 import com.ecnu.compiler.component.lexer.domain.RE;
@@ -15,6 +16,7 @@ import com.ecnu.compiler.lexical.domain.Regex;
 import com.ecnu.compiler.lexical.domain.SymbolTableVO;
 import com.ecnu.compiler.lexical.domain.SymbolVO;
 import com.ecnu.compiler.lexical.mapper.RegexMapper;
+import com.ecnu.compiler.parser.mapper.CFGMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
@@ -24,10 +26,15 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * @author michaelchen
+ */
 @Service
 public class LexicalService{
     @Resource
     private RegexMapper regexMapper;
+    @Resource
+    private CFGMapper cfgMapper;
 
     public List<Regex> getRegrexsFromTargetLanguage(String language){
         return regexMapper.selectList(
@@ -43,11 +50,20 @@ public class LexicalService{
             reStrList.add(new RE(reg.getName(), reg.getRegex(), reg.getType()));
         }
 
+        List<Cfg> cfgList = cfgMapper.selectList(
+                new EntityWrapper<Cfg>().eq("compiler_id",id)
+        );
+
+        List<String> cfgStrList = new ArrayList<>();
+        for(Cfg cfg : cfgList){
+            cfgStrList.add(cfg.getCfgContent());
+        }
+
         Config config = new Config();
         config.setExecuteType(Constants.EXECUTE_STAGE_BY_STAGE);
 
         CompilerBuilder compilerBuilder = new CompilerBuilder();
-        compilerBuilder.prepareLanguage(id, reStrList, new ArrayList<String>());
+        compilerBuilder.prepareLanguage(id, reStrList, cfgStrList);
 
         Compiler compiler = compilerBuilder.getCompilerInstance(id, config);
         //初始化编译器
