@@ -256,9 +256,9 @@
                                         <div>
                                             <button class="btn btn-danger btn-xs">My</button>
                                             <button class="btn btn-default btn-xs">Favourite</button>
-                                            <button class="btn btn-primary btn-xs">Color</button>
-                                            <button class="btn btn-success btn-xs">Is</button>
-                                            <button class="btn btn-info btn-xs">Blue</button>
+                                            <button class="btn btn-rose btn-xs">Color</button>
+                                            <button class="btn btn-info btn-xs">Is</button>
+                                            <button class="btn btn-behance btn-xs">Blue</button>
                                         </div>
                                     </div>
                                 </div>
@@ -415,6 +415,8 @@
                     var map = new Map();
                     var count =0;
                     var flag;
+                    var lastRow = 1;
+                    bHtml += "<div>";
                     $.each(arr, function(index, symbol) {
                         flag =0;
                         sHtml += "<tr>\n";
@@ -428,18 +430,33 @@
                             "</tr>";
                         map.forEach(function (value,key,map) {
                             if(symbol.type === key){
-                                bHtml += "<button style='text-transform:lowercase'  data-tip=\"ID="+symbol.id+" Type="+symbol.type+"\" " +
-                                    "class=\"tip-hotspot "+value+"\">"+symbol.attr+"</button>\n";
+                                if(symbol.rowNumber === lastRow){
+                                    bHtml += "<button style='text-transform:lowercase'  data-tip=\"ID="+symbol.id+"<br/>"+symbol.type+"\" " +
+                                        "class=\"tip-hotspot "+value+"\">"+symbol.attr+"</button>\n";
+                                }else {
+                                    bHtml += "</div>";
+                                    bHtml += "<div>";
+                                    bHtml += "<button style='text-transform:lowercase'  data-tip=\"ID=" + symbol.id + "<br/>" + symbol.type + "\" " +
+                                        "class=\"tip-hotspot " + value + "\">" + symbol.attr + "</button>\n";
+                                }
                                 flag = 1;
                             }
                         });
                         if(flag === 0){
-                            bHtml += "<button style='text-transform:lowercase' data-tip=\"ID="+symbol.id+" Type="+symbol.type+"\" " +
-                                "class=\"tip-hotspot "+colors[count]+"\">"+symbol.attr+"</button>\n";
+                            if(symbol.rowNumber === lastRow) {
+                                bHtml += "<button style='text-transform:lowercase' data-tip=\"ID=" + symbol.id + "<br/>" + symbol.type + "\" " +
+                                    "class=\"tip-hotspot " + colors[count] + "\">" + symbol.attr + "</button>\n";
+                            }else{
+                                bHtml += "</div>";
+                                bHtml += "<div>";
+                                bHtml += "<button style='text-transform:lowercase' data-tip=\"ID=" + symbol.id + "<br/>" + symbol.type + "\" " +
+                                    "class=\"tip-hotspot " + colors[count] + "\">" + symbol.attr + "</button>\n";
+                            }
                             map.set(symbol.type,colors[count]);
-                            if(count === 5)count=0;
+                            if(count === 7)count=0;
                             else count++;
                         }
+                        lastRow = symbol.rowNumber;
                     });
                     bHtml += "</div>";
                     $("#tableBody").html(sHtml);

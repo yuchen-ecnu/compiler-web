@@ -6,6 +6,8 @@ public class SymbolVO {
     private int id;
     private String attr;
     private String type;
+    private Integer rowNumber;
+    private Integer colNumber;
 
     public SymbolVO(int id, String attr, String type) {
         this.id = id;
@@ -17,6 +19,8 @@ public class SymbolVO {
         this.id = id;
         this.attr = (String)token.getStr();
         this.type = token.getType();
+        this.colNumber = token.getColPosition();
+        this.rowNumber = token.getRowNumber();
     }
 
     public SymbolVO(){}
@@ -43,5 +47,21 @@ public class SymbolVO {
 
     public void setType(String type) {
         this.type = type;
+    }
+
+    public Integer getRowNumber() {
+        return rowNumber;
+    }
+
+    public void setRowNumber(Integer rowNumber) {
+        this.rowNumber = rowNumber;
+    }
+
+    public Integer getColNumber() {
+        return colNumber;
+    }
+
+    public void setColNumber(Integer colNumber) {
+        this.colNumber = colNumber;
     }
 }

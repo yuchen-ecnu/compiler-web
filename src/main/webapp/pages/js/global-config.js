@@ -15,13 +15,15 @@ var api_system_compiler_config = "common/system/configuration/";
 
 var url_dashboard = "pages/dashboard.html";
 var url_login = "pages/login/login.html";
-var colors = new Array(6);
+var colors = new Array(8);
 colors[0]="btn btn-primary btn-xs";
 colors[1]="btn btn-success btn-xs";
 colors[2]="btn btn-info btn-xs";
 colors[3]="btn btn-warning btn-xs";
 colors[4]="btn btn-danger btn-xs";
 colors[5]="btn btn-default btn-xs";
+colors[6]="btn btn-rose btn-xs";
+colors[7]="btn btn-behance btn-xs";
 
 function ts2String (time){
     var datetime = new Date();
