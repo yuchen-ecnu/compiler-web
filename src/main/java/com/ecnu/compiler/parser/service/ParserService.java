@@ -5,6 +5,7 @@ import com.ecnu.CompilerBuilder;
 import com.ecnu.LanguageBuilder;
 import com.ecnu.compiler.common.domain.Cfg;
 import com.ecnu.compiler.component.parser.domain.ParsingTable.ParsingTable;
+import com.ecnu.compiler.component.parser.domain.PredictTable.PredictTable;
 import com.ecnu.compiler.constant.StatusCode;
 import com.ecnu.compiler.lexical.mapper.CompilerMapper;
 import com.ecnu.compiler.parser.domain.TimeTableVO;
@@ -76,36 +77,32 @@ public class ParserService {
         LanguageBuilder languageBuilder = new LanguageBuilder();
         LanguageBuilder.ParserHolder parserHolder = languageBuilder.buildParserComponents(cfgStrList);
         ParsingTable pt = getParsingTable(parserHolder,compilerVO.getParserModel());
+        TD td = compiler.getSyntaxTree();
+        PredictTable pd = compiler.getPredictTable();
 
-
-
-
-
-
+        //TODO: Handsome Zhao 补充完整，前端绘图+表格
         //temp code
-        TD td = new TD();
-        TD.TNode<String> td1 = new TD.TNode<>();
-        td1.setContent("11");
-        TD.TNode<String> td2 = new TD.TNode<>();
-        td2.setContent("12");
-        TD.TNode<String> td3 = new TD.TNode<>();
-        td3.setContent("13");
-        TD.TNode<String> td4 = new TD.TNode<>();
-        td4.setContent("14");
-        TD.TNode<String> td5 = new TD.TNode<>();
-        td5.setContent("15");
-        List<TD.TNode<String>> list1 = new ArrayList<>();
-        List<TD.TNode<String>> list2 = new ArrayList<>();
-        list1.add(td2);
-        list1.add(td3);
-        list2.add(td4);
-        list2.add(td5);
-        td1.setChildren(list1);
-        td3.setChildren(list2);
-        td.setRoot(td1);
+//        TD.TNode<String> td1 = new TD.TNode<>();
+//        td1.setContent("11");
+//        TD.TNode<String> td2 = new TD.TNode<>();
+//        td2.setContent("12");
+//        TD.TNode<String> td3 = new TD.TNode<>();
+//        td3.setContent("13");
+//        TD.TNode<String> td4 = new TD.TNode<>();
+//        td4.setContent("14");
+//        TD.TNode<String> td5 = new TD.TNode<>();
+//        td5.setContent("15");
+//        List<TD.TNode<String>> list1 = new ArrayList<>();
+//        List<TD.TNode<String>> list2 = new ArrayList<>();
+//        list1.add(td2);
+//        list1.add(td3);
+//        list2.add(td4);
+//        list2.add(td5);
+//        td1.setChildren(list1);
+//        td3.setChildren(list2);
+//        td.setRoot(td1);
 
-        ParserVO parserVO = new ParserVO(null, new TDVO(td), null,null,null);
-        return parserVO;
+        return new ParserVO(timeTable, new TDVO(td), pt,compilerVO.getParserModel()+"",pd);
     }
 
     private ParsingTable getParsingTable(LanguageBuilder.ParserHolder parserHolder, Integer parserModel) {
