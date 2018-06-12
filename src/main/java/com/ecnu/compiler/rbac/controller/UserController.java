@@ -21,10 +21,12 @@ import com.ecnu.compiler.rbac.domain.User;
 import com.ecnu.compiler.rbac.service.SessionService;
 import com.ecnu.compiler.rbac.service.UserService;
 import com.ecnu.compiler.rbac.utils.UserUtils;
+import com.ecnu.compiler.utils.domain.Constants;
 import com.ecnu.compiler.utils.domain.HttpRespCode;
 import com.ecnu.compiler.utils.domain.Resp;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.TransactionDefinition;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -70,15 +72,13 @@ public class UserController {
         // 校验用户权限
         User user = UserUtils.getCurrentUser();
         if(ObjectUtils.isEmpty(user)|| !user.getId().equals(compilerConfiguration.getCompiler().getUserId())){
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new Resp());
+            return ResponseEntity.status(HttpStatus.OK).body(new Resp(HttpRespCode.NEED_CREATE_ERROR));
         }
         boolean status = userServices.modifyUserCompiler(compilerConfiguration);
         if(!status){
-            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(
-                    new Resp(HttpRespCode.COMPILER_MODIFIED_ERROR,new Resp())
-            );
+            return ResponseEntity.status(HttpStatus.OK).body(new Resp(HttpRespCode.COMPILER_MODIFIED_ERROR));
         }
-        return ResponseEntity.status(HttpStatus.OK).body(new Resp(HttpRespCode.SUCCESS,new Resp()));
+        return ResponseEntity.status(HttpStatus.OK).body(new Resp(HttpRespCode.SUCCESS));
     }
 
     /**
@@ -101,7 +101,7 @@ public class UserController {
                     new Resp(HttpRespCode.COMPILER_ADD_ERROR,new Resp())
             );
         }
-        return ResponseEntity.status(HttpStatus.OK).body(new Resp(HttpRespCode.SUCCESS,new Resp()));
+        return ResponseEntity.status(HttpStatus.OK).body(new Resp(HttpRespCode.SUCCESS));
     }
 
 }

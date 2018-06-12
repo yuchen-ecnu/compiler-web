@@ -51,7 +51,7 @@
         <property name="logicDeleteValue" value="-1"/>
         <property name="logicNotDeleteValue" value="1"/>
         <!-- 全局ID类型： 0, "数据库ID自增"， 1, "用户输入ID", 2, "全局唯一ID", 3, "全局唯一ID"-->
-        <property name="idType" value="2"/>
+        <property name="idType" value="0"/>
         <!--主键Sequence-->
         <property name="keyGenerator" ref="keyGenerator"/>
 

@@ -16,7 +16,7 @@ import java.sql.Timestamp;
 @TableName("regex")
 public class Regex extends Model<Regex>{
 
-    private int id;
+    private Integer id;
     private String name;
     private String regex;
     private Integer priority;
@@ -25,11 +25,11 @@ public class Regex extends Model<Regex>{
     private Timestamp gmtCreated;
     private Timestamp gmtModified;
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 

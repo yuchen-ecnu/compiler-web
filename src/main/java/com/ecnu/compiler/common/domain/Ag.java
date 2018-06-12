@@ -44,12 +44,12 @@ public class Ag extends Model<Ag> {
         this.agContent = agContent;
     }
 
-    public Integer getCompileId() {
+    public Integer getCompilerId() {
         return compilerId;
     }
 
-    public void setCompileId(Integer compileId) {
-        this.compilerId = compileId;
+    public void setCompilerId(Integer compilerId) {
+        this.compilerId = compilerId;
     }
 
     public Timestamp getGmtCreated() {

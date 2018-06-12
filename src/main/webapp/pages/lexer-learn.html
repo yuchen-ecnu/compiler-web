@@ -371,6 +371,25 @@
 </script>
 
 <script type="text/javascript">
+    $(document).ready(function(){
+        initToolTip();
+    });
+
+    function initToolTip() {
+        ToolTip.init({
+            delay: 400,
+            fadeDuration: 250,
+            fontSize: '0.8em',
+            theme: 'light',
+            textColor: '#757575',
+            shadowColor: '#000',
+            fontFamily: "'Roboto-Medium', 'Roboto-Regular', Arial"
+        });
+    }
+</script>
+
+
+<script type="text/javascript">
     $("#sel-lan").change(function () {
         editor.session.setMode("ace/mode/" + $("#sel-lan").val());
     });

@@ -461,7 +461,48 @@
 <script src="js/global-config.js"></script>
 
 <script type="text/javascript">
-    function saveToServer(){
+    var sendCreatePost = function () {
+        if(!checkParamValidate()) { return; }
+        $.ajax({
+            url: base_url + api_create_compiler,
+            type: "post",
+            dataType: "json",
+            headers: {'Content-type': 'application/json;charset=UTF-8'},
+            data: JSON.stringify({
+                compiler: compiler,
+                reList: reList.concat(newRE),
+                cfgList: cfgList.concat(newCFG),
+                agList: agList.concat(newAG)
+            }),
+            success: function (res) {
+                console.log(res);
+                if (res.resCode === '200') {
+                    showSuccessDialog();
+                }else if (res.resCode === '400'){
+                    swal({
+                        title: 'CAN\'T MODIFIED ERROR',
+                        text: "Do you want to create a new Compiler for yourself?",
+                        type: 'warning',
+                        showCancelButton: true,
+                        confirmButtonClass: 'btn btn-success',
+                        cancelButtonClass: 'btn btn-danger',
+                        confirmButtonText: 'Yes,create it!',
+                        // cancel
+                        buttonsStyling: false
+                    }).then(function() {
+                        sendCreatePost();
+                    });
+                }
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                if (XMLHttpRequest.status === 401) {
+                    showLoginDialog();
+                }
+            }
+        });
+    };
+
+    function checkParamValidate() {
         // check
         compiler.compilerName = $("#cname").val();
         compiler.languageName = $("#lname").val();
@@ -473,9 +514,28 @@
             &&checkValid('introduce',compiler.introduce)
             &&checkValid('lexerModel',compiler.lexerModel)
             &&checkValid('parserModel',compiler.parserModel))){
-            return;
+            toast("warning", "EMPTY WARN", "Please fill all information about the compiler!");
+            return false;
         }
+        return true;
+    }
 
+    var showSuccessDialog = function () {
+        swal({
+            title: 'ADD SUCCESS',
+            text: "Click 'OK' to redirect to compiler list.",
+            type: 'success',
+            confirmButtonClass: 'btn btn-success',
+            cancelButtonClass: 'btn btn-danger',
+            confirmButtonText: 'OK!',
+            buttonsStyling: false
+        }).then(function() {
+            location.href = base_url + url_compiler_list;
+        });
+    };
+
+    function saveToServer(){
+        if(!checkParamValidate()) { return; }
         var str = api_save_compiler;
         var id = getQueryString("id");
         if(id == null || id===""){
@@ -485,6 +545,7 @@
             url: base_url + str,
             type: "post",
             dataType: "json",
+            headers: {'Content-type': 'application/json;charset=UTF-8'},
             data: JSON.stringify({
                 compiler: compiler,
                 re: reList.concat(newRE),
@@ -494,40 +555,29 @@
             success: function (res) {
                 console.log(res);
                 if (res.resCode === '200') {
-
-                }
-            },
-            error: function (data) {
-                console.log(data);
-                if (data.status === 401) {
+                    showSuccessDialog();
+                }else if (res.resCode === '412'){
                     swal({
-                        title: 'UNAUTHORIZED ERROR',
-                        text: "You need to login in to finish your operation!",
+                        title: 'CAN\'T MODIFIED ERROR',
+                        text: "Do you want to create a new Compiler for yourself?",
                         type: 'warning',
                         showCancelButton: true,
                         confirmButtonClass: 'btn btn-success',
                         cancelButtonClass: 'btn btn-danger',
-                        confirmButtonText: 'Login',
+                        confirmButtonText: 'Yes,create it!',
                         // cancel
                         buttonsStyling: false
                     }).then(function() {
-                        swal({
-                            title: 'Redirecting!',
-                            text: 'Your will redirect to Login Page right now.',
-                            type: 'success',
-                            confirmButtonClass: "btn btn-success",
-                            buttonsStyling: false
-                        });
-                        location.href = base_url + url_login;
+                        sendCreatePost();
                     });
-                    $("#user-table").html("<div class=\"tim-typo\"><h3>Please login to build your own compiler!" +
-                        "&nbsp;&nbsp;&nbsp;<button id='login-btn' class=\"btn btn-success\">Login</button></h3></div>");
-                    $("#login-btn").click(function () {
-                        location.href = base_url + url_login;
-                    });
-                    return;
+                }else if(res.resCode === '400'){
+                    toast("error","COMPILER_MODIFIED_ERROR",res.resMsg);
                 }
-                toast("warning", "Get Compiler's Configuration Error", "Please wait a moment and refresh the page.");
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                if (XMLHttpRequest.status === 401) {
+                    showLoginDialog();
+                }
             }
         });
     }

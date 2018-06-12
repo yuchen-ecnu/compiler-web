@@ -10,10 +10,12 @@
        http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx-4.2.xsd">
 
     <!-- 扫描 service -->
-    <context:component-scan base-package="com.ecnu.compiler" />
+    <context:component-scan base-package="com.ecnu.compiler,com.baomidou.mybatisplus.service.impl" >
+        <context:exclude-filter type="annotation"  expression="org.springframework.stereotype.Controller" />
+    </context:component-scan>
 
     <!-- 使用annotation注解方式配置事务 -->
-    <tx:annotation-driven transaction-manager="transactionManager" />
+    <tx:annotation-driven proxy-target-class="true"/>
 
     <!-- 使用JDBC事物 -->
     <bean id="transactionManager" class="org.springframework.jdbc.datasource.DataSourceTransactionManager">
@@ -21,20 +23,20 @@
     </bean>
 
     <!-- 定义事务通知 -->
-    <tx:advice id="transactionAdvice" transaction-manager="transactionManager">
+    <tx:advice id="transactionAdvice">
         <tx:attributes>
-            <tx:method name="select*" read-only="true" propagation="REQUIRED" />
-            <tx:method name="delete*"  propagation="REQUIRED" rollback-for="Exception" />
-            <tx:method name="update*" propagation="REQUIRED" rollback-for="Exception" />
-            <tx:method name="insert*" propagation="REQUIRED" rollback-for="Exception" />
-            <tx:method name="*" propagation="REQUIRED" />
+            <tx:method name="select*" read-only="true"/>
+            <tx:method name="delete*" rollback-for="Exception" />
+            <tx:method name="update*" rollback-for="Exception" />
+            <tx:method name="insert*" rollback-for="Exception" />
+            <tx:method name="*"/>
         </tx:attributes>
     </tx:advice>
-    <tx:annotation-driven proxy-target-class="true"
-                          transaction-manager="transactionManager" />
+    <tx:annotation-driven proxy-target-class="true"/>
     <!-- 定义aop切面，并织入事务通知 -->
     <aop:config>
         <aop:pointcut id="transactionPointcut" expression="execution(* com.ecnu.compiler.*.service.*.*(..))"/>
         <aop:advisor pointcut-ref="transactionPointcut" advice-ref="transactionAdvice"/>
     </aop:config>
+    <!--<aop:aspectj-autoproxy  proxy-target-class="true"/>-->
 </beans>
