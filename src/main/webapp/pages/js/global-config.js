@@ -27,6 +27,11 @@ var colors = [
     "btn btn-behance btn-xs"
 ];
 
+/**
+ * TimeStamp转格式化String
+ * @param time
+ * @returns {string}
+ */
 function ts2String (time){
     var datetime = new Date();
     datetime.setTime(time);
@@ -38,6 +43,12 @@ function ts2String (time){
     return year + "-" + month + "-" + date+" "+hour+":"+minute;
 }
 
+/**
+ * 弹窗，无回调
+ * @param type  'success'，'warning'，'error'
+ * @param title 弹窗标题
+ * @param text 弹窗内容文本
+ */
 function toast(type,title,text){
     swal({ title: title,
         text: text,
@@ -47,7 +58,21 @@ function toast(type,title,text){
     }).then(function () {}, function (reason) {});
 }
 
+/**
+ * 获取URL中的请求参数
+ * @param name  参数名
+ * @returns {*}
+ */
+function getQueryString(name) {
+    var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+    var r = window.location.search.substr(1).match(reg);
+    if (r != null) return unescape(r[2]);
+    return null;
+}
 
+/**
+ * 显示请求登陆对话框
+ */
 function showLoginDialog(){
     swal({
         title: 'UNAUTHORIZED ERROR',

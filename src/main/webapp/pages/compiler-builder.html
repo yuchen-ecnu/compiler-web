@@ -480,7 +480,7 @@
                     showSuccessDialog();
                 }else if (res.resCode === '400'){
                     swal({
-                        title: 'CAN\'T MODIFIED ERROR',
+                        title: 'CAN\'T MODIFIED WARN',
                         text: "Do you want to create a new Compiler for yourself?",
                         type: 'warning',
                         showCancelButton: true,
@@ -676,29 +676,20 @@
                             "<i class=\"material-icons\">close</i></button></td></tr>";
                     });
                     $("#ag-content").html(sHtml);
+                }else if(res.resCode === '404'){
+                    toast("warning","Compiler Not Found!","Please check the compile status or refresh the page.")
                 }
             },
             error: function (data) {
                 console.log(data);
                 if (data.status === 401) {
-                    $("#user-table").html("<div class=\"tim-typo\"><h3>Please login to build your own compiler!" +
-                        "&nbsp;&nbsp;&nbsp;<button id='login-btn' class=\"btn btn-success\">Login</button></h3></div>");
-                    $("#login-btn").click(function () {
-                        location.href = base_url + url_login;
-                    });
-                    return;
+                    showLoginDialog();
+                } else if(data.status === 403){
+                    toast("error", "Permission Error", "Please check is this your own compiler?");
                 }
-                toast("warning", "Get Compiler's Configuration Error", "Please wait a moment and refresh the page.");
             }
         });
     });
-
-    function getQueryString(name) {
-        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
-        var r = window.location.search.substr(1).match(reg);
-        if (r != null) return unescape(r[2]);
-        return null;
-    }
 
     function addToStorage(type, name, val) {
         var sHtml;

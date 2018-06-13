@@ -1,6 +1,5 @@
 package com.ecnu.compiler.lexical.service;
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
-import com.baomidou.mybatisplus.service.impl.ServiceImpl;
 import com.ecnu.CompilerBuilder;
 import com.ecnu.compiler.common.domain.Cfg;
 import com.ecnu.compiler.common.domain.DfaVO;
@@ -12,19 +11,22 @@ import com.ecnu.compiler.constant.Config;
 import com.ecnu.compiler.constant.Constants;
 import com.ecnu.compiler.constant.StatusCode;
 import com.ecnu.compiler.controller.Compiler;
+import com.ecnu.compiler.history.service.HistoryService;
 import com.ecnu.compiler.lexical.domain.Regex;
 import com.ecnu.compiler.lexical.domain.SymbolTableVO;
 import com.ecnu.compiler.lexical.domain.SymbolVO;
+import com.ecnu.compiler.lexical.mapper.CompilerMapper;
 import com.ecnu.compiler.lexical.mapper.RegexMapper;
 import com.ecnu.compiler.parser.mapper.CFGMapper;
+import com.ecnu.compiler.rbac.domain.History;
+import com.ecnu.compiler.rbac.domain.User;
+import com.ecnu.compiler.rbac.utils.UserUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 /**
  * @author michaelchen
@@ -32,16 +34,28 @@ import java.util.Map;
 @Service
 public class LexicalService{
     @Resource
+    private HistoryService historyService;
+    @Resource
+    private CompilerMapper compilerMapper;
+    @Resource
     private RegexMapper regexMapper;
     @Resource
     private CFGMapper cfgMapper;
 
-    public List<Regex> getRegrexsFromTargetLanguage(String language){
+    public List<Regex> getRegexFromTargetLanguage(String language){
         return regexMapper.selectList(
                 new EntityWrapper<Regex>().eq("language", language));
     }
 
     public SymbolTableVO generateSymbolTable(int id, String text){
+
+        //init compiler
+        com.ecnu.compiler.rbac.domain.Compiler compilerVO = compilerMapper.selectById(id);
+        if(ObjectUtils.isEmpty(compilerVO)){ return null; }
+        compilerVO.setUsedTime(compilerVO.getUsedTime()+1);
+        compilerMapper.updateById(compilerVO);
+
+        //init re
         List<Regex> regexList = regexMapper.selectList(
                 new EntityWrapper<Regex>().eq("compiler_id", id));
         List<RE> reStrList = new ArrayList<>();
@@ -50,10 +64,10 @@ public class LexicalService{
             reStrList.add(new RE(reg.getName(), reg.getRegex(), reg.getType()));
         }
 
+        //init cfg
         List<Cfg> cfgList = cfgMapper.selectList(
                 new EntityWrapper<Cfg>().eq("compiler_id",id)
         );
-
         List<String> cfgStrList = new ArrayList<>();
         for(Cfg cfg : cfgList){
             cfgStrList.add(cfg.getCfgContent());
@@ -61,6 +75,7 @@ public class LexicalService{
 
         Config config = new Config();
         config.setExecuteType(Constants.EXECUTE_STAGE_BY_STAGE);
+        config.setParserAlgorithm(compilerVO.getParserModel());
 
         CompilerBuilder compilerBuilder = new CompilerBuilder();
         compilerBuilder.prepareLanguage(id, reStrList, cfgStrList);
@@ -82,7 +97,9 @@ public class LexicalService{
         for(int i = 0; i < tokensListSize; i++){
             listVO.add(new SymbolVO(list.get(i), i + 1));
         }
-
+        User user = UserUtils.getCurrentUser();
+        historyService.logUserHistory(new History(user.getId(),compilerVO.getId(),text,
+                com.ecnu.compiler.utils.domain.Constants.LOG_TYPE_LEXER));
         return new SymbolTableVO(listVO, regexList,compiler.getErrorList());
     }
 
@@ -93,20 +110,5 @@ public class LexicalService{
         DFA dfa = regularExpression.getDFAIndirect();
         if(ObjectUtils.isEmpty(dfa)) { return null; }
         return  new DfaVO(dfa);
-    }
-
-    public void getLexicalAnalyzeTable(String code){
-        SymbolTable symbolTable = new SymbolTable();
-        Map<String, DFA> map = new HashMap<String, DFA>();
-
-        map.put("x2", new RE("x2", "aab", 2).getDFAIndirect());
-        map.put("x3", new RE("x3", "if", 2).getDFAIndirect());
-        List<String> list = new ArrayList<>();
-        list.add("aab");
-        list.add("if");
-        list.add("aab");
-        list.add("aab");
-
-//        symbolTable.build(map, list);
     }
 }

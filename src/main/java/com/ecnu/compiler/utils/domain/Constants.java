@@ -13,4 +13,8 @@ public class Constants {
     public static final int VOLUME_COMMON = 5;
     public static final int VOLUME_STANDARD_VIP = 20;
 
+    /**Log History*/
+    public static final String LOG_TYPE_LEXER = "Lexer";
+    public static final String LOG_TYPE_PARSER = "Parser";
+
 }

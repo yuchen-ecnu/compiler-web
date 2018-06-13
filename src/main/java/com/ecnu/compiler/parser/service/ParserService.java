@@ -7,6 +7,7 @@ import com.ecnu.compiler.common.domain.Cfg;
 import com.ecnu.compiler.component.parser.domain.ParsingTable.ParsingTable;
 import com.ecnu.compiler.component.parser.domain.PredictTable.PredictTable;
 import com.ecnu.compiler.constant.StatusCode;
+import com.ecnu.compiler.history.service.HistoryService;
 import com.ecnu.compiler.lexical.mapper.CompilerMapper;
 import com.ecnu.compiler.parser.domain.TimeTableVO;
 import com.ecnu.compiler.parser.mapper.CFGMapper;
@@ -19,6 +20,9 @@ import com.ecnu.compiler.lexical.domain.Regex;
 import com.ecnu.compiler.lexical.mapper.RegexMapper;
 import com.ecnu.compiler.parser.domain.ParserVO;
 import com.ecnu.compiler.parser.domain.TDVO;
+import com.ecnu.compiler.rbac.domain.History;
+import com.ecnu.compiler.rbac.domain.User;
+import com.ecnu.compiler.rbac.utils.UserUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -27,6 +31,8 @@ import java.util.List;
 
 @Service
 public class ParserService {
+    @Resource
+    private HistoryService historyService;
     @Resource
     private RegexMapper regexMapper;
     @Resource
@@ -51,9 +57,12 @@ public class ParserService {
         }
 
         com.ecnu.compiler.rbac.domain.Compiler compilerVO = compilerMapper.selectById(id);
+        compilerVO.setUsedTime(compilerVO.getUsedTime()+1);
+        compilerMapper.updateById(compilerVO);
 
         Config config = new Config();
         config.setExecuteType(Constants.EXECUTE_STAGE_BY_STAGE);
+        config.setParserAlgorithm(compilerVO.getParserModel());
 
         CompilerBuilder compilerBuilder = new CompilerBuilder();
         compilerBuilder.prepareLanguage(id, reStrList, cfgStrList);
@@ -102,6 +111,9 @@ public class ParserService {
 //        td3.setChildren(list2);
 //        td.setRoot(td1);
 
+        User user = UserUtils.getCurrentUser();
+        historyService.logUserHistory(new History(user.getId(),compilerVO.getId(),text,
+                com.ecnu.compiler.utils.domain.Constants.LOG_TYPE_LEXER));
         return new ParserVO(timeTable, new TDVO(td), pt,compilerVO.getParserModel()+"",pd);
     }
 
