@@ -294,6 +294,9 @@
                                                         <option value="1">汤姆森构造法+子集构造法（RE_NFA_DFA）</option>
                                                     </select>
                                                 </div>
+                                                <label class="col-sm-3 label-on-right">
+                                                    <code>Used For DFA Generator</code>
+                                                </label>
                                             </div>
                                             <div class="row">
                                                 <label class="col-sm-2 label-on-left">Parser Executes Algorithm</label>
@@ -307,6 +310,9 @@
                                                         <option value="3">LALR 算法（PARSER_LALR）</option>
                                                     </select>
                                                 </div>
+                                                <label class="col-sm-3 label-on-right">
+                                                    <code>Used For Parser Process</code>
+                                                </label>
                                             </div>
                                         </div>
                                     </form>
@@ -327,8 +333,10 @@
                                                     <thead>
                                                     <tr>
                                                         <th class="text-center col-md-1">#</th>
-                                                        <th class="col-md-2">Name</th>
-                                                        <th class="col-md-8">Regular Expression</th>
+                                                        <th class="col-md-1">Name</th>
+                                                        <th class="col-md-6">Regular Expression</th>
+                                                        <th class="text-center col-md-2">Type</th>
+                                                        <th class="text-center col-md-1">Priority</th>
                                                         <th class="text-right col-md-1">Actions</th>
                                                     </tr>
                                                     </thead>
@@ -359,7 +367,7 @@
                                                     <tr>
                                                         <th class="text-center col-md-1">#</th>
                                                         <th class="col-md-2">Name</th>
-                                                        <th class="col-md-6">Regular Expression</th>
+                                                        <th class="text-center col-md-6">CFG</th>
                                                         <th class="text-right col-md-3">Actions</th>
                                                     </tr>
                                                     </thead>
@@ -378,7 +386,7 @@
                                 <div class="card">
                                     <form id="agValid" class="form-horizontal" action="" method="">
                                         <div class="card-header">
-                                            <h4 class="card-title">Attribute Grammar</h4>
+                                            <h4 class="card-title">AG</h4>
                                             <p class="category">
                                                 More information here
                                             </p>
@@ -390,7 +398,7 @@
                                                     <tr>
                                                         <th class="text-center col-md-1">#</th>
                                                         <th class="col-md-2">Name</th>
-                                                        <th class="col-md-6">Regular Expression</th>
+                                                        <th class="text-center col-md-6">Regular Expression</th>
                                                         <th class="text-right col-md-3">Actions</th>
                                                     </tr>
                                                     </thead>
@@ -635,11 +643,13 @@
                     // init re list
                     var sHtml = "";
                     $.each(reList, function(index, re) {
+                        var type = re.type === 1? "NON_SPLITTER":"SPLITTER";
                         sHtml += "<tr id='RE"+re.id+"'><td class=\"text-center\">"+re.id+"</td>" +
                             "<td>"+re.name+"</td><td>"+re.regex+"</td>" +
+                            "<td class='text-center'>"+type+"</td><td class='text-center'>"+re.priority+"</td>" +
                             "<td class=\"td-actions text-right\">" +
                             "<button type=\"button\" rel=\"tooltip\" class=\"btn btn-success\" data-placement=\"left\" title=\"Edit\"" +
-                            " onclick=\"editItem('RE',"+re.id+")\">" +
+                            " onclick=\"editItem('RE',"+re.id+",'"+re.type+"',"+re.priority+")\">" +
                             "<i class=\"material-icons\">edit</i></button>&nbsp;&nbsp;&nbsp;" +
                             "<button type=\"button\" rel=\"tooltip\" class=\"btn btn-danger data-placement=\"left\" title=\"Delete\"" +
                             " onclick=\"deleteItem('RE',\'"+re.name.replace("\"","\\\"").replace("\'","\\\'")+"\',"+re.id+")\">" +
@@ -654,7 +664,7 @@
                             "<td>"+cfg.cfgName+"</td><td>"+cfg.cfgContent+"</td>" +
                             "<td class=\"td-actions text-right\">" +
                             "<button type=\"button\" rel=\"tooltip\" class=\"btn btn-success\" data-placement=\"left\" title=\"Edit\""  +
-                            " onclick=\"editItem('CFG',"+cfg.id+")\">" +
+                            " onclick=\"editItem('CFG',"+cfg.id+",'','')\">" +
                             "<i class=\"material-icons\">edit</i></button>&nbsp;&nbsp;&nbsp;" +
                             "<button type=\"button\" rel=\"tooltip\" class=\"btn btn-danger data-placement=\"left\" title=\"Delete\"" +
                             " onclick=\"deleteItem('CFG',\'"+cfg.cfgName.replace("\"","\\\"").replace("\'","\\\'")+"\',"+cfg.id+")\">" +
@@ -669,7 +679,7 @@
                             "<td>"+ag.agName+"</td><td>"+ag.agContent+"</td>" +
                             "<td class=\"td-actions text-right\">" +
                             "<button type=\"button\" rel=\"tooltip\" class=\"btn btn-success\" data-placement=\"left\" title=\"Edit\"" +
-                            " onclick=\"editItem('AG',"+ag.id+")\">" +
+                            " onclick=\"editItem('AG',"+ag.id+",'','')\">" +
                             "<i class=\"material-icons\">edit</i></button>&nbsp;&nbsp;&nbsp;" +
                             "<button type=\"button\" rel=\"tooltip\" class=\"btn btn-danger data-placement=\"left\" title=\"Delete\"" +
                             " onclick=\"deleteItem('AG',\'"+ag.agName.replace("\"","\\\"").replace("\'","\\\'")+"\',"+ag.id+")\">" +
@@ -691,14 +701,16 @@
         });
     });
 
-    function addToStorage(type, name, val) {
+    function addToStorage(type, name, val,typeParam,priority) {
         var sHtml;
         switch (type){
             case 'RE':
-                newRE.push({ id:indexRE, name:name, regex:val });
+                newRE.push({ id:indexRE, name:name, regex:val, priority: priority,type: typeParam});
+                var typeName = typeParam === 2? "NON_SPLITTER":"SPLITTER";
                 sHtml = $("#re-content").html();
                 sHtml += "<tr id='NRE"+indexRE+"'><td class=\"text-center\">--</td>" +
                     "<td>"+name+"</td><td>"+val+"</td>" +
+                    "<td class='text-center'>"+typeName+"</td><td class='text-center'>"+priority+"</td>" +
                     "<td class=\"td-actions text-right\">" +
                     "<button type=\"button\" rel=\"tooltip\" class=\"btn btn-success\" data-placement=\"left\" title=\"Edit\"" +
                     " onclick=\"editNewItem('NRE',"+indexRE+")\">" +
@@ -741,20 +753,30 @@
 
     //新增记录弹窗
     function addNewOne(type){
-        swal({
-            title: 'Add new '+ type +' rules',
-            html: '<div class="form-group label-floating">' +
+        sHtml = '<div class="form-group label-floating">' +
             '<label class="control-label">Name</label>' +
             '<input class="form-control" type="text" name="min_length" minLength="1" id="i-name"/></div>' +
             '<div class="form-group label-floating">' +
             '<label class="control-label">'+type+'</label>' +
-            '<input class="form-control" type="text" name="min_length" minLength="1" id="i-value"/></div>',
+            '<input class="form-control" type="text" name="min_length" minLength="1" id="i-value"/></div>';
+        if(type === "RE"){
+            sHtml += '<div class="form-group label-floating">' +
+                '<label class="control-label">Priority</label>' +
+                '<input id=\'priority\' class="form-control" type="number" name="min_length" minLength="1" id="i-value"/></div>';
+            sHtml +="<div><label>" +
+                "<input id='checkbox-type' type=\"checkbox\" name=\"optionsCheckboxes\"> Is Splitter?" +
+                "</label></div>"
+        }
+        swal({
+            title: 'Add new '+ type +' rules',
+            html: sHtml,
             showCancelButton: true,
             confirmButtonClass: 'btn btn-success',
             cancelButtonClass: 'btn btn-danger',
             buttonsStyling: false
         }).then(function(result) {
-            addToStorage(type,$('#i-name').val(),$('#i-value').val());
+            addToStorage(type,$('#i-name').val(),$('#i-value').val(),
+                $('#checkbox-type').is(':checked')?1:2,$('#priority').val());
             swal({
                 type: 'success',
                 html: 'You created: <strong>' +
@@ -767,23 +789,37 @@
         }).catch(swal.noop)
     }
 
-    function editItem(type,id){
+    function editItem(type,id,typeParam,priority){
         var name = $("#"+type+id+" td:nth-child(2)").html();
         var val = $("#"+type+id+" td:nth-child(3)").html();
-        swal({
-            title: 'Modify '+ type +' rules',
-            html: '<div class="form-group label-floating">' +
+        var sHtml = '<div class="form-group label-floating">' +
             '<label class="control-label">Name</label>' +
             '<input class="form-control" type="text" name="min_length" minLength="1" id="i-name" value="'+ name+'"/></div>' +
             '<div class="form-group label-floating">' +
             '<label class="control-label">'+type+'</label>' +
-            '<input class="form-control" type="text" name="min_length" minLength="1" id="i-value" value="'+val+'"/></div>',
+            '<input class="form-control" type="text" name="min_length" minLength="1" id="i-value" value="'+val+'"/></div>';
+
+        if(priority!==undefined && priority!==""){
+            sHtml += '<div class="form-group label-floating">' +
+                '<label class="control-label">Priority</label>' +
+                '<input class="form-control" type="number" name="min_length" minLength="1" id="i-value" value="'+priority+'"/></div>';
+        }
+        if(typeParam!==undefined && typeParam !==""){
+            var checked = typeParam ==="2"?"checked":"";
+            sHtml +="<div><label>" +
+                "<input type=\"checkbox\" "+checked+" name=\"optionsCheckboxes\"> Is Splitter?" +
+                "</label></div>"
+        }
+
+        swal({
+            title: 'Modify '+ type +' rules',
+            html: sHtml,
             showCancelButton: true,
             confirmButtonClass: 'btn btn-success',
             cancelButtonClass: 'btn btn-danger',
             buttonsStyling: false
         }).then(function(result) {
-            modifyFromStorage(type,id,$('#i-name').val(),$('#i-value').val());
+            modifyFromStorage(type,id,$('#i-name').val(),$('#i-value').val(),typeParam,priority);
             swal({
                 type: 'success',
                 html: 'You modify: <strong>' +
@@ -931,7 +967,7 @@
     }
 
     // 编辑一个条目（原始数据）
-    function modifyFromStorage(type,id,name,val){
+    function modifyFromStorage(type,id,name,val,typeParam,priority){
         $("#"+type+id+" td:nth-child(2)").html(name);
         $("#"+type+id+" td:nth-child(3)").html(val);
         switch (type){
@@ -940,6 +976,8 @@
                     if(re.id === id){
                         reList[index].name = name;
                         reList[index].regex = val;
+                        reList[index].type = typeParam;
+                        reList[index].priority = priority;
                         return false;
                     }
                 });
