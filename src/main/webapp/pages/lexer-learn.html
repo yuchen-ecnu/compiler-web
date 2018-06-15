@@ -479,6 +479,10 @@
                 }
             },
             error: function (res) {
+                if (res.status === 401) {
+                    showLoginDialog();
+                    return;
+                }
                 swal({
                     title: "Generator Error",
                     text: "Please check you code and retry.",

@@ -28,6 +28,28 @@ var colors = [
 ];
 
 /**
+ * type = ['','info','success','warning','danger','rose','primary'];
+ * @param from      移入方向(top,bottom)
+ * @param align     位置（left，center，right）
+ */
+function showNotification(type,msg){
+    $.notify({
+        icon: "notifications",
+        message: msg
+
+    },{
+        type: type,
+        timer: 3000,
+        placement: {
+            from: 'top',
+            align: 'right'
+        }
+    });
+}
+
+
+
+/**
  * TimeStamp转格式化String
  * @param time
  * @returns {string}

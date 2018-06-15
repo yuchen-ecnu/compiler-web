@@ -295,7 +295,7 @@
                                                     </select>
                                                 </div>
                                                 <label class="col-sm-3 label-on-right">
-                                                    <code>Used For DFA Generator</code>
+                                                    <code>Used For 'DFA Generator'</code>
                                                 </label>
                                             </div>
                                             <div class="row">
@@ -311,7 +311,7 @@
                                                     </select>
                                                 </div>
                                                 <label class="col-sm-3 label-on-right">
-                                                    <code>Used For Parser Process</code>
+                                                    <code>Used For 'Parser Process'</code>
                                                 </label>
                                             </div>
                                         </div>
@@ -789,9 +789,11 @@
         }).catch(swal.noop)
     }
 
-    function editItem(type,id,typeParam,priority){
+    function editItem(type,id){
         var name = $("#"+type+id+" td:nth-child(2)").html();
         var val = $("#"+type+id+" td:nth-child(3)").html();
+        var typeParam = $("#"+type+id+" td:nth-child(4)").html();
+        var priority = $("#"+type+id+" td:nth-child(5)").html();
         var sHtml = '<div class="form-group label-floating">' +
             '<label class="control-label">Name</label>' +
             '<input class="form-control" type="text" name="min_length" minLength="1" id="i-name" value="'+ name+'"/></div>' +
@@ -802,12 +804,12 @@
         if(priority!==undefined && priority!==""){
             sHtml += '<div class="form-group label-floating">' +
                 '<label class="control-label">Priority</label>' +
-                '<input class="form-control" type="number" name="min_length" minLength="1" id="i-value" value="'+priority+'"/></div>';
+                '<input class="form-control" type="number" name="min_length" minLength="1" id="i-priority" value="'+priority+'"/></div>';
         }
         if(typeParam!==undefined && typeParam !==""){
-            var checked = typeParam ==="2"?"checked":"";
+            var checked = typeParam ==="SPLITTER"?"checked":"";
             sHtml +="<div><label>" +
-                "<input type=\"checkbox\" "+checked+" name=\"optionsCheckboxes\"> Is Splitter?" +
+                "<input type=\"checkbox\" "+checked+" id='i-splitter' name=\"optionsCheckboxes\"> Is Splitter?" +
                 "</label></div>"
         }
 
@@ -819,7 +821,7 @@
             cancelButtonClass: 'btn btn-danger',
             buttonsStyling: false
         }).then(function(result) {
-            modifyFromStorage(type,id,$('#i-name').val(),$('#i-value').val(),typeParam,priority);
+            modifyFromStorage(type,id,$('#i-name').val(),$('#i-value').val(),$('#i-splitter').prop('checked'),$('#i-priority').val());
             swal({
                 type: 'success',
                 html: 'You modify: <strong>' +
@@ -970,13 +972,15 @@
     function modifyFromStorage(type,id,name,val,typeParam,priority){
         $("#"+type+id+" td:nth-child(2)").html(name);
         $("#"+type+id+" td:nth-child(3)").html(val);
+        $("#"+type+id+" td:nth-child(4)").html(typeParam?"SPLITTER":"NON_SPLITTER");
+        $("#"+type+id+" td:nth-child(5)").html(priority);
         switch (type){
             case 'RE':
                 $.each(reList,function (index, re) {
                     if(re.id === id){
                         reList[index].name = name;
                         reList[index].regex = val;
-                        reList[index].type = typeParam;
+                        reList[index].type = typeParam?2:1;
                         reList[index].priority = priority;
                         return false;
                     }
