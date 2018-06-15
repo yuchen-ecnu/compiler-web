@@ -12,7 +12,7 @@ import com.ecnu.compiler.lexical.mapper.RegexMapper;
 import com.ecnu.compiler.rbac.domain.Compiler;
 import com.ecnu.compiler.rbac.domain.User;
 import com.ecnu.compiler.rbac.service.UserService;
-import com.ecnu.compiler.rbac.utils.UserUtils;
+import com.ecnu.compiler.utils.UserUtils;
 import com.ecnu.compiler.semantic.mapper.AGMapper;
 import com.ecnu.compiler.utils.domain.Constants;
 import com.ecnu.compiler.utils.domain.HttpRespCode;

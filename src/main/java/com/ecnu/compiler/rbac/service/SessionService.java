@@ -1,10 +1,9 @@
 package com.ecnu.compiler.rbac.service;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
-import com.baomidou.mybatisplus.plugins.Page;
 import com.ecnu.compiler.rbac.domain.User;
 import com.ecnu.compiler.rbac.mapper.UserMapper;
-import com.ecnu.compiler.rbac.utils.UserUtils;
+import com.ecnu.compiler.utils.UserUtils;
 import com.ecnu.compiler.utils.domain.Constants;
 import org.springframework.stereotype.Service;
 import org.springframework.util.DigestUtils;

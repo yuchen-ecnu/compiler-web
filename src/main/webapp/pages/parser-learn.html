@@ -473,8 +473,17 @@
                     network = new vis.Network(container, data, options);
                 }
             },
-            error: function (data) {
-                toast("Generating Failed","Please check your regular expression and then retry.");
+            error: function (res) {
+                if (res.status === 401) {
+                    showLoginDialog();
+                    return;
+                }
+                swal({
+                    title: "Generator Error",
+                    text: "Please check you code and retry.",
+                    timer: 2000,
+                    showConfirmButton: false
+                });
             }
         })
 
@@ -493,9 +502,6 @@
 
         var txt = editor.getValue();
         var lan = $("#sel-lan").val();
-        // draw picture
-        draw(lan, txt);
-
 
         if (txt === "" || txt === undefined) {
             swal({
@@ -517,79 +523,49 @@
             });
             return;
         }
-        /*
-        $.ajax({
-            url: base_url + api_parser,
-            type: "post",
-            dataType: "json",
-            headers: {'Content-type': 'application/json;charset=UTF-8'},
-            data: JSON.stringify({
-                txt: txt,
-                lan: lan
-            }),
-            success: function (data) {
-                console.log(data);
-                $("#tableBody").html("<tr>\n" +
-                    "<td>1</td>\n" +
-                    "<td>identify</td>\n" +
-                    "<td>id1</td>\n" +
-                    "<td class=\"text-right\">\n" +
-                    "<a href=\"#\" class=\"btn btn-simple btn-warning btn-icon edit\"><i\n" +
-                    "class=\"material-icons\">dvr</i></a>\n" +
-                    "</td>\n" +
-                    "</tr>");
-
-            },
-            error: function (data) {
-                swal({
-                    title: "Generator Error",
-                    text: "Please check you code and retry.",
-                    timer: 2000,
-                    showConfirmButton: false
-                });
-            }
-        })
-        */
+        // draw picture
+        draw(lan, txt);
     });
 
-    //获取用户可选择的语法器
-    $.ajax({
-        url: base_url + api_compiler_select,
-        type : "get",
-        dataType : "json",
-        headers: {'Content-type': 'application/json;charset=UTF-8'},
-        success : function(res){
-            if(res.resCode === '200'){
-                var arr = res.data;
-                var selector = $("#sel-lan");
-                selector.append("<option disabled>Default Compiler</option>");
-                $.each(arr, function(index, compiler) {
-                    if(compiler.userId === -1){
-                        selector.append("<option value="+compiler.id+">"+compiler.compilerName+"</option>");
-                    }
-                });
-                selector.append("<option disabled>Your Compiler</option>");
-                $.each(arr, function(index, compiler) {
-                    if(compiler.userId !== -1){
-                        selector.append("<option value="+compiler.id+">"+compiler.compilerName+"</option>");
-                    }
-                });
-                selector.selectpicker('refresh');
-            }
-        },
-        error : function(data){
-            swal({ title: "Get System Compilers Error",
-                text: "Please refresh page and retry.",
-                timer: 2000,
-                showConfirmButton: false
-            }).then(function () {}, function (reason) {});
-        }
-    })
+
 </script>
 
 
 <script type="text/javascript">
     $(document).ready(function () {
+        //获取用户可选择的语法器
+        $.ajax({
+            url: base_url + api_compiler_select,
+            type : "get",
+            dataType : "json",
+            headers: {'Content-type': 'application/json;charset=UTF-8'},
+            success : function(res){
+                if(res.resCode === '200'){
+                    var arr = res.data;
+                    var selector = $("#sel-lan");
+                    selector.append("<option disabled>Default Compiler</option>");
+                    $.each(arr, function(index, compiler) {
+                        if(compiler.userId === -1){
+                            selector.append("<option value="+compiler.id+">"+compiler.compilerName+"</option>");
+                        }
+                    });
+                    selector.append("<option disabled>Your Compiler</option>");
+                    $.each(arr, function(index, compiler) {
+                        if(compiler.userId !== -1){
+                            selector.append("<option value="+compiler.id+">"+compiler.compilerName+"</option>");
+                        }
+                    });
+                    selector.selectpicker('refresh');
+                }
+            },
+            error : function(data){
+                swal({ title: "Get Compilers Error",
+                    text: "Please refresh page and retry.",
+                    timer: 2000,
+                    showConfirmButton: false
+                }).then(function () {}, function (reason) {});
+            }
+        })
     });
 
 

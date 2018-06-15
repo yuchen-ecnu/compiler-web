@@ -18,15 +18,12 @@ package com.ecnu.compiler.rbac.controller;
 
 import com.ecnu.compiler.common.domain.CompilerConfiguration;
 import com.ecnu.compiler.rbac.domain.User;
-import com.ecnu.compiler.rbac.service.SessionService;
 import com.ecnu.compiler.rbac.service.UserService;
-import com.ecnu.compiler.rbac.utils.UserUtils;
-import com.ecnu.compiler.utils.domain.Constants;
+import com.ecnu.compiler.utils.UserUtils;
 import com.ecnu.compiler.utils.domain.HttpRespCode;
 import com.ecnu.compiler.utils.domain.Resp;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.transaction.TransactionDefinition;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,7 +31,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
-import javax.servlet.http.HttpSession;
 
 /**
  * 用户控制器，用于处理用户账户内信息处理

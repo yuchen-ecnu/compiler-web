@@ -16,7 +16,6 @@
  */
 package com.ecnu.compiler.common.controller;
 
-import com.ecnu.compiler.common.domain.CompilerConfiguration;
 import com.ecnu.compiler.common.domain.DfaVO;
 import com.ecnu.compiler.common.domain.NfaVO;
 import com.ecnu.compiler.common.service.CommonService;
@@ -24,8 +23,7 @@ import com.ecnu.compiler.lexical.service.LexicalService;
 import com.ecnu.compiler.rbac.domain.Compiler;
 import com.ecnu.compiler.rbac.domain.User;
 import com.ecnu.compiler.rbac.service.UserService;
-import com.ecnu.compiler.rbac.utils.UserUtils;
-import com.ecnu.compiler.utils.domain.Constants;
+import com.ecnu.compiler.utils.UserUtils;
 import com.ecnu.compiler.utils.domain.HttpRespCode;
 import com.ecnu.compiler.utils.domain.Resp;
 import org.springframework.http.HttpStatus;

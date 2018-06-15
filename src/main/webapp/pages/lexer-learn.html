@@ -483,12 +483,7 @@
                     showLoginDialog();
                     return;
                 }
-                swal({
-                    title: "Generator Error",
-                    text: "Please check you code and retry.",
-                    timer: 2000,
-                    showConfirmButton: false
-                });
+                toast("warning","Generator Error","Please check you code and retry.");
             }
         })
     });
@@ -526,7 +521,7 @@
                 }
             },
             error : function(data){
-                swal({ title: "Get System Compilers Error",
+                swal({ title: "Get Compilers Error",
                     text: "Please refresh page and retry.",
                     timer: 2000,
                     showConfirmButton: false

@@ -22,11 +22,12 @@ import com.ecnu.compiler.parser.domain.ParserVO;
 import com.ecnu.compiler.parser.domain.TDVO;
 import com.ecnu.compiler.rbac.domain.History;
 import com.ecnu.compiler.rbac.domain.User;
-import com.ecnu.compiler.rbac.utils.UserUtils;
+import com.ecnu.compiler.utils.UserUtils;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 @Service
@@ -65,7 +66,7 @@ public class ParserService {
         config.setParserAlgorithm(compilerVO.getParserModel());
 
         CompilerBuilder compilerBuilder = new CompilerBuilder();
-        compilerBuilder.prepareLanguage(id, reStrList, cfgStrList);
+        compilerBuilder.prepareLanguage(id, reStrList, cfgStrList,new ArrayList<String>(),new HashMap<String, String>());
 
         Compiler compiler = compilerBuilder.getCompilerInstance(id, config);
         //初始化编译器
@@ -90,26 +91,7 @@ public class ParserService {
         PredictTable pd = compiler.getPredictTable();
 
         //TODO: Handsome Zhao 补充完整，前端绘图+表格
-        //temp code
-//        TD.TNode<String> td1 = new TD.TNode<>();
-//        td1.setContent("11");
-//        TD.TNode<String> td2 = new TD.TNode<>();
-//        td2.setContent("12");
-//        TD.TNode<String> td3 = new TD.TNode<>();
-//        td3.setContent("13");
-//        TD.TNode<String> td4 = new TD.TNode<>();
-//        td4.setContent("14");
-//        TD.TNode<String> td5 = new TD.TNode<>();
-//        td5.setContent("15");
-//        List<TD.TNode<String>> list1 = new ArrayList<>();
-//        List<TD.TNode<String>> list2 = new ArrayList<>();
-//        list1.add(td2);
-//        list1.add(td3);
-//        list2.add(td4);
-//        list2.add(td5);
-//        td1.setChildren(list1);
-//        td3.setChildren(list2);
-//        td.setRoot(td1);
+
 
         User user = UserUtils.getCurrentUser();
         historyService.logUserHistory(new History(user.getId(),compilerVO.getId(),text,

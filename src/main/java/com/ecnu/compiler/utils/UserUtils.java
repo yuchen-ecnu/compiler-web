@@ -1,4 +1,4 @@
-package com.ecnu.compiler.rbac.utils;
+package com.ecnu.compiler.utils;
 
 import com.ecnu.compiler.rbac.domain.User;
 import com.ecnu.compiler.utils.domain.Constants;

@@ -12,6 +12,7 @@ var api_user_history = "history/list/";
 var api_save_compiler = "user/compiler/modify/";
 var api_create_compiler = "user/compiler/new/";
 var api_system_compiler_config = "common/system/configuration/";
+var api_semantic_analyser = "semantic/analyser/";
 
 var url_dashboard = "pages/dashboard.html";
 var url_login = "pages/login/login.html";

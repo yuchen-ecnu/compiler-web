@@ -20,12 +20,13 @@ import com.ecnu.compiler.lexical.mapper.RegexMapper;
 import com.ecnu.compiler.parser.mapper.CFGMapper;
 import com.ecnu.compiler.rbac.domain.History;
 import com.ecnu.compiler.rbac.domain.User;
-import com.ecnu.compiler.rbac.utils.UserUtils;
+import com.ecnu.compiler.utils.UserUtils;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -78,7 +79,7 @@ public class LexicalService{
         config.setParserAlgorithm(compilerVO.getParserModel());
 
         CompilerBuilder compilerBuilder = new CompilerBuilder();
-        compilerBuilder.prepareLanguage(id, reStrList, cfgStrList);
+        compilerBuilder.prepareLanguage(id, reStrList, cfgStrList,new ArrayList<String>(),new HashMap<String, String>());
 
         Compiler compiler = compilerBuilder.getCompilerInstance(id, config);
         //初始化编译器

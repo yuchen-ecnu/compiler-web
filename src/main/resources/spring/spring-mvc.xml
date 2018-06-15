@@ -46,11 +46,10 @@
             <mvc:exclude-mapping path="/examples/**"/>
             <mvc:exclude-mapping path="/assets/**"/>
             <mvc:exclude-mapping path="/session/**"/>
-            <mvc:exclude-mapping path="/parser/**"/>
             <mvc:exclude-mapping path="/common/**"/>
             <bean class="com.ecnu.compiler.rbac.interceptor.SessionRequiredInterceptor">
                 <property name="mappingURL"
-                          value="^/compiler/(common|user|lexical|history)/.*$"/>
+                          value="^/compiler/(common|user|lexical|history|parser|semantic)/.*$"/>
             </bean>
         </mvc:interceptor>
     </mvc:interceptors>

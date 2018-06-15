@@ -17,12 +17,10 @@ package com.ecnu.compiler.lexical.controller;
  */
 
 import com.ecnu.compiler.common.domain.DfaVO;
-import com.ecnu.compiler.history.service.HistoryService;
-import com.ecnu.compiler.lexical.domain.LexerParam;
+import com.ecnu.compiler.lexical.domain.LanguageParam;
 import com.ecnu.compiler.lexical.domain.Regex;
 import com.ecnu.compiler.lexical.domain.SymbolTableVO;
 import com.ecnu.compiler.lexical.service.LexicalService;
-import com.ecnu.compiler.rbac.domain.History;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.ecnu.compiler.utils.domain.HttpRespCode;
@@ -85,12 +83,12 @@ public class LexicalController {
      * 词法分析器
      */
     @RequestMapping(value = "/lexer/", method = RequestMethod.POST)
-    public ResponseEntity<Resp> text2SymbolTable(@RequestBody LexerParam lexerParam) {
+    public ResponseEntity<Resp> text2SymbolTable(@RequestBody LanguageParam languageParam) {
         //params error
-        if(!lexerParam.isVaild()){
+        if(!languageParam.isVaild()){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Resp());
         }
-        SymbolTableVO symbolTable = lexicalService.generateSymbolTable(lexerParam.getLan(), lexerParam.getTxt());
+        SymbolTableVO symbolTable = lexicalService.generateSymbolTable(languageParam.getLan(), languageParam.getTxt());
         return ResponseEntity.status(HttpStatus.OK).body(new Resp(HttpRespCode.SUCCESS,symbolTable));
     }
 
