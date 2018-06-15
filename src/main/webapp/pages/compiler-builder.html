@@ -556,9 +556,9 @@
             headers: {'Content-type': 'application/json;charset=UTF-8'},
             data: JSON.stringify({
                 compiler: compiler,
-                re: reList.concat(newRE),
-                cfg: cfgList.concat(newCFG),
-                ag: agList.concat(newAG)
+                reList: reList.concat(newRE),
+                cfgList: cfgList.concat(newCFG),
+                agList: agList.concat(newAG)
             }),
             success: function (res) {
                 console.log(res);

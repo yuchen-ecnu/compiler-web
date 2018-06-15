@@ -45,9 +45,40 @@ public class UserService {
         Compiler compiler = compilerConfiguration.getCompiler();
         int status = compilerMapper.updateById(compiler);
         if(status==0){ return false; }
-        reService.insertOrUpdateAllColumnBatch(compilerConfiguration.getReList());
-        cfgService.insertOrUpdateAllColumnBatch(compilerConfiguration.getCfgList());
-        agService.insertOrUpdateAllColumnBatch(compilerConfiguration.getAgList());
+
+
+        //delete origin records
+        reService.delete(new EntityWrapper<Regex>().eq("compiler_id",compiler.getId()));
+        cfgService.delete(new EntityWrapper<Cfg>().eq("compiler_id",compiler.getId()));
+        agService.delete(new EntityWrapper<Ag>().eq("compiler_id",compiler.getId()));
+
+        List<Regex> reList = compilerConfiguration.getReList();
+        List<Cfg> cfgList = compilerConfiguration.getCfgList();
+        List<Ag> agList = compilerConfiguration.getAgList();
+
+        //set id
+        for (Regex re : reList) {
+            re.setId(null);
+            re.setCompilerId(compiler.getId());
+        }
+        for (Cfg cfg : cfgList) {
+            cfg.setId(null);
+            cfg.setCompilerId(compiler.getId());
+        }
+        for (Ag ag : agList) {
+            ag.setId(null);
+            ag.setCompilerId(compiler.getId());
+        }
+
+        if(!ObjectUtils.isEmpty(reList)){
+            reService.insertOrUpdateBatch(reList);
+        }
+        if(!ObjectUtils.isEmpty(cfgList)){
+            cfgService.insertOrUpdateBatch(cfgList);
+        }
+        if(!ObjectUtils.isEmpty(agList)){
+            agService.insertOrUpdateBatch(agList);
+        }
         return true;
     }
 
