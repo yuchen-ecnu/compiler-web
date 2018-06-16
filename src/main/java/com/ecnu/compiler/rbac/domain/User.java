@@ -16,6 +16,7 @@ import java.sql.Timestamp;
 public class User  extends Model<User> {
     private Integer id;
     private String nickName;
+    private String headImg;
     private String pwd;
     private String email;
     private Integer userType;
@@ -39,6 +40,14 @@ public class User  extends Model<User> {
 
     public void setNickName(String nickName) {
         this.nickName = nickName;
+    }
+
+    public String getHeadImg() {
+        return headImg;
+    }
+
+    public void setHeadImg(String headImg) {
+        this.headImg = headImg;
     }
 
     public String getPwd() {

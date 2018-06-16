@@ -10,6 +10,6 @@
 
     <insert id="log">
         insert into history (user_id, compiler_id, compile_text, operator, gmt_created)
-        VALUES (${his.user.id},${his.compiler.id},#{his.compileText},#{his.operator},NOW())
+        VALUES (${his.userId},${his.compilerId},#{his.compileText},#{his.operator},NOW())
     </insert>
 </mapper>
