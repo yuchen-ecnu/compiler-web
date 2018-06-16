@@ -1,4 +1,4 @@
-package com.ecnu.compiler.parser.domain;
+package com.ecnu.compiler.parser.domain.vo;
 
 import com.ecnu.compiler.common.domain.EdgeVO;
 import com.ecnu.compiler.common.domain.NodeVO;

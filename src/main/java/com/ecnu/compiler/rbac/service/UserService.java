@@ -4,18 +4,17 @@ import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.ecnu.compiler.common.domain.Ag;
 import com.ecnu.compiler.common.domain.Cfg;
 import com.ecnu.compiler.common.domain.CompilerConfiguration;
-import com.ecnu.compiler.component.lexer.domain.RE;
 import com.ecnu.compiler.lexical.domain.Regex;
 import com.ecnu.compiler.lexical.mapper.CompilerMapper;
 import com.ecnu.compiler.lexical.service.ReService;
 import com.ecnu.compiler.parser.service.CfgService;
 import com.ecnu.compiler.rbac.domain.Compiler;
+import com.ecnu.compiler.semantic.domain.Action;
+import com.ecnu.compiler.semantic.service.ActionService;
 import com.ecnu.compiler.semantic.service.AgService;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.TransactionDefinition;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.transaction.interceptor.TransactionAspectSupport;
 import org.springframework.util.ObjectUtils;
 
 import javax.annotation.Resource;
@@ -34,6 +33,8 @@ public class UserService {
     private CfgService cfgService;
     @Resource
     private AgService agService;
+    @Resource
+    private ActionService actionService;
 
     public List<Compiler> getUserCompilers(int uid) {
         return compilerMapper.selectList(
@@ -51,10 +52,12 @@ public class UserService {
         reService.delete(new EntityWrapper<Regex>().eq("compiler_id",compiler.getId()));
         cfgService.delete(new EntityWrapper<Cfg>().eq("compiler_id",compiler.getId()));
         agService.delete(new EntityWrapper<Ag>().eq("compiler_id",compiler.getId()));
+        actionService.delete(new EntityWrapper<Action>().eq("compiler_id",compiler.getId()));
 
         List<Regex> reList = compilerConfiguration.getReList();
         List<Cfg> cfgList = compilerConfiguration.getCfgList();
         List<Ag> agList = compilerConfiguration.getAgList();
+        List<Action> actionList = compilerConfiguration.getActionList();
 
         //set id
         for (Regex re : reList) {
@@ -69,6 +72,10 @@ public class UserService {
             ag.setId(null);
             ag.setCompilerId(compiler.getId());
         }
+        for (Action ac : actionList) {
+            ac.setId(null);
+            ac.setCompilerId(compiler.getId());
+        }
 
         if(!ObjectUtils.isEmpty(reList)){
             reService.insertOrUpdateBatch(reList);
@@ -78,6 +85,9 @@ public class UserService {
         }
         if(!ObjectUtils.isEmpty(agList)){
             agService.insertOrUpdateBatch(agList);
+        }
+        if(!ObjectUtils.isEmpty(actionList)){
+            actionService.insertOrUpdateBatch(actionList);
         }
         return true;
     }
@@ -94,6 +104,7 @@ public class UserService {
         List<Regex> reList = compilerConfiguration.getReList();
         List<Cfg> cfgList = compilerConfiguration.getCfgList();
         List<Ag> agList = compilerConfiguration.getAgList();
+        List<Action> acList = compilerConfiguration.getActionList();
 
         //set id
         for (Regex re : reList) {
@@ -108,6 +119,10 @@ public class UserService {
             ag.setId(null);
             ag.setCompilerId(compiler.getId());
         }
+        for (Action ac : acList) {
+            ac.setId(null);
+            ac.setCompilerId(compiler.getId());
+        }
 
         if(!ObjectUtils.isEmpty(reList)){
             reService.insertBatch(reList);
@@ -117,6 +132,9 @@ public class UserService {
         }
         if(!ObjectUtils.isEmpty(agList)){
             agService.insertBatch(agList);
+        }
+        if(!ObjectUtils.isEmpty(agList)){
+            actionService.insertBatch(acList);
         }
 
         return true;

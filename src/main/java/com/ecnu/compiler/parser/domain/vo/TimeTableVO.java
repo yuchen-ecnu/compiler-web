@@ -1,4 +1,4 @@
-package com.ecnu.compiler.parser.domain;
+package com.ecnu.compiler.parser.domain.vo;
 
 public class TimeTableVO {
     private long preprocessorTime;

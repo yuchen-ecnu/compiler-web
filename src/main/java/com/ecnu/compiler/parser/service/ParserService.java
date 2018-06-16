@@ -9,7 +9,7 @@ import com.ecnu.compiler.component.parser.domain.PredictTable.PredictTable;
 import com.ecnu.compiler.constant.StatusCode;
 import com.ecnu.compiler.history.service.HistoryService;
 import com.ecnu.compiler.lexical.mapper.CompilerMapper;
-import com.ecnu.compiler.parser.domain.TimeTableVO;
+import com.ecnu.compiler.parser.domain.vo.TimeTableVO;
 import com.ecnu.compiler.parser.mapper.CFGMapper;
 import com.ecnu.compiler.component.lexer.domain.RE;
 import com.ecnu.compiler.component.parser.domain.TD;
@@ -18,8 +18,8 @@ import com.ecnu.compiler.constant.Constants;
 import com.ecnu.compiler.controller.Compiler;
 import com.ecnu.compiler.lexical.domain.Regex;
 import com.ecnu.compiler.lexical.mapper.RegexMapper;
-import com.ecnu.compiler.parser.domain.ParserVO;
-import com.ecnu.compiler.parser.domain.TDVO;
+import com.ecnu.compiler.parser.domain.vo.ParserVO;
+import com.ecnu.compiler.parser.domain.vo.TDVO;
 import com.ecnu.compiler.rbac.domain.History;
 import com.ecnu.compiler.rbac.domain.User;
 import com.ecnu.compiler.utils.UserUtils;
@@ -42,11 +42,11 @@ public class ParserService {
     private CompilerMapper compilerMapper;
 
     public ParserVO generateParserTable(int id, String text){
-        List<Cfg> cfgList = cfgMapper.selectList(
-                new EntityWrapper<Cfg>().eq("compiler_id",id)
-        );
         List<Regex> regexList = regexMapper.selectList(
                 new EntityWrapper<Regex>().eq("compiler_id", id)
+        );
+        List<Cfg> cfgList = cfgMapper.selectList(
+                new EntityWrapper<Cfg>().eq("compiler_id",id)
         );
         List<RE> reStrList = new ArrayList<>();
         for (Regex reg : regexList) {

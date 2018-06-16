@@ -14,12 +14,11 @@ package com.ecnu.compiler.semantic.controller;
  *   6、所有函数请在头部标明作者，以便代码回溯
  *   7、使用 @Resource 注解自动装配 Service
  *
- *   @author Lucto
+ *   @author Michael Chen
  */
 
 import com.ecnu.compiler.lexical.domain.LanguageParam;
-import com.ecnu.compiler.parser.domain.ParserVO;
-import com.ecnu.compiler.parser.service.ParserService;
+import com.ecnu.compiler.semantic.domain.SemanticVO;
 import com.ecnu.compiler.semantic.service.SemanticService;
 import com.ecnu.compiler.utils.domain.HttpRespCode;
 import com.ecnu.compiler.utils.domain.Resp;
@@ -33,7 +32,7 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.Resource;
 
 /**
- * 语法控制器
+ * 语义控制器
  *
  *
  * @author Michael Chen
@@ -53,7 +52,7 @@ public class SemanticController {
         if(!languageParam.isVaild()){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Resp());
         }
-        ParserVO parserVO = semanticService.semanticAnalyser(languageParam.getLan(), languageParam.getTxt());
+        SemanticVO parserVO = semanticService.semanticAnalyser(languageParam.getLan(), languageParam.getTxt());
         return ResponseEntity.status(HttpStatus.OK).body(new Resp(HttpRespCode.SUCCESS,parserVO));
     }
 }

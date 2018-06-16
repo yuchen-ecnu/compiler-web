@@ -228,6 +228,11 @@
                                     </a>
                                 </li>
                                 <li>
+                                    <a href="#action" role="tab" data-toggle="tab">
+                                        <i class="material-icons">help_outline</i> Actions
+                                    </a>
+                                </li>
+                                <li>
                                     <a href="#semantic" role="tab" data-toggle="tab">
                                         <i class="material-icons">help_outline</i> Semantic
                                     </a>
@@ -367,7 +372,7 @@
                                                     <tr>
                                                         <th class="text-center col-md-1">#</th>
                                                         <th class="col-md-2">Name</th>
-                                                        <th class="text-center col-md-6">CFG</th>
+                                                        <th class="col-md-6">CFG</th>
                                                         <th class="text-right col-md-3">Actions</th>
                                                     </tr>
                                                     </thead>
@@ -376,6 +381,37 @@
                                                 <div class="card-footer text-right">
                                                     <button type="button" class="btn btn-info btn-fill"
                                                             onclick="addNewOne('CFG')">Add New One</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                            <div class="tab-pane" id="action">
+                                <div class="card">
+                                    <form id="actionValid" class="form-horizontal" action="" method="">
+                                        <div class="card-header">
+                                            <h4 class="card-title">Action List</h4>
+                                            <p class="category">
+                                                More information here
+                                            </p>
+                                        </div>
+                                        <div class="card-content">
+                                            <div class="table-responsive">
+                                                <table class="table">
+                                                    <thead>
+                                                    <tr>
+                                                        <th class="text-center col-md-1">#</th>
+                                                        <th class="col-md-2">Token</th>
+                                                        <th class="col-md-6">Action Expression</th>
+                                                        <th class="text-right col-md-3">Actions</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody id="action-content"/>
+                                                </table>
+                                                <div class="card-footer text-right">
+                                                    <button type="button" class="btn btn-info btn-fill"
+                                                            onclick="addNewOne('Action')">Add New One</button>
                                                 </div>
                                             </div>
                                         </div>
@@ -398,7 +434,7 @@
                                                     <tr>
                                                         <th class="text-center col-md-1">#</th>
                                                         <th class="col-md-2">Name</th>
-                                                        <th class="text-center col-md-6">Regular Expression</th>
+                                                        <th class="col-md-6">Attribute Grammer</th>
                                                         <th class="text-right col-md-3">Actions</th>
                                                     </tr>
                                                     </thead>
@@ -413,6 +449,7 @@
                                     </form>
                                 </div>
                             </div>
+
                         </div>
 
                         <div>
@@ -558,7 +595,8 @@
                 compiler: compiler,
                 reList: reList.concat(newRE),
                 cfgList: cfgList.concat(newCFG),
-                agList: agList.concat(newAG)
+                agList: agList.concat(newAG),
+                actionList: actionList.concat(newAction)
             }),
             success: function (res) {
                 console.log(res);
@@ -607,9 +645,9 @@
 </script>
 
 <script type="text/javascript">
-    var compiler,reList,cfgList,agList;
-    var newRE = [],newCFG = [],newAG = [];
-    var indexRE = 0,indexCFG = 0,indexAG=0;
+    var compiler,reList,cfgList,agList,actionList;
+    var newRE = [],newCFG = [],newAG = [],newAction=[];
+    var indexRE = 0,indexCFG = 0,indexAG=0,indexAction=0;
 
 
     $().ready(function () {
@@ -632,6 +670,7 @@
                     reList = data.reList;
                     cfgList = data.cfgList;
                     agList = data.agList;
+                    actionList = data.actionList;
                     $("#cname").val(compiler.compilerName);
                     $("#lname").val(compiler.languageName);
                     $("#intro").val(compiler.introduce);
@@ -686,6 +725,24 @@
                             "<i class=\"material-icons\">close</i></button></td></tr>";
                     });
                     $("#ag-content").html(sHtml);
+
+
+                    //init action list
+                    sHtml = "";
+                    $.each(actionList, function(index, ac) {
+                        sHtml += "<tr id='Action"+ac.id+"'><td class=\"text-center\">"+ac.id+"</td>" +
+                            "<td>"+ac.actionName+"</td><td>"+ac.actionContent+"</td>" +
+                            "<td class=\"td-actions text-right\">" +
+                            "<button type=\"button\" rel=\"tooltip\" class=\"btn btn-success\" data-placement=\"left\" title=\"Edit\"" +
+                            " onclick=\"editItem('Action',"+ac.id+",'','')\">" +
+                            "<i class=\"material-icons\">edit</i></button>&nbsp;&nbsp;&nbsp;" +
+                            "<button type=\"button\" rel=\"tooltip\" class=\"btn btn-danger data-placement=\"left\" title=\"Delete\"" +
+                            " onclick=\"deleteItem('Action',\'"+ac.actionName.replace("\"","\\\"").replace("\'","\\\'")+"\',"+ac.id+")\">" +
+                            "<i class=\"material-icons\">close</i></button></td></tr>";
+                    });
+                    $("#action-content").html(sHtml);
+
+
                 }else if(res.resCode === '404'){
                     toast("warning","Compiler Not Found!","Please check the compile status or refresh the page.")
                 }
@@ -748,6 +805,19 @@
                     "<i class=\"material-icons\">close</i></button></td></tr>";
                 $("#ag-content").html(sHtml);
                 break;
+            case 'Action':
+                newAction.push({ id:indexAction, actionName:name,actionContent:val });
+                sHtml = $("#action-content").html();
+                sHtml += "<tr id='Action"+indexAction+"'><td class=\"text-center\">--</td>" +
+                    "<td>"+name.replace("\"","\\\"").replace("\'","\\\'")+"</td><td>"+val.replace("\"","\\\"").replace("\'","\\\'")+"</td>" +
+                    "<td class=\"td-actions text-right\">" +
+                    "<button type=\"button\" rel=\"tooltip\" class=\"btn btn-success\" data-placement=\"left\" title=\"Edit\"" +
+                    " onclick=\"editNewItem('Action',"+indexAction+")\">" +
+                    "<i class=\"material-icons\">edit</i></button>&nbsp;&nbsp;&nbsp;" +
+                    "<button type=\"button\" rel=\"tooltip\" class=\"btn btn-danger data-placement=\"left\" title=\"Delete\"" +
+                    " onclick=\"deleteNewItem('Action',"+(indexAction++)+")\">" +
+                    "<i class=\"material-icons\">close</i></button></td></tr>";
+                $("#action-content").html(sHtml);
         }
     }
 
@@ -800,17 +870,18 @@
             '<div class="form-group label-floating">' +
             '<label class="control-label">'+type+'</label>' +
             '<input class="form-control" type="text" name="min_length" minLength="1" id="i-value" value="'+val+'"/></div>';
-
-        if(priority!==undefined && priority!==""){
-            sHtml += '<div class="form-group label-floating">' +
-                '<label class="control-label">Priority</label>' +
-                '<input class="form-control" type="number" name="min_length" minLength="1" id="i-priority" value="'+priority+'"/></div>';
-        }
-        if(typeParam!==undefined && typeParam !==""){
-            var checked = typeParam ==="SPLITTER"?"checked":"";
-            sHtml +="<div><label>" +
-                "<input type=\"checkbox\" "+checked+" id='i-splitter' name=\"optionsCheckboxes\"> Is Splitter?" +
-                "</label></div>"
+        if(type ==='RE'){
+            if(priority!==undefined && priority!==""){
+                sHtml += '<div class="form-group label-floating">' +
+                    '<label class="control-label">Priority</label>' +
+                    '<input class="form-control" type="number" name="min_length" minLength="1" id="i-priority" value="'+priority+'"/></div>';
+            }
+            if(typeParam!==undefined && typeParam !==""){
+                var checked = typeParam ==="SPLITTER"?"checked":"";
+                sHtml +="<div><label>" +
+                    "<input type=\"checkbox\" "+checked+" id='i-splitter' name=\"optionsCheckboxes\"> Is Splitter?" +
+                    "</label></div>"
+            }
         }
 
         swal({
@@ -874,14 +945,30 @@
     function editNewItem(type,id){
         var name = $("#"+type+id+" td:nth-child(2)").html();
         var val = $("#"+type+id+" td:nth-child(3)").html();
-        swal({
-            title: 'Modify '+ type +' rules',
-            html: '<div class="form-group label-floating">' +
+        var typeParam = $("#"+type+id+" td:nth-child(4)").html();
+        var priority = $("#"+type+id+" td:nth-child(5)").html();
+        var sHtml = '<div class="form-group label-floating">' +
             '<label class="control-label">Name</label>' +
             '<input class="form-control" type="text" name="min_length" minLength="1" id="i-name" value="'+ name+'"/></div>' +
             '<div class="form-group label-floating">' +
             '<label class="control-label">'+type+'</label>' +
-            '<input class="form-control" type="text" name="min_length" minLength="1" id="i-value" value="'+val+'"/></div>',
+            '<input class="form-control" type="text" name="min_length" minLength="1" id="i-value" value="'+val+'"/></div>';
+        if(type==='NRE'){
+            if(priority!==undefined && priority!==""){
+                sHtml += '<div class="form-group label-floating">' +
+                    '<label class="control-label">Priority</label>' +
+                    '<input class="form-control" type="number" name="min_length" minLength="1" id="i-priority" value="'+priority+'"/></div>';
+            }
+            if(typeParam!==undefined && typeParam !==""){
+                var checked = typeParam ==="SPLITTER"?"checked":"";
+                sHtml +="<div><label>" +
+                    "<input type=\"checkbox\" "+checked+" id='i-splitter' name=\"optionsCheckboxes\"> Is Splitter?" +
+                    "</label></div>"
+            }
+        }
+        swal({
+            title: 'Modify '+ type +' rules',
+            html: sHtml,
             showCancelButton: true,
             confirmButtonClass: 'btn btn-success',
             cancelButtonClass: 'btn btn-danger',
@@ -889,7 +976,7 @@
         }).then(function(result) {
             var var1 = $('#i-name').val();
             var var2 = $('#i-value').val();
-            modifyFromNewStorage(type,id,var1,var2);
+            modifyFromNewStorage(type,id,var1,var2,$('#i-splitter').prop('checked'),$('#i-priority').val());
             swal({
                 type: 'success',
                 html: 'You modify: <strong>' + var1 +'</strong><br> ' +
@@ -965,6 +1052,15 @@
                     }
                 });
                 break;
+            case 'Action':
+                $("#Action"+id).remove();
+                $.each(actionList,function (index, item) {
+                    if(item.id === id){
+                        actionList.splice(index,1);
+                        return false;
+                    }
+                });
+                break;
         }
     }
 
@@ -1004,20 +1100,33 @@
                     }
                 });
                 break;
+            case 'Action':
+                $.each(actionList,function (index, ac) {
+                    if(ac.id === id){
+                        actionList[index].actionName = name;
+                        actionList[index].actionContent = val;
+                        return false;
+                    }
+                });
+                break;
         }
     }
 
     // 编辑一个条目（新添数据）
-    function modifyFromNewStorage(type,id,name,val){
+    function modifyFromNewStorage(type,id,name,val,typeParam,priority){
         //更新显示表格
         $("#"+type+id+" td:nth-child(2)").html(name);
         $("#"+type+id+" td:nth-child(3)").html(val);
+        $("#"+type+id+" td:nth-child(4)").html(typeParam?"SPLITTER":"NON_SPLITTER");
+        $("#"+type+id+" td:nth-child(5)").html(priority);
         switch (type){
             case 'NRE':
                 $.each(newRE,function (index, re) {
                     if(re.id===id){
                         newRE[index].name = name;
                         newRE[index].regex = val;
+                        newRE[index].type = typeParam?2:1;
+                        newRE[index].priority = priority;
                         return false;
                     }
                 });
@@ -1036,6 +1145,15 @@
                     if(ag.id===id){
                         newAG[index].agName = name;
                         newAG[index].agContent = val;
+                        return false;
+                    }
+                });
+                break;
+            case 'Action':
+                $.each(newAction,function (index, ac) {
+                    if(ac.id===id){
+                        newAction[index].actionName = name;
+                        newAction[index].actionContent = val;
                         return false;
                     }
                 });
@@ -1067,6 +1185,14 @@
                 $.each(newAG,function (index, item) {
                     if(item.id === id){
                         newAG.splice(index,1);
+                        return false;
+                    }
+                });
+                break;
+            case 'Action':
+                $.each(newAction,function (index, item) {
+                    if(item.id === id){
+                        newAction.splice(index,1);
                         return false;
                     }
                 });

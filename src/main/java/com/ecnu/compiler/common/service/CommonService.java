@@ -12,6 +12,8 @@ import com.ecnu.compiler.lexical.mapper.RegexMapper;
 import com.ecnu.compiler.rbac.domain.Compiler;
 import com.ecnu.compiler.rbac.domain.User;
 import com.ecnu.compiler.rbac.service.UserService;
+import com.ecnu.compiler.semantic.domain.Action;
+import com.ecnu.compiler.semantic.mapper.ActionMapper;
 import com.ecnu.compiler.utils.UserUtils;
 import com.ecnu.compiler.semantic.mapper.AGMapper;
 import com.ecnu.compiler.utils.domain.Constants;
@@ -37,6 +39,8 @@ public class CommonService {
     private CFGMapper cfgMapper;
     @Resource
     private AGMapper agMapper;
+    @Resource
+    private ActionMapper actionMapper;
     /**
      * RE 转 NFA
      * @param re regular expression
@@ -90,7 +94,10 @@ public class CommonService {
         List<Ag> agList = agMapper.selectList(
                 new EntityWrapper<Ag>().eq("compiler_id",compiler.getId())
         );
+        List<Action> actionList = actionMapper.selectList(
+                new EntityWrapper<Action>().eq("compiler_id",compiler.getId())
+        );
 
-        return new Resp(HttpRespCode.SUCCESS,new CompilerConfiguration(compiler,reList,cfgList,agList));
+        return new Resp(HttpRespCode.SUCCESS,new CompilerConfiguration(compiler,reList,cfgList,agList,actionList));
     }
 }

@@ -18,7 +18,7 @@ package com.ecnu.compiler.parser.controller;
  */
 
 import com.ecnu.compiler.lexical.domain.LanguageParam;
-import com.ecnu.compiler.parser.domain.ParserVO;
+import com.ecnu.compiler.parser.domain.vo.ParserVO;
 import com.ecnu.compiler.parser.service.ParserService;
 import com.ecnu.compiler.utils.domain.HttpRespCode;
 import com.ecnu.compiler.utils.domain.Resp;

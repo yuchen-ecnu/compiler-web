@@ -2,6 +2,7 @@ package com.ecnu.compiler.common.domain;
 
 import com.ecnu.compiler.lexical.domain.Regex;
 import com.ecnu.compiler.rbac.domain.Compiler;
+import com.ecnu.compiler.semantic.domain.Action;
 import org.springframework.util.ObjectUtils;
 
 import java.util.List;
@@ -15,12 +16,17 @@ public class CompilerConfiguration {
     private List<Regex> reList;
     private List<Cfg> cfgList;
     private List<Ag> agList;
+    private List<Action> actionList;
 
-    public CompilerConfiguration(Compiler compiler, List<Regex> reList, List<Cfg> cfgList, List<Ag> agList) {
+    public CompilerConfiguration() {
+    }
+
+    public CompilerConfiguration(Compiler compiler, List<Regex> reList, List<Cfg> cfgList, List<Ag> agList, List<Action> actionList) {
         this.compiler = compiler;
         this.reList = reList;
         this.cfgList = cfgList;
         this.agList = agList;
+        this.actionList = actionList;
     }
 
     public Compiler getCompiler() {
@@ -53,6 +59,14 @@ public class CompilerConfiguration {
 
     public void setAgList(List<Ag> agList) {
         this.agList = agList;
+    }
+
+    public List<Action> getActionList() {
+        return actionList;
+    }
+
+    public void setActionList(List<Action> actionList) {
+        this.actionList = actionList;
     }
 
     public boolean isNewValid(){
