@@ -310,6 +310,19 @@
     });
 </script>
 <script type="text/javascript">
+    var operator2string = function (operator) {
+        switch (operator) {
+            case 0:
+                return "Lexer";
+            case 1:
+                return "Parser";
+            case 2:
+                return "Semantic Analysis"
+            default:
+                return "/";
+        }
+    };
+
     function initHistoryTable(){
         $.ajax({
             url: base_url + api_user_history,
@@ -321,19 +334,19 @@
                     var arr = res.data;
                     var sHtml = "";
                     $.each(arr, function(index, history) {
-                        var compiler = history.compiler;
-                        var user = history.user;
                         sHtml += "<tr><td>"+index+"</td>";
-                        sHtml += "<td>"+compiler.compilerName+"</td>";
+                        sHtml += "<td>"+history.compilerName+"</td>";
                         sHtml += "<td>"+history.compileText+"</td>";
-                        sHtml += "<td>"+history.operator+"</td>";
+                        sHtml += "<td>"+operator2string(history.operator)+"</td>";
                         sHtml += "<td>"+ts2String(history.gmtCreated)+"</td>";
                         sHtml += "<td class=\"text-right\">\n" +
                             "<a href=\"#\" class=\"btn btn-simple btn-warning btn-icon edit\"><i class=\"material-icons\">dvr</i></a>\n" +
                             "<a href=\"#\" class=\"btn btn-simple btn-danger btn-icon remove\"><i class=\"material-icons\">close</i></a>\n" +
                             "</td></tr>";
                     });
+                    $("#history-table").dataTable().fnDestroy();
                     $("#history-tbody").html(sHtml);
+                    initTable();
                 }
             },
             error : function(data){

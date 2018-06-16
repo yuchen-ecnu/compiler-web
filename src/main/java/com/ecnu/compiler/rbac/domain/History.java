@@ -16,16 +16,30 @@ public class History extends Model<History> {
     private Integer id;
     private Integer userId;
     private Integer compilerId;
+    private String compilerName;
     private String compileText;
-    private String operator;
+    private Integer operator;
     @TableField(update="now()")
     private Timestamp gmtCreated;
+
+    public History() {
+    }
+
+    public History(Integer id, Integer userId, Integer compilerId, String compilerName, String compileText, Integer operator, Timestamp gmtCreated) {
+        this.id = id;
+        this.userId = userId;
+        this.compilerId = compilerId;
+        this.compilerName = compilerName;
+        this.compileText = compileText;
+        this.operator = operator;
+        this.gmtCreated = gmtCreated;
+    }
 
     public History(Integer id) {
         this.id = id;
     }
 
-    public History(Integer userId, Integer compilerId, String compileText, String operator) {
+    public History(Integer userId, Integer compilerId, String compileText, Integer operator) {
         this.userId = userId;
         this.compilerId = compilerId;
         this.compileText = compileText;
@@ -64,11 +78,11 @@ public class History extends Model<History> {
         this.compileText = compileText;
     }
 
-    public String getOperator() {
+    public Integer getOperator() {
         return operator;
     }
 
-    public void setOperator(String operator) {
+    public void setOperator(Integer operator) {
         this.operator = operator;
     }
 
@@ -78,6 +92,14 @@ public class History extends Model<History> {
 
     public void setGmtCreated(Timestamp gmtCreated) {
         this.gmtCreated = gmtCreated;
+    }
+
+    public String getCompilerName() {
+        return compilerName;
+    }
+
+    public void setCompilerName(String compilerName) {
+        this.compilerName = compilerName;
     }
 
     @Override

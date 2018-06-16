@@ -95,7 +95,7 @@ public class ParserService {
 
         User user = UserUtils.getCurrentUser();
         historyService.logUserHistory(new History(user.getId(),compilerVO.getId(),text,
-                com.ecnu.compiler.utils.domain.Constants.LOG_TYPE_LEXER));
+                com.ecnu.compiler.utils.domain.Constants.LOG_TYPE_PARSER));
         return new ParserVO(timeTable, new TDVO(td), pt,compilerVO.getParserModel()+"",pd);
     }
 
