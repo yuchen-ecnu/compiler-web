@@ -88,8 +88,8 @@ public class LexicalController {
         if(!languageParam.isVaild()){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Resp());
         }
-        SymbolTableVO symbolTable = lexicalService.generateSymbolTable(languageParam.getLan(), languageParam.getTxt());
-        return ResponseEntity.status(HttpStatus.OK).body(new Resp(HttpRespCode.SUCCESS,symbolTable));
+        Resp resp = lexicalService.generateSymbolTable(languageParam.getLan(), languageParam.getTxt());
+        return ResponseEntity.status(HttpStatus.OK).body(resp);
     }
 
 }

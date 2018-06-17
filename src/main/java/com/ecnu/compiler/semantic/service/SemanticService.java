@@ -5,6 +5,7 @@ import com.ecnu.CompilerBuilder;
 import com.ecnu.compiler.common.domain.Ag;
 import com.ecnu.compiler.common.domain.Cfg;
 import com.ecnu.compiler.component.lexer.domain.RE;
+import com.ecnu.compiler.component.parser.domain.TD;
 import com.ecnu.compiler.constant.Config;
 import com.ecnu.compiler.constant.Constants;
 import com.ecnu.compiler.constant.StatusCode;
@@ -13,6 +14,7 @@ import com.ecnu.compiler.history.service.HistoryService;
 import com.ecnu.compiler.lexical.domain.Regex;
 import com.ecnu.compiler.lexical.mapper.CompilerMapper;
 import com.ecnu.compiler.lexical.mapper.RegexMapper;
+import com.ecnu.compiler.parser.domain.vo.TDVO;
 import com.ecnu.compiler.parser.domain.vo.TimeTableVO;
 import com.ecnu.compiler.parser.mapper.CFGMapper;
 import com.ecnu.compiler.rbac.domain.History;
@@ -98,6 +100,7 @@ public class SemanticService {
         TimeTableVO timeTable = new TimeTableVO(timeHolder.getPreprocessorTime(),
                 timeHolder.getLexerTime(),timeHolder.getParserTime());
         List<String> compilerActionList = compiler.getActionList();
+        TD td = compiler.getSyntaxTree();
 
         System.out.println("Time of preprocessor is: "+timeTable.getPreprocessorTime());
         System.out.println("Time of lexer is: "+timeTable.getLexerTime());
@@ -107,6 +110,6 @@ public class SemanticService {
         User user = UserUtils.getCurrentUser();
         historyService.logUserHistory(new History(user.getId(),compilerVO.getId(),text,
                 com.ecnu.compiler.utils.domain.Constants.LOG_TYPE_PARSER));
-        return new SemanticVO(timeTable,compilerActionList);
+        return new SemanticVO(timeTable,compilerActionList,new TDVO(td));
     }
 }

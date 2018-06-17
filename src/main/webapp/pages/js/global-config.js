@@ -120,36 +120,3 @@ function showLoginDialog(){
     });
 }
 
-function initTable() {
-    //init Table
-    $('#datatables').DataTable({
-        "pagingType": "full_numbers",
-        "lengthMenu": [
-            [10, 25, 50, -1],
-            [10, 25, 50, "All"]
-        ],
-        responsive: true,
-        language: {
-            search: "_INPUT_",
-            searchPlaceholder: "Search records",
-        }
-
-    });
-
-
-    var table = $('#datatables').DataTable();
-
-    // Edit record
-    table.on('click', '.edit', function () {
-        $tr = $(this).closest('tr');
-
-        var data = table.row($tr).data();
-        showProcess(data);
-    });
-
-    $('.card .material-datatables label').addClass('form-group');
-}
-
-function showProcess(data) {
-    console.log('You press on Row: ' + data[0] + ' ' + data[1] + ' ' + data[2] + '\'s row.');
-}

@@ -330,7 +330,6 @@
             dataType : "json",
             success : function(res){
                 if(res.resCode === '200'){
-                    initTable();
                     var arr = res.data;
                     var sHtml = "";
                     $.each(arr, function(index, history) {
@@ -377,6 +376,7 @@
                 [10, 25, 50, -1],
                 [10, 25, 50, "All"]
             ],
+            destroy:true,
             responsive: true,
             language: {
                 search: "_INPUT_",

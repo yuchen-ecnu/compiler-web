@@ -394,7 +394,7 @@
                     $.each(arr, function(index, user) {
                         var rank = index<3?(index+1):"common";
                         rank = "rank-"+rank;
-                        sHtml += "<tr><td><div class=\"flag\"><img src=\"../assets/img/flags/"+rank+".png\"></div></td>" +
+                        sHtml += "<tr><td><div class=\"flag\"><img src=\"../assets/img/flags/"+rank+".png\" style='max-width: 40px;+' ></div></td>" +
                             "<td>"+user.nickName+"</td><td class=\"text-right\">"+user.times+"</td>" +
                             "<td class=\"text-right\">0</td></tr>";
                     });

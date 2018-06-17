@@ -476,7 +476,7 @@
                     $("#history-table").dataTable().fnDestroy();
                     $("#tableBody").html(sHtml);
                     $("#buttonBody").html(bHtml);
-                    initTable();
+                    initTable("datatables");
                 }
             },
             error: function (res) {
@@ -541,6 +541,43 @@
             shadowColor: '#000',
             fontFamily: "'Roboto-Medium', 'Roboto-Regular', Arial"
         });
+    }
+</script>
+<script type="text/javascript">
+
+    function initTable(id) {
+        //init Table
+        $('#'+id+'').DataTable({
+            "pagingType": "full_numbers",
+            "lengthMenu": [
+                [10, 25, 50, -1],
+                [10, 25, 50, "All"]
+            ],
+            responsive: true,
+            destroy:true,
+            language: {
+                search: "_INPUT_",
+                searchPlaceholder: "Search records"
+            }
+
+        });
+
+
+        var table = $('#'+id+'').DataTable();
+
+        // Edit record
+        table.on('click', '.edit', function () {
+            $tr = $(this).closest('tr');
+
+            var data = table.row($tr).data();
+            showProcess(data);
+        });
+
+        $('.card .material-datatables label').addClass('form-group');
+    }
+
+    function showProcess(data) {
+        console.log('You press on Row: ' + data[0] + ' ' + data[1] + ' ' + data[2] + '\'s row.');
     }
 </script>
 </html>

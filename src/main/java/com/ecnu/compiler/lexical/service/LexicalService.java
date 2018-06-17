@@ -21,6 +21,8 @@ import com.ecnu.compiler.parser.mapper.CFGMapper;
 import com.ecnu.compiler.rbac.domain.History;
 import com.ecnu.compiler.rbac.domain.User;
 import com.ecnu.compiler.utils.UserUtils;
+import com.ecnu.compiler.utils.domain.HttpRespCode;
+import com.ecnu.compiler.utils.domain.Resp;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
@@ -48,7 +50,7 @@ public class LexicalService{
                 new EntityWrapper<Regex>().eq("language", language));
     }
 
-    public SymbolTableVO generateSymbolTable(int id, String text){
+    public Resp generateSymbolTable(int id, String text){
 
         //init compiler
         com.ecnu.compiler.rbac.domain.Compiler compilerVO = compilerMapper.selectById(id);
@@ -65,28 +67,25 @@ public class LexicalService{
             reStrList.add(new RE(reg.getName(), reg.getRegex(), reg.getType()));
         }
 
-        //init cfg
-        List<Cfg> cfgList = cfgMapper.selectList(
-                new EntityWrapper<Cfg>().eq("compiler_id",id)
-        );
-        List<String> cfgStrList = new ArrayList<>();
-        for(Cfg cfg : cfgList){
-            cfgStrList.add(cfg.getCfgContent());
-        }
-
         Config config = new Config();
         config.setExecuteType(Constants.EXECUTE_STAGE_BY_STAGE);
         config.setParserAlgorithm(compilerVO.getParserModel());
 
         CompilerBuilder compilerBuilder = new CompilerBuilder();
-        compilerBuilder.prepareLanguage(id, reStrList, cfgStrList,new ArrayList<String>(),new HashMap<String, String>());
+        compilerBuilder.prepareLanguage(id, reStrList, null,null,null);
 
         Compiler compiler = compilerBuilder.getCompilerInstance(id, config);
+        if(ObjectUtils.isEmpty(compiler)){
+            return new Resp(HttpRespCode.PRECONDITION_FAILED,compilerBuilder.getErrorList());
+        }
         //初始化编译器
         compiler.prepare(text);
         //利用状态码判断是否刚好执行完词法分析
-        while (compiler.getStatus() != StatusCode.STAGE_PARSER){
+        while (compiler.getStatus().getCode()>0&&compiler.getStatus() != StatusCode.STAGE_PARSER){
             compiler.next();
+        }
+        if(compiler.getStatus().getCode()<0){
+            return new Resp(HttpRespCode.PRECONDITION_FAILED,compiler.getErrorList());
         }
         SymbolTable sb = compiler.getSymbolTable();
         if(sb == null){
@@ -101,7 +100,7 @@ public class LexicalService{
         User user = UserUtils.getCurrentUser();
         historyService.logUserHistory(new History(user.getId(),compilerVO.getId(),text,
                 com.ecnu.compiler.utils.domain.Constants.LOG_TYPE_LEXER));
-        return new SymbolTableVO(listVO, regexList,compiler.getErrorList());
+        return new Resp(HttpRespCode.SUCCESS,new SymbolTableVO(listVO, regexList,compiler.getErrorList()));
     }
 
     public DfaVO getDFAbyRegexId(Integer id){
