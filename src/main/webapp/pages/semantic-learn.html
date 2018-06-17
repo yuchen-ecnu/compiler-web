@@ -238,7 +238,7 @@
                                 <div class="card-content">
                                     <div>
                                         <div class="card-title">
-                                            <h4>Procedure</h4>
+                                            <h4>Annotation syntax tree</h4>
                                         </div>
                                         <div class="form-group label-floating">
                                             <p id="re-output" style="min-height:250px"></p>
@@ -253,7 +253,7 @@
                                     <i class="material-icons">assignment</i>
                                 </div>
                                 <div class="card-content">
-                                    <h4 class="card-title">Symbol Table</h4>
+                                    <h4 class="card-title">Action List</h4>
                                     <div class="toolbar">
                                         <!--        Here you can write extra buttons/actions for the toolbar              -->
                                     </div>
@@ -353,6 +353,14 @@
 </script>
 
 <script type="text/javascript">
+    var network = null;
+    function destroy() {
+        if (network !== null) {
+            network.destroy();
+            network = null;
+        }
+    }
+
     $("#sel-lan").change(function () {
         editor.session.setMode("ace/mode/" + $("#sel-lan").val());
     });
@@ -378,7 +386,7 @@
                     lan: lan
                 }),
                 success: function (data) {
-                    console.log(data);
+                    draw(data);
                     $("#tableBody").html("<tr>\n" +
                         "<td>1</td>\n" +
                         "<td>identify</td>\n" +
@@ -388,7 +396,6 @@
                         "class=\"material-icons\">dvr</i></a>\n" +
                         "</td>\n" +
                         "</tr>");
-
                 },
                 error: function (res) {
                     if (res.status === 401) {
@@ -400,6 +407,37 @@
             })
         }
     });
+</script>
+
+
+
+<script type="text/javascript">
+    function draw(res) {
+        destroy();
+        var nodes = new vis.DataSet(res.data.td.nodeVOList);
+        var edges = new vis.DataSet(res.data.td.edgeVOList);
+        var data = {
+            nodes: nodes,
+            edges: edges
+        };
+
+        // create a network
+        var container = document.getElementById('parsing-tree');
+
+        var options = {
+            layout: {
+                hierarchical: {
+                    direction: "UD",
+                    sortMethod: "directed"
+                }
+            },
+            edges: {
+                arrows: {to : true }
+            }
+        };
+        network = new vis.Network(container, data, options);
+    }
+
 </script>
 
 <script type="text/javascript">

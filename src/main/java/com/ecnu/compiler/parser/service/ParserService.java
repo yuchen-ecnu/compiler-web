@@ -26,6 +26,7 @@ import com.ecnu.compiler.utils.UserUtils;
 import com.ecnu.compiler.utils.domain.HttpRespCode;
 import com.ecnu.compiler.utils.domain.Resp;
 import org.springframework.stereotype.Service;
+import org.springframework.util.ObjectUtils;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
@@ -74,6 +75,9 @@ public class ParserService {
         Language language = compilerBuilder.prepareLanguage(id, reStrList, cfgStrList,new ArrayList<String>(),new HashMap<String, String>());
 
         Compiler compiler = compilerBuilder.getCompilerInstance(id, config);
+        if(ObjectUtils.isEmpty(compiler)){
+            return new Resp(HttpRespCode.PRECONDITION_FAILED,compilerBuilder.getErrorList());
+        }
         //初始化编译器
         compiler.prepare(text);
         while (compiler.getStatus().getCode()>0&&compiler.getStatus() != StatusCode.STAGE_SEMANTIC_ANALYZER){
