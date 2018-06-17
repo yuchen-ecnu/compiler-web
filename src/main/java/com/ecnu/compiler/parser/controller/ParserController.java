@@ -52,7 +52,7 @@ public class ParserController {
         if(!languageParam.isVaild()){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Resp());
         }
-        ParserVO parserVO = parserService.generateParserTable(languageParam.getLan(), languageParam.getTxt());
-        return ResponseEntity.status(HttpStatus.OK).body(new Resp(HttpRespCode.SUCCESS,parserVO));
+        Resp resp = parserService.generateParserTable(languageParam.getLan(), languageParam.getTxt());
+        return ResponseEntity.status(HttpStatus.OK).body(resp);
     }
 }

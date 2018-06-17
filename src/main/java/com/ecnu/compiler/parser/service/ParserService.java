@@ -23,6 +23,8 @@ import com.ecnu.compiler.parser.mapper.CFGMapper;
 import com.ecnu.compiler.rbac.domain.History;
 import com.ecnu.compiler.rbac.domain.User;
 import com.ecnu.compiler.utils.UserUtils;
+import com.ecnu.compiler.utils.domain.HttpRespCode;
+import com.ecnu.compiler.utils.domain.Resp;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
@@ -44,7 +46,7 @@ public class ParserService {
     @Resource
     private CompilerMapper compilerMapper;
 
-    public ParserVO generateParserTable(int id, String text){
+    public Resp generateParserTable(int id, String text){
         List<Regex> regexList = regexMapper.selectList(
                 new EntityWrapper<Regex>().eq("compiler_id", id)
         );
@@ -74,8 +76,12 @@ public class ParserService {
         Compiler compiler = compilerBuilder.getCompilerInstance(id, config);
         //初始化编译器
         compiler.prepare(text);
-        while (compiler.getStatus() != StatusCode.STAGE_SEMANTIC_ANALYZER){
+        while (compiler.getStatus().getCode()>0&&compiler.getStatus() != StatusCode.STAGE_SEMANTIC_ANALYZER){
             compiler.next();
+        }
+
+        if(compiler.getStatus().getCode()<0){
+            return new Resp(HttpRespCode.PRECONDITION_FAILED,compiler.getErrorList());
         }
 
         Compiler.TimeHolder timeHolder = compiler.getTimeHolder();
@@ -88,7 +94,7 @@ public class ParserService {
         User user = UserUtils.getCurrentUser();
         historyService.logUserHistory(new History(user.getId(),compilerVO.getId(),text,
                 com.ecnu.compiler.utils.domain.Constants.LOG_TYPE_PARSER));
-        return new ParserVO(timeTable, new TDVO(td), pt,compilerVO.getParserModel()+"",pd);
+        return new Resp(HttpRespCode.SUCCESS,new ParserVO(timeTable, new TDVO(td), pt,compilerVO.getParserModel()+"",pd));
     }
 
     private ParsingTable getParsingTable(Language language, Integer parserModel) {
