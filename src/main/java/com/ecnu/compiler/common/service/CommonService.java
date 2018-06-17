@@ -1,6 +1,7 @@
 package com.ecnu.compiler.common.service;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
+import com.baomidou.mybatisplus.plugins.Page;
 import com.ecnu.compiler.common.domain.*;
 import com.ecnu.compiler.parser.mapper.CFGMapper;
 import com.ecnu.compiler.component.lexer.domain.DFA;
@@ -11,6 +12,7 @@ import com.ecnu.compiler.lexical.mapper.CompilerMapper;
 import com.ecnu.compiler.lexical.mapper.RegexMapper;
 import com.ecnu.compiler.rbac.domain.Compiler;
 import com.ecnu.compiler.rbac.domain.User;
+import com.ecnu.compiler.rbac.mapper.UserMapper;
 import com.ecnu.compiler.rbac.service.UserService;
 import com.ecnu.compiler.semantic.domain.Action;
 import com.ecnu.compiler.semantic.mapper.ActionMapper;
@@ -23,6 +25,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
 import javax.annotation.Resource;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -39,6 +42,8 @@ public class CommonService {
     private CFGMapper cfgMapper;
     @Resource
     private AGMapper agMapper;
+    @Resource
+    private UserMapper userMapper;
     @Resource
     private ActionMapper actionMapper;
     /**
@@ -99,5 +104,13 @@ public class CommonService {
         );
 
         return new Resp(HttpRespCode.SUCCESS,new CompilerConfiguration(compiler,reList,cfgList,agList,actionList));
+    }
+
+    public List<User> getSiteRank() {
+        List<String> conditions =  new ArrayList<>();
+        conditions.add("times");
+        return userMapper.selectPage(
+                new Page<User>(1, 5)
+                ,new EntityWrapper<User>().orderDesc(conditions));
     }
 }

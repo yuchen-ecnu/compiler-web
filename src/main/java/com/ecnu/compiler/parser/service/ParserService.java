@@ -1,25 +1,25 @@
 package com.ecnu.compiler.parser.service;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
-import com.ecnu.CompilerBuilder;
-import com.ecnu.LanguageBuilder;
 import com.ecnu.compiler.common.domain.Cfg;
+import com.ecnu.CompilerBuilder;
+import com.ecnu.compiler.component.CacheManager.Language;
+import com.ecnu.compiler.component.lexer.domain.RE;
 import com.ecnu.compiler.component.parser.domain.ParsingTable.ParsingTable;
 import com.ecnu.compiler.component.parser.domain.PredictTable.PredictTable;
-import com.ecnu.compiler.constant.StatusCode;
-import com.ecnu.compiler.history.service.HistoryService;
-import com.ecnu.compiler.lexical.mapper.CompilerMapper;
-import com.ecnu.compiler.parser.domain.vo.TimeTableVO;
-import com.ecnu.compiler.parser.mapper.CFGMapper;
-import com.ecnu.compiler.component.lexer.domain.RE;
 import com.ecnu.compiler.component.parser.domain.TD;
 import com.ecnu.compiler.constant.Config;
 import com.ecnu.compiler.constant.Constants;
+import com.ecnu.compiler.constant.StatusCode;
 import com.ecnu.compiler.controller.Compiler;
+import com.ecnu.compiler.history.service.HistoryService;
 import com.ecnu.compiler.lexical.domain.Regex;
+import com.ecnu.compiler.lexical.mapper.CompilerMapper;
 import com.ecnu.compiler.lexical.mapper.RegexMapper;
 import com.ecnu.compiler.parser.domain.vo.ParserVO;
 import com.ecnu.compiler.parser.domain.vo.TDVO;
+import com.ecnu.compiler.parser.domain.vo.TimeTableVO;
+import com.ecnu.compiler.parser.mapper.CFGMapper;
 import com.ecnu.compiler.rbac.domain.History;
 import com.ecnu.compiler.rbac.domain.User;
 import com.ecnu.compiler.utils.UserUtils;
@@ -30,6 +30,9 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+/**
+ * @author michaelchen
+ */
 @Service
 public class ParserService {
     @Resource
@@ -66,7 +69,7 @@ public class ParserService {
         config.setParserAlgorithm(compilerVO.getParserModel());
 
         CompilerBuilder compilerBuilder = new CompilerBuilder();
-        compilerBuilder.prepareLanguage(id, reStrList, cfgStrList,new ArrayList<String>(),new HashMap<String, String>());
+        Language language = compilerBuilder.prepareLanguage(id, reStrList, cfgStrList,new ArrayList<String>(),new HashMap<String, String>());
 
         Compiler compiler = compilerBuilder.getCompilerInstance(id, config);
         //初始化编译器
@@ -76,22 +79,11 @@ public class ParserService {
         }
 
         Compiler.TimeHolder timeHolder = compiler.getTimeHolder();
-        TimeTableVO timeTable = new TimeTableVO(timeHolder.getPreprocessorTime(),
-                timeHolder.getLexerTime(),timeHolder.getParserTime());
+        TimeTableVO timeTable = new TimeTableVO(timeHolder);
 
-
-        System.out.println("Time of preprocessor is: "+timeTable.getPreprocessorTime());
-        System.out.println("Time of lexer is: "+timeTable.getLexerTime());
-        System.out.println("Time of parser is: "+timeTable.getParserTime());
-
-        LanguageBuilder languageBuilder = new LanguageBuilder();
-        LanguageBuilder.ParserHolder parserHolder = languageBuilder.buildParserComponents(cfgStrList);
-        ParsingTable pt = getParsingTable(parserHolder,compilerVO.getParserModel());
+        ParsingTable pt = getParsingTable(language,compilerVO.getParserModel());
         TD td = compiler.getSyntaxTree();
         PredictTable pd = compiler.getPredictTable();
-
-        //TODO: Handsome Zhao 补充完整，前端绘图+表格
-
 
         User user = UserUtils.getCurrentUser();
         historyService.logUserHistory(new History(user.getId(),compilerVO.getId(),text,
@@ -99,16 +91,16 @@ public class ParserService {
         return new ParserVO(timeTable, new TDVO(td), pt,compilerVO.getParserModel()+"",pd);
     }
 
-    private ParsingTable getParsingTable(LanguageBuilder.ParserHolder parserHolder, Integer parserModel) {
+    private ParsingTable getParsingTable(Language language, Integer parserModel) {
         switch(parserModel){
             case Constants.PARSER_LL:
-                return parserHolder.getLLParsingTable();
+                return language.getLLParsingTable();
             case Constants.PARSER_LALR:
-                return parserHolder.getLALRParsingTable();
+                return language.getLALRParsingTable();
             case Constants.PARSER_LR:
-                return parserHolder.getLRParsingTable();
+                return language.getLRParsingTable();
             case Constants.PARSER_SLR:
-                return parserHolder.getSLRParsingTable();
+                return language.getSLRParsingTable();
             default:
                 return null;
         }

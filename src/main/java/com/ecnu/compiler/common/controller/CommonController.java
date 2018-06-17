@@ -19,7 +19,6 @@ package com.ecnu.compiler.common.controller;
 import com.ecnu.compiler.common.domain.DfaVO;
 import com.ecnu.compiler.common.domain.NfaVO;
 import com.ecnu.compiler.common.service.CommonService;
-import com.ecnu.compiler.lexical.service.LexicalService;
 import com.ecnu.compiler.rbac.domain.Compiler;
 import com.ecnu.compiler.rbac.domain.User;
 import com.ecnu.compiler.rbac.service.UserService;
@@ -29,7 +28,10 @@ import com.ecnu.compiler.utils.domain.Resp;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.ObjectUtils;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
@@ -46,9 +48,6 @@ public class CommonController {
     private CommonService commonService;
     @Resource
     private UserService userService;
-    @Resource
-    private LexicalService lexicalService;
-
 
     @RequestMapping(value = "/re2nfa/", method = RequestMethod.GET)
     public ResponseEntity<Resp> RE2NFA(@RequestParam("re") String re) {
@@ -63,6 +62,14 @@ public class CommonController {
             return ResponseEntity.status(HttpStatus.OK).body(new Resp(HttpRespCode.SUCCESS,nfa));
         }
     }
+
+    @RequestMapping(value = "/rank/", method = RequestMethod.GET)
+    public ResponseEntity<Resp> getSiteRank() {
+        return ResponseEntity.status(HttpStatus.OK).body(new Resp(HttpRespCode.SUCCESS,commonService.getSiteRank()));
+    }
+
+
+
     @RequestMapping(value = "/re2dfa/", method = RequestMethod.GET)
     public ResponseEntity<Resp> RE2DFA(@RequestParam("re") String re) {
         //params error

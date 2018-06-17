@@ -21,6 +21,7 @@ public class User  extends Model<User> {
     private String email;
     private Integer userType;
     private Integer volume;
+    private Integer times;
     private Timestamp gmtCreated;
     @TableField(update="now()")
     private Timestamp gmtModified;
@@ -104,6 +105,14 @@ public class User  extends Model<User> {
 
     public void setLastLogin(Timestamp lastLogin) {
         this.lastLogin = lastLogin;
+    }
+
+    public Integer getTimes() {
+        return times;
+    }
+
+    public void setTimes(Integer times) {
+        this.times = times;
     }
 
     public boolean isValid(){

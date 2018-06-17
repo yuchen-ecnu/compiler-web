@@ -1,5 +1,7 @@
 package com.ecnu.compiler.parser.domain.vo;
 
+import com.ecnu.compiler.controller.Compiler;
+
 public class TimeTableVO {
     private long preprocessorTime;
     private long lexerTime;
@@ -9,6 +11,13 @@ public class TimeTableVO {
         this.preprocessorTime = preprocessorTime;
         this.lexerTime = lexerTime;
         this.parserTime = parserTime;
+    }
+
+    public TimeTableVO(Compiler.TimeHolder timeHolder) {
+        if(timeHolder==null){ return; }
+        this.preprocessorTime = timeHolder.getPreprocessorTime();
+        this.lexerTime = timeHolder.getLexerTime();
+        this.parserTime = timeHolder.getParserTime();
     }
 
     public long getPreprocessorTime() {

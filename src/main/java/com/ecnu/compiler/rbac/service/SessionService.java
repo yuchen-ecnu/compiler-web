@@ -31,6 +31,8 @@ public class SessionService {
        User user = users.get(0);
        if(user.checkPassword(userParam.getPwd())){
            UserUtils.registerCurrentUser(user);
+           user.setTimes(user.getTimes()+1);
+           userMapper.updateById(user);
            return user;
        }else { return null; }
     }
