@@ -517,7 +517,8 @@
                 compiler: compiler,
                 reList: reList.concat(newRE),
                 cfgList: cfgList.concat(newCFG),
-                agList: agList.concat(newAG)
+                agList: agList.concat(newAG),
+                actionList: actionList.concat(newAction)
             }),
             success: function (res) {
                 console.log(res);
@@ -682,7 +683,7 @@
                     // init re list
                     var sHtml = "";
                     $.each(reList, function(index, re) {
-                        var type = re.type === 1? "NON_SPLITTER":"SPLITTER";
+                        var type = re.type === 1? "SPLITTER":"NON_SPLITTER";
                         sHtml += "<tr id='RE"+re.id+"'><td class=\"text-center\">"+re.id+"</td>" +
                             "<td>"+re.name+"</td><td>"+re.regex+"</td>" +
                             "<td class='text-center'>"+type+"</td><td class='text-center'>"+re.priority+"</td>" +
@@ -763,7 +764,7 @@
         switch (type){
             case 'RE':
                 newRE.push({ id:indexRE, name:name, regex:val, priority: priority,type: typeParam});
-                var typeName = typeParam === 2? "NON_SPLITTER":"SPLITTER";
+                var typeName = typeParam === 1? "SPLITTER":"NON_SPLITTER";
                 sHtml = $("#re-content").html();
                 sHtml += "<tr id='NRE"+indexRE+"'><td class=\"text-center\">--</td>" +
                     "<td>"+name+"</td><td>"+val+"</td>" +
@@ -1076,7 +1077,7 @@
                     if(re.id === id){
                         reList[index].name = name;
                         reList[index].regex = val;
-                        reList[index].type = typeParam?2:1;
+                        reList[index].type = typeParam?1:2;
                         reList[index].priority = priority;
                         return false;
                     }
@@ -1125,7 +1126,7 @@
                     if(re.id===id){
                         newRE[index].name = name;
                         newRE[index].regex = val;
-                        newRE[index].type = typeParam?2:1;
+                        newRE[index].type = typeParam?1:2;
                         newRE[index].priority = priority;
                         return false;
                     }
