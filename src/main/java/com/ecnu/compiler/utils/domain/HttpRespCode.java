@@ -82,8 +82,9 @@ public enum HttpRespCode implements Serializable {
     TASK_RECORD_ADD_ERROR("523", "任务记录插入失败"),
     //以下可继续补充
 
-    COMPILER_MODIFIED_ERROR("500","请检查编译器状态及登陆状态"),
-    COMPILER_ADD_ERROR("500","请检查编译器参数状态及登陆状态")
+    COMPILER_MODIFIED_ERROR("400","请检查编译器状态及登陆状态"),
+    COMPILER_ADD_ERROR("400","请检查编译器参数状态及登陆状态"),
+    NEED_CREATE_ERROR("412","编译器不可修改，是否尝试新建编译器？")
     ;
 
 

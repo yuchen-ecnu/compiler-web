@@ -12,19 +12,49 @@ var api_user_history = "history/list/";
 var api_save_compiler = "user/compiler/modify/";
 var api_create_compiler = "user/compiler/new/";
 var api_system_compiler_config = "common/system/configuration/";
+var api_semantic_analyser = "semantic/analyser/";
 
 var url_dashboard = "pages/dashboard.html";
 var url_login = "pages/login/login.html";
-var colors = new Array(8);
-colors[0]="btn btn-primary btn-xs";
-colors[1]="btn btn-success btn-xs";
-colors[2]="btn btn-info btn-xs";
-colors[3]="btn btn-warning btn-xs";
-colors[4]="btn btn-danger btn-xs";
-colors[5]="btn btn-default btn-xs";
-colors[6]="btn btn-rose btn-xs";
-colors[7]="btn btn-behance btn-xs";
+var url_compiler_list = "pages/compilers.html";
+var colors = [
+    "btn btn-primary btn-xs",
+    "btn btn-success btn-xs",
+    "btn btn-info btn-xs",
+    "btn btn-warning btn-xs",
+    "btn btn-danger btn-xs",
+    "btn btn-default btn-xs",
+    "btn btn-rose btn-xs",
+    "btn btn-behance btn-xs"
+];
 
+/**
+ * type = ['','info','success','warning','danger','rose','primary'];
+ * @param from      移入方向(top,bottom)
+ * @param align     位置（left，center，right）
+ */
+function showNotification(type,msg){
+    $.notify({
+        icon: "notifications",
+        message: msg
+
+    },{
+        type: type,
+        timer: 3000,
+        placement: {
+            from: 'top',
+            align: 'right'
+        }
+    });
+}
+
+
+
+/**
+ * TimeStamp转格式化String
+ * @param time
+ * @returns {string}
+ */
 function ts2String (time){
     var datetime = new Date();
     datetime.setTime(time);
@@ -36,6 +66,12 @@ function ts2String (time){
     return year + "-" + month + "-" + date+" "+hour+":"+minute;
 }
 
+/**
+ * 弹窗，无回调
+ * @param type  'success'，'warning'，'error'
+ * @param title 弹窗标题
+ * @param text 弹窗内容文本
+ */
 function toast(type,title,text){
     swal({ title: title,
         text: text,
@@ -43,6 +79,44 @@ function toast(type,title,text){
         type: type,
         showConfirmButton: false
     }).then(function () {}, function (reason) {});
+}
+
+/**
+ * 获取URL中的请求参数
+ * @param name  参数名
+ * @returns {*}
+ */
+function getQueryString(name) {
+    var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+    var r = window.location.search.substr(1).match(reg);
+    if (r != null) return unescape(r[2]);
+    return null;
+}
+
+/**
+ * 显示请求登陆对话框
+ */
+function showLoginDialog(){
+    swal({
+        title: 'UNAUTHORIZED ERROR',
+        text: "You need to login in to finish your operation!",
+        type: 'warning',
+        showCancelButton: true,
+        confirmButtonClass: 'btn btn-success',
+        cancelButtonClass: 'btn btn-danger',
+        confirmButtonText: 'Login',
+        // cancel
+        buttonsStyling: false
+    }).then(function() {
+        swal({
+            title: 'Redirecting!',
+            text: 'Your will redirect to Login Page right now.',
+            type: 'success',
+            confirmButtonClass: "btn btn-success",
+            buttonsStyling: false
+        });
+        location.href = base_url + url_login;
+    });
 }
 
 function initTable() {
@@ -78,15 +152,3 @@ function initTable() {
 function showProcess(data) {
     console.log('You press on Row: ' + data[0] + ' ' + data[1] + ' ' + data[2] + '\'s row.');
 }
-
-$(document).ready(function() {
-    ToolTip.init({
-        delay: 400,
-        fadeDuration: 250,
-        fontSize: '0.8em',
-        theme: 'light',
-        textColor: '#757575',
-        shadowColor: '#000',
-        fontFamily: "'Roboto-Medium', 'Roboto-Regular', Arial"
-    });
-});

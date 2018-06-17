@@ -12,9 +12,13 @@ import com.ecnu.compiler.lexical.mapper.RegexMapper;
 import com.ecnu.compiler.rbac.domain.Compiler;
 import com.ecnu.compiler.rbac.domain.User;
 import com.ecnu.compiler.rbac.service.UserService;
-import com.ecnu.compiler.rbac.utils.UserUtils;
+import com.ecnu.compiler.semantic.domain.Action;
+import com.ecnu.compiler.semantic.mapper.ActionMapper;
+import com.ecnu.compiler.utils.UserUtils;
 import com.ecnu.compiler.semantic.mapper.AGMapper;
 import com.ecnu.compiler.utils.domain.Constants;
+import com.ecnu.compiler.utils.domain.HttpRespCode;
+import com.ecnu.compiler.utils.domain.Resp;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ObjectUtils;
 
@@ -35,6 +39,8 @@ public class CommonService {
     private CFGMapper cfgMapper;
     @Resource
     private AGMapper agMapper;
+    @Resource
+    private ActionMapper actionMapper;
     /**
      * RE 转 NFA
      * @param re regular expression
@@ -68,13 +74,16 @@ public class CommonService {
         return userService.getUserCompilers(Constants.SYSTEM_ID);
     }
 
-    public CompilerConfiguration getSystemCompilerConfiguration(int id) {
+    public Resp getCompilerConfiguration(int id) {
         Compiler compiler = compilerMapper.selectById(id);
-        if(ObjectUtils.isEmpty(compiler)){ return null; }
+        if(ObjectUtils.isEmpty(compiler)){ return new Resp(HttpRespCode.NOT_FOUND); }
         User user = UserUtils.getCurrentUser();
-        if(compiler.getUserId()!= Constants.SYSTEM_ID
-                && user!=null && !user.getId().equals(compiler.getUserId())){
-            return null;
+        if(compiler.getUserId()!= Constants.SYSTEM_ID){
+            if(ObjectUtils.isEmpty(user)){
+                return new Resp(HttpRespCode.UNAUTHORIZED);
+            }else if(!user.getId().equals(compiler.getUserId())){
+                return new Resp(HttpRespCode.FORBIDDEN);
+            }
         }
         List<Regex> reList = regexMapper.selectList(
                 new EntityWrapper<Regex>().eq("compiler_id",compiler.getId())
@@ -85,7 +94,10 @@ public class CommonService {
         List<Ag> agList = agMapper.selectList(
                 new EntityWrapper<Ag>().eq("compiler_id",compiler.getId())
         );
+        List<Action> actionList = actionMapper.selectList(
+                new EntityWrapper<Action>().eq("compiler_id",compiler.getId())
+        );
 
-        return new CompilerConfiguration(compiler,reList,cfgList,agList);
+        return new Resp(HttpRespCode.SUCCESS,new CompilerConfiguration(compiler,reList,cfgList,agList,actionList));
     }
 }

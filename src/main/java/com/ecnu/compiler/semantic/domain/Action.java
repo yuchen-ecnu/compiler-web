@@ -1,20 +1,18 @@
-package com.ecnu.compiler.common.domain;
+package com.ecnu.compiler.semantic.domain;
 
 import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableField;
 import com.baomidou.mybatisplus.annotations.TableName;
+import com.ecnu.compiler.common.domain.Ag;
 
 import java.io.Serializable;
 import java.sql.Timestamp;
 
-/**
- * @author michaelchen
- */
-@TableName("ag")
-public class Ag extends Model<Ag> {
+@TableName("action")
+public class Action extends Model<Action> {
     private Integer id;
-    private String agName;
-    private String agContent;
+    private String actionName;
+    private String actionContent;
     private Integer compilerId;
     private Timestamp gmtCreated;
     @TableField(update="now()")
@@ -28,20 +26,20 @@ public class Ag extends Model<Ag> {
         this.id = id;
     }
 
-    public String getAgName() {
-        return agName;
+    public String getActionName() {
+        return actionName;
     }
 
-    public void setAgName(String agName) {
-        this.agName = agName;
+    public void setActionName(String actionName) {
+        this.actionName = actionName;
     }
 
-    public String getAgContent() {
-        return agContent;
+    public String getActionContent() {
+        return actionContent;
     }
 
-    public void setAgContent(String agContent) {
-        this.agContent = agContent;
+    public void setActionContent(String actionContent) {
+        this.actionContent = actionContent;
     }
 
     public Integer getCompilerId() {

@@ -333,12 +333,18 @@
                         sHtml += "<td class=\"text-center\">"+ts2String(compiler.gmtCreated)+"</td>";
                         sHtml += "<td class=\"text-center\">"+ts2String(compiler.gmtModified)+"</td>";
                         sHtml += "<td class=\"td-actions text-right\">\n" +
+                            "<a href=\'compiler-builder.html?id="+compiler.id+"\'>" +
                             "<button type=\"button\" rel=\"tooltip\" class=\"btn btn-success\" title=\"Edit\">\n" +
                             "<i class=\"material-icons\">edit</i>\n" +
-                            "</button>\n" +
+                            "</button></a>\n" +
+                            "<a href=\'lexer-learn.html?id="+compiler.id+"\'>" +
                             "<button type=\"button\" rel=\"tooltip\" class=\"btn btn-info\" title=\"Compile Now\">\n" +
                             "<i class=\"material-icons\">send</i>\n" +
-                            "</button>\n" +
+                            "</button></a>\n" +
+                            "<button type=\"button\" rel=\"tooltip\" class=\"btn btn-danger btn-round\" " +
+                            " onclick=\"deleteCompiler(\'"+compiler.compilerName+"\',"+compiler.id+")\">" +
+                            "<i class=\"material-icons\">close</i>" +
+                            "</button>" +
                             "</td></tr>";
                     });
                     $("#user-compiler").html(sHtml);
@@ -379,9 +385,10 @@
                             "<button type=\"button\" rel=\"tooltip\" class=\"btn btn-success\" title=\"Edit\">\n" +
                             "<i class=\"material-icons\">edit</i>\n" +
                             "</button></a>\n" +
+                            "<a href=\'lexer-learn.html?id="+compiler.id+"\'>" +
                             "<button type=\"button\" rel=\"tooltip\" class=\"btn btn-info\" title=\"Compile Now\">\n" +
                             "<i class=\"material-icons\">send</i>\n" +
-                            "</button>\n" +
+                            "</button></a>\n" +
                             "</td></tr>";
                     });
                     $("#system-compiler").html(sHtml);
@@ -392,5 +399,51 @@
             }
         })
     });
+</script>
+
+<script type="text/javascript">
+    function deleteCompiler(name,compilerId){
+        swal({
+            title: 'Are you sure?',
+            text: 'You will remove the compiler: '+name+' !',
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Yes, delete it!',
+            cancelButtonText: 'No, keep it',
+            confirmButtonClass: "btn btn-success",
+            cancelButtonClass: "btn btn-danger",
+            buttonsStyling: false
+        }).then(function() {
+            $.ajax({
+                url: base_url + api_compiler_delete,
+                type: "delete",
+                dataType: "json",
+                headers: {'Content-type': 'application/json;charset=UTF-8'},
+                data: JSON.stringify({
+                    id: compilerId
+                }),
+                success: function (res) {
+                    if(res.resCode === '200'){
+                        toast('success','Deleted!','Your compiler:'+name+' has been deleted.');
+                    }
+                },
+                error : function(data){
+                    if(data.status === '401'){
+                        showLoginDialog();
+                    }
+                }
+            });
+        }, function(dismiss) {
+            if (dismiss === 'cancel') {
+                swal({
+                    title: 'Cancelled',
+                    text: 'Your compiler:'+name+' is safe :)',
+                    type: 'error',
+                    confirmButtonClass: "btn btn-info",
+                    buttonsStyling: false
+                })
+            }
+        })
+    }
 </script>
 </html>

@@ -17,12 +17,9 @@ package com.ecnu.compiler.lexical.controller;
  */
 
 import com.ecnu.compiler.common.domain.DfaVO;
-import com.ecnu.compiler.component.storage.ErrorList;
-import com.ecnu.compiler.component.storage.SymbolTable;
-import com.ecnu.compiler.lexical.domain.LexerParam;
+import com.ecnu.compiler.lexical.domain.LanguageParam;
 import com.ecnu.compiler.lexical.domain.Regex;
 import com.ecnu.compiler.lexical.domain.SymbolTableVO;
-import com.ecnu.compiler.lexical.domain.SymbolVO;
 import com.ecnu.compiler.lexical.service.LexicalService;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -34,7 +31,6 @@ import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.*;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -58,7 +54,7 @@ public class LexicalController {
         if(ObjectUtils.isEmpty(language)){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Resp());
         }
-        List<Regex> list = lexicalService.getRegrexsFromTargetLanguage(language);
+        List<Regex> list = lexicalService.getRegexFromTargetLanguage(language);
         if(ObjectUtils.isEmpty(list)){
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new Resp());
         }else{
@@ -87,12 +83,12 @@ public class LexicalController {
      * 词法分析器
      */
     @RequestMapping(value = "/lexer/", method = RequestMethod.POST)
-    public ResponseEntity<Resp> text2SymbolTable(@RequestBody LexerParam lexerParam) {
+    public ResponseEntity<Resp> text2SymbolTable(@RequestBody LanguageParam languageParam) {
         //params error
-        if(!lexerParam.isVaild()){
+        if(!languageParam.isVaild()){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Resp());
         }
-        SymbolTableVO symbolTable = lexicalService.generateSymbolTable(lexerParam.getLan(), lexerParam.getTxt());
+        SymbolTableVO symbolTable = lexicalService.generateSymbolTable(languageParam.getLan(), languageParam.getTxt());
         return ResponseEntity.status(HttpStatus.OK).body(new Resp(HttpRespCode.SUCCESS,symbolTable));
     }
 

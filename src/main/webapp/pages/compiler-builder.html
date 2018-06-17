@@ -228,6 +228,11 @@
                                     </a>
                                 </li>
                                 <li>
+                                    <a href="#action" role="tab" data-toggle="tab">
+                                        <i class="material-icons">help_outline</i> Actions
+                                    </a>
+                                </li>
+                                <li>
                                     <a href="#semantic" role="tab" data-toggle="tab">
                                         <i class="material-icons">help_outline</i> Semantic
                                     </a>
@@ -294,6 +299,9 @@
                                                         <option value="1">汤姆森构造法+子集构造法（RE_NFA_DFA）</option>
                                                     </select>
                                                 </div>
+                                                <label class="col-sm-3 label-on-right">
+                                                    <code>Used For 'DFA Generator'</code>
+                                                </label>
                                             </div>
                                             <div class="row">
                                                 <label class="col-sm-2 label-on-left">Parser Executes Algorithm</label>
@@ -307,6 +315,9 @@
                                                         <option value="3">LALR 算法（PARSER_LALR）</option>
                                                     </select>
                                                 </div>
+                                                <label class="col-sm-3 label-on-right">
+                                                    <code>Used For 'Parser Process'</code>
+                                                </label>
                                             </div>
                                         </div>
                                     </form>
@@ -327,8 +338,10 @@
                                                     <thead>
                                                     <tr>
                                                         <th class="text-center col-md-1">#</th>
-                                                        <th class="col-md-2">Name</th>
-                                                        <th class="col-md-8">Regular Expression</th>
+                                                        <th class="col-md-1">Name</th>
+                                                        <th class="col-md-6">Regular Expression</th>
+                                                        <th class="text-center col-md-2">Type</th>
+                                                        <th class="text-center col-md-1">Priority</th>
                                                         <th class="text-right col-md-1">Actions</th>
                                                     </tr>
                                                     </thead>
@@ -359,7 +372,7 @@
                                                     <tr>
                                                         <th class="text-center col-md-1">#</th>
                                                         <th class="col-md-2">Name</th>
-                                                        <th class="col-md-6">Regular Expression</th>
+                                                        <th class="col-md-6">CFG</th>
                                                         <th class="text-right col-md-3">Actions</th>
                                                     </tr>
                                                     </thead>
@@ -374,11 +387,42 @@
                                     </form>
                                 </div>
                             </div>
+                            <div class="tab-pane" id="action">
+                                <div class="card">
+                                    <form id="actionValid" class="form-horizontal" action="" method="">
+                                        <div class="card-header">
+                                            <h4 class="card-title">Action List</h4>
+                                            <p class="category">
+                                                More information here
+                                            </p>
+                                        </div>
+                                        <div class="card-content">
+                                            <div class="table-responsive">
+                                                <table class="table">
+                                                    <thead>
+                                                    <tr>
+                                                        <th class="text-center col-md-1">#</th>
+                                                        <th class="col-md-2">Token</th>
+                                                        <th class="col-md-6">Action Expression</th>
+                                                        <th class="text-right col-md-3">Actions</th>
+                                                    </tr>
+                                                    </thead>
+                                                    <tbody id="action-content"/>
+                                                </table>
+                                                <div class="card-footer text-right">
+                                                    <button type="button" class="btn btn-info btn-fill"
+                                                            onclick="addNewOne('Action')">Add New One</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
                             <div class="tab-pane" id="semantic">
                                 <div class="card">
                                     <form id="agValid" class="form-horizontal" action="" method="">
                                         <div class="card-header">
-                                            <h4 class="card-title">Attribute Grammar</h4>
+                                            <h4 class="card-title">AG</h4>
                                             <p class="category">
                                                 More information here
                                             </p>
@@ -390,7 +434,7 @@
                                                     <tr>
                                                         <th class="text-center col-md-1">#</th>
                                                         <th class="col-md-2">Name</th>
-                                                        <th class="col-md-6">Regular Expression</th>
+                                                        <th class="col-md-6">Attribute Grammer</th>
                                                         <th class="text-right col-md-3">Actions</th>
                                                     </tr>
                                                     </thead>
@@ -405,6 +449,7 @@
                                     </form>
                                 </div>
                             </div>
+
                         </div>
 
                         <div>
@@ -461,7 +506,48 @@
 <script src="js/global-config.js"></script>
 
 <script type="text/javascript">
-    function saveToServer(){
+    var sendCreatePost = function () {
+        if(!checkParamValidate()) { return; }
+        $.ajax({
+            url: base_url + api_create_compiler,
+            type: "post",
+            dataType: "json",
+            headers: {'Content-type': 'application/json;charset=UTF-8'},
+            data: JSON.stringify({
+                compiler: compiler,
+                reList: reList.concat(newRE),
+                cfgList: cfgList.concat(newCFG),
+                agList: agList.concat(newAG)
+            }),
+            success: function (res) {
+                console.log(res);
+                if (res.resCode === '200') {
+                    showSuccessDialog();
+                }else if (res.resCode === '400'){
+                    swal({
+                        title: 'CAN\'T MODIFIED WARN',
+                        text: "Do you want to create a new Compiler for yourself?",
+                        type: 'warning',
+                        showCancelButton: true,
+                        confirmButtonClass: 'btn btn-success',
+                        cancelButtonClass: 'btn btn-danger',
+                        confirmButtonText: 'Yes,create it!',
+                        // cancel
+                        buttonsStyling: false
+                    }).then(function() {
+                        sendCreatePost();
+                    });
+                }
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                if (XMLHttpRequest.status === 401) {
+                    showLoginDialog();
+                }
+            }
+        });
+    };
+
+    function checkParamValidate() {
         // check
         compiler.compilerName = $("#cname").val();
         compiler.languageName = $("#lname").val();
@@ -473,9 +559,28 @@
             &&checkValid('introduce',compiler.introduce)
             &&checkValid('lexerModel',compiler.lexerModel)
             &&checkValid('parserModel',compiler.parserModel))){
-            return;
+            toast("warning", "EMPTY WARN", "Please fill all information about the compiler!");
+            return false;
         }
+        return true;
+    }
 
+    var showSuccessDialog = function () {
+        swal({
+            title: 'ADD SUCCESS',
+            text: "Click 'OK' to redirect to compiler list.",
+            type: 'success',
+            confirmButtonClass: 'btn btn-success',
+            cancelButtonClass: 'btn btn-danger',
+            confirmButtonText: 'OK!',
+            buttonsStyling: false
+        }).then(function() {
+            location.href = base_url + url_compiler_list;
+        });
+    };
+
+    function saveToServer(){
+        if(!checkParamValidate()) { return; }
         var str = api_save_compiler;
         var id = getQueryString("id");
         if(id == null || id===""){
@@ -485,49 +590,40 @@
             url: base_url + str,
             type: "post",
             dataType: "json",
+            headers: {'Content-type': 'application/json;charset=UTF-8'},
             data: JSON.stringify({
                 compiler: compiler,
-                re: reList.concat(newRE),
-                cfg: cfgList.concat(newCFG),
-                ag: agList.concat(newAG)
+                reList: reList.concat(newRE),
+                cfgList: cfgList.concat(newCFG),
+                agList: agList.concat(newAG),
+                actionList: actionList.concat(newAction)
             }),
             success: function (res) {
                 console.log(res);
                 if (res.resCode === '200') {
-
-                }
-            },
-            error: function (data) {
-                console.log(data);
-                if (data.status === 401) {
+                    showSuccessDialog();
+                }else if (res.resCode === '412'){
                     swal({
-                        title: 'UNAUTHORIZED ERROR',
-                        text: "You need to login in to finish your operation!",
+                        title: 'CAN\'T MODIFIED ERROR',
+                        text: "Do you want to create a new Compiler for yourself?",
                         type: 'warning',
                         showCancelButton: true,
                         confirmButtonClass: 'btn btn-success',
                         cancelButtonClass: 'btn btn-danger',
-                        confirmButtonText: 'Login',
+                        confirmButtonText: 'Yes,create it!',
                         // cancel
                         buttonsStyling: false
                     }).then(function() {
-                        swal({
-                            title: 'Redirecting!',
-                            text: 'Your will redirect to Login Page right now.',
-                            type: 'success',
-                            confirmButtonClass: "btn btn-success",
-                            buttonsStyling: false
-                        });
-                        location.href = base_url + url_login;
+                        sendCreatePost();
                     });
-                    $("#user-table").html("<div class=\"tim-typo\"><h3>Please login to build your own compiler!" +
-                        "&nbsp;&nbsp;&nbsp;<button id='login-btn' class=\"btn btn-success\">Login</button></h3></div>");
-                    $("#login-btn").click(function () {
-                        location.href = base_url + url_login;
-                    });
-                    return;
+                }else if(res.resCode === '400'){
+                    toast("error","COMPILER_MODIFIED_ERROR",res.resMsg);
                 }
-                toast("warning", "Get Compiler's Configuration Error", "Please wait a moment and refresh the page.");
+            },
+            error: function (XMLHttpRequest, textStatus, errorThrown) {
+                if (XMLHttpRequest.status === 401) {
+                    showLoginDialog();
+                }
             }
         });
     }
@@ -549,9 +645,9 @@
 </script>
 
 <script type="text/javascript">
-    var compiler,reList,cfgList,agList;
-    var newRE = [],newCFG = [],newAG = [];
-    var indexRE = 0,indexCFG = 0,indexAG=0;
+    var compiler,reList,cfgList,agList,actionList;
+    var newRE = [],newCFG = [],newAG = [],newAction=[];
+    var indexRE = 0,indexCFG = 0,indexAG=0,indexAction=0;
 
 
     $().ready(function () {
@@ -574,6 +670,7 @@
                     reList = data.reList;
                     cfgList = data.cfgList;
                     agList = data.agList;
+                    actionList = data.actionList;
                     $("#cname").val(compiler.compilerName);
                     $("#lname").val(compiler.languageName);
                     $("#intro").val(compiler.introduce);
@@ -585,11 +682,13 @@
                     // init re list
                     var sHtml = "";
                     $.each(reList, function(index, re) {
+                        var type = re.type === 1? "NON_SPLITTER":"SPLITTER";
                         sHtml += "<tr id='RE"+re.id+"'><td class=\"text-center\">"+re.id+"</td>" +
                             "<td>"+re.name+"</td><td>"+re.regex+"</td>" +
+                            "<td class='text-center'>"+type+"</td><td class='text-center'>"+re.priority+"</td>" +
                             "<td class=\"td-actions text-right\">" +
                             "<button type=\"button\" rel=\"tooltip\" class=\"btn btn-success\" data-placement=\"left\" title=\"Edit\"" +
-                            " onclick=\"editItem('RE',"+re.id+")\">" +
+                            " onclick=\"editItem('RE',"+re.id+",'"+re.type+"',"+re.priority+")\">" +
                             "<i class=\"material-icons\">edit</i></button>&nbsp;&nbsp;&nbsp;" +
                             "<button type=\"button\" rel=\"tooltip\" class=\"btn btn-danger data-placement=\"left\" title=\"Delete\"" +
                             " onclick=\"deleteItem('RE',\'"+re.name.replace("\"","\\\"").replace("\'","\\\'")+"\',"+re.id+")\">" +
@@ -604,7 +703,7 @@
                             "<td>"+cfg.cfgName+"</td><td>"+cfg.cfgContent+"</td>" +
                             "<td class=\"td-actions text-right\">" +
                             "<button type=\"button\" rel=\"tooltip\" class=\"btn btn-success\" data-placement=\"left\" title=\"Edit\""  +
-                            " onclick=\"editItem('CFG',"+cfg.id+")\">" +
+                            " onclick=\"editItem('CFG',"+cfg.id+",'','')\">" +
                             "<i class=\"material-icons\">edit</i></button>&nbsp;&nbsp;&nbsp;" +
                             "<button type=\"button\" rel=\"tooltip\" class=\"btn btn-danger data-placement=\"left\" title=\"Delete\"" +
                             " onclick=\"deleteItem('CFG',\'"+cfg.cfgName.replace("\"","\\\"").replace("\'","\\\'")+"\',"+cfg.id+")\">" +
@@ -619,45 +718,56 @@
                             "<td>"+ag.agName+"</td><td>"+ag.agContent+"</td>" +
                             "<td class=\"td-actions text-right\">" +
                             "<button type=\"button\" rel=\"tooltip\" class=\"btn btn-success\" data-placement=\"left\" title=\"Edit\"" +
-                            " onclick=\"editItem('AG',"+ag.id+")\">" +
+                            " onclick=\"editItem('AG',"+ag.id+",'','')\">" +
                             "<i class=\"material-icons\">edit</i></button>&nbsp;&nbsp;&nbsp;" +
                             "<button type=\"button\" rel=\"tooltip\" class=\"btn btn-danger data-placement=\"left\" title=\"Delete\"" +
                             " onclick=\"deleteItem('AG',\'"+ag.agName.replace("\"","\\\"").replace("\'","\\\'")+"\',"+ag.id+")\">" +
                             "<i class=\"material-icons\">close</i></button></td></tr>";
                     });
                     $("#ag-content").html(sHtml);
+
+
+                    //init action list
+                    sHtml = "";
+                    $.each(actionList, function(index, ac) {
+                        sHtml += "<tr id='Action"+ac.id+"'><td class=\"text-center\">"+ac.id+"</td>" +
+                            "<td>"+ac.actionName+"</td><td>"+ac.actionContent+"</td>" +
+                            "<td class=\"td-actions text-right\">" +
+                            "<button type=\"button\" rel=\"tooltip\" class=\"btn btn-success\" data-placement=\"left\" title=\"Edit\"" +
+                            " onclick=\"editItem('Action',"+ac.id+",'','')\">" +
+                            "<i class=\"material-icons\">edit</i></button>&nbsp;&nbsp;&nbsp;" +
+                            "<button type=\"button\" rel=\"tooltip\" class=\"btn btn-danger data-placement=\"left\" title=\"Delete\"" +
+                            " onclick=\"deleteItem('Action',\'"+ac.actionName.replace("\"","\\\"").replace("\'","\\\'")+"\',"+ac.id+")\">" +
+                            "<i class=\"material-icons\">close</i></button></td></tr>";
+                    });
+                    $("#action-content").html(sHtml);
+
+
+                }else if(res.resCode === '404'){
+                    toast("warning","Compiler Not Found!","Please check the compile status or refresh the page.")
                 }
             },
             error: function (data) {
                 console.log(data);
                 if (data.status === 401) {
-                    $("#user-table").html("<div class=\"tim-typo\"><h3>Please login to build your own compiler!" +
-                        "&nbsp;&nbsp;&nbsp;<button id='login-btn' class=\"btn btn-success\">Login</button></h3></div>");
-                    $("#login-btn").click(function () {
-                        location.href = base_url + url_login;
-                    });
-                    return;
+                    showLoginDialog();
+                } else if(data.status === 403){
+                    toast("error", "Permission Error", "Please check is this your own compiler?");
                 }
-                toast("warning", "Get Compiler's Configuration Error", "Please wait a moment and refresh the page.");
             }
         });
     });
 
-    function getQueryString(name) {
-        var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
-        var r = window.location.search.substr(1).match(reg);
-        if (r != null) return unescape(r[2]);
-        return null;
-    }
-
-    function addToStorage(type, name, val) {
+    function addToStorage(type, name, val,typeParam,priority) {
         var sHtml;
         switch (type){
             case 'RE':
-                newRE.push({ id:indexRE, name:name, regex:val });
+                newRE.push({ id:indexRE, name:name, regex:val, priority: priority,type: typeParam});
+                var typeName = typeParam === 2? "NON_SPLITTER":"SPLITTER";
                 sHtml = $("#re-content").html();
                 sHtml += "<tr id='NRE"+indexRE+"'><td class=\"text-center\">--</td>" +
                     "<td>"+name+"</td><td>"+val+"</td>" +
+                    "<td class='text-center'>"+typeName+"</td><td class='text-center'>"+priority+"</td>" +
                     "<td class=\"td-actions text-right\">" +
                     "<button type=\"button\" rel=\"tooltip\" class=\"btn btn-success\" data-placement=\"left\" title=\"Edit\"" +
                     " onclick=\"editNewItem('NRE',"+indexRE+")\">" +
@@ -695,25 +805,48 @@
                     "<i class=\"material-icons\">close</i></button></td></tr>";
                 $("#ag-content").html(sHtml);
                 break;
+            case 'Action':
+                newAction.push({ id:indexAction, actionName:name,actionContent:val });
+                sHtml = $("#action-content").html();
+                sHtml += "<tr id='Action"+indexAction+"'><td class=\"text-center\">--</td>" +
+                    "<td>"+name.replace("\"","\\\"").replace("\'","\\\'")+"</td><td>"+val.replace("\"","\\\"").replace("\'","\\\'")+"</td>" +
+                    "<td class=\"td-actions text-right\">" +
+                    "<button type=\"button\" rel=\"tooltip\" class=\"btn btn-success\" data-placement=\"left\" title=\"Edit\"" +
+                    " onclick=\"editNewItem('Action',"+indexAction+")\">" +
+                    "<i class=\"material-icons\">edit</i></button>&nbsp;&nbsp;&nbsp;" +
+                    "<button type=\"button\" rel=\"tooltip\" class=\"btn btn-danger data-placement=\"left\" title=\"Delete\"" +
+                    " onclick=\"deleteNewItem('Action',"+(indexAction++)+")\">" +
+                    "<i class=\"material-icons\">close</i></button></td></tr>";
+                $("#action-content").html(sHtml);
         }
     }
 
     //新增记录弹窗
     function addNewOne(type){
-        swal({
-            title: 'Add new '+ type +' rules',
-            html: '<div class="form-group label-floating">' +
+        sHtml = '<div class="form-group label-floating">' +
             '<label class="control-label">Name</label>' +
             '<input class="form-control" type="text" name="min_length" minLength="1" id="i-name"/></div>' +
             '<div class="form-group label-floating">' +
             '<label class="control-label">'+type+'</label>' +
-            '<input class="form-control" type="text" name="min_length" minLength="1" id="i-value"/></div>',
+            '<input class="form-control" type="text" name="min_length" minLength="1" id="i-value"/></div>';
+        if(type === "RE"){
+            sHtml += '<div class="form-group label-floating">' +
+                '<label class="control-label">Priority</label>' +
+                '<input id=\'priority\' class="form-control" type="number" name="min_length" minLength="1" id="i-value"/></div>';
+            sHtml +="<div><label>" +
+                "<input id='checkbox-type' type=\"checkbox\" name=\"optionsCheckboxes\"> Is Splitter?" +
+                "</label></div>"
+        }
+        swal({
+            title: 'Add new '+ type +' rules',
+            html: sHtml,
             showCancelButton: true,
             confirmButtonClass: 'btn btn-success',
             cancelButtonClass: 'btn btn-danger',
             buttonsStyling: false
         }).then(function(result) {
-            addToStorage(type,$('#i-name').val(),$('#i-value').val());
+            addToStorage(type,$('#i-name').val(),$('#i-value').val(),
+                $('#checkbox-type').is(':checked')?1:2,$('#priority').val());
             swal({
                 type: 'success',
                 html: 'You created: <strong>' +
@@ -729,20 +862,37 @@
     function editItem(type,id){
         var name = $("#"+type+id+" td:nth-child(2)").html();
         var val = $("#"+type+id+" td:nth-child(3)").html();
-        swal({
-            title: 'Modify '+ type +' rules',
-            html: '<div class="form-group label-floating">' +
+        var typeParam = $("#"+type+id+" td:nth-child(4)").html();
+        var priority = $("#"+type+id+" td:nth-child(5)").html();
+        var sHtml = '<div class="form-group label-floating">' +
             '<label class="control-label">Name</label>' +
             '<input class="form-control" type="text" name="min_length" minLength="1" id="i-name" value="'+ name+'"/></div>' +
             '<div class="form-group label-floating">' +
             '<label class="control-label">'+type+'</label>' +
-            '<input class="form-control" type="text" name="min_length" minLength="1" id="i-value" value="'+val+'"/></div>',
+            '<input class="form-control" type="text" name="min_length" minLength="1" id="i-value" value="'+val+'"/></div>';
+        if(type ==='RE'){
+            if(priority!==undefined && priority!==""){
+                sHtml += '<div class="form-group label-floating">' +
+                    '<label class="control-label">Priority</label>' +
+                    '<input class="form-control" type="number" name="min_length" minLength="1" id="i-priority" value="'+priority+'"/></div>';
+            }
+            if(typeParam!==undefined && typeParam !==""){
+                var checked = typeParam ==="SPLITTER"?"checked":"";
+                sHtml +="<div><label>" +
+                    "<input type=\"checkbox\" "+checked+" id='i-splitter' name=\"optionsCheckboxes\"> Is Splitter?" +
+                    "</label></div>"
+            }
+        }
+
+        swal({
+            title: 'Modify '+ type +' rules',
+            html: sHtml,
             showCancelButton: true,
             confirmButtonClass: 'btn btn-success',
             cancelButtonClass: 'btn btn-danger',
             buttonsStyling: false
         }).then(function(result) {
-            modifyFromStorage(type,id,$('#i-name').val(),$('#i-value').val());
+            modifyFromStorage(type,id,$('#i-name').val(),$('#i-value').val(),$('#i-splitter').prop('checked'),$('#i-priority').val());
             swal({
                 type: 'success',
                 html: 'You modify: <strong>' +
@@ -795,14 +945,30 @@
     function editNewItem(type,id){
         var name = $("#"+type+id+" td:nth-child(2)").html();
         var val = $("#"+type+id+" td:nth-child(3)").html();
-        swal({
-            title: 'Modify '+ type +' rules',
-            html: '<div class="form-group label-floating">' +
+        var typeParam = $("#"+type+id+" td:nth-child(4)").html();
+        var priority = $("#"+type+id+" td:nth-child(5)").html();
+        var sHtml = '<div class="form-group label-floating">' +
             '<label class="control-label">Name</label>' +
             '<input class="form-control" type="text" name="min_length" minLength="1" id="i-name" value="'+ name+'"/></div>' +
             '<div class="form-group label-floating">' +
             '<label class="control-label">'+type+'</label>' +
-            '<input class="form-control" type="text" name="min_length" minLength="1" id="i-value" value="'+val+'"/></div>',
+            '<input class="form-control" type="text" name="min_length" minLength="1" id="i-value" value="'+val+'"/></div>';
+        if(type==='NRE'){
+            if(priority!==undefined && priority!==""){
+                sHtml += '<div class="form-group label-floating">' +
+                    '<label class="control-label">Priority</label>' +
+                    '<input class="form-control" type="number" name="min_length" minLength="1" id="i-priority" value="'+priority+'"/></div>';
+            }
+            if(typeParam!==undefined && typeParam !==""){
+                var checked = typeParam ==="SPLITTER"?"checked":"";
+                sHtml +="<div><label>" +
+                    "<input type=\"checkbox\" "+checked+" id='i-splitter' name=\"optionsCheckboxes\"> Is Splitter?" +
+                    "</label></div>"
+            }
+        }
+        swal({
+            title: 'Modify '+ type +' rules',
+            html: sHtml,
             showCancelButton: true,
             confirmButtonClass: 'btn btn-success',
             cancelButtonClass: 'btn btn-danger',
@@ -810,7 +976,7 @@
         }).then(function(result) {
             var var1 = $('#i-name').val();
             var var2 = $('#i-value').val();
-            modifyFromNewStorage(type,id,var1,var2);
+            modifyFromNewStorage(type,id,var1,var2,$('#i-splitter').prop('checked'),$('#i-priority').val());
             swal({
                 type: 'success',
                 html: 'You modify: <strong>' + var1 +'</strong><br> ' +
@@ -886,19 +1052,32 @@
                     }
                 });
                 break;
+            case 'Action':
+                $("#Action"+id).remove();
+                $.each(actionList,function (index, item) {
+                    if(item.id === id){
+                        actionList.splice(index,1);
+                        return false;
+                    }
+                });
+                break;
         }
     }
 
     // 编辑一个条目（原始数据）
-    function modifyFromStorage(type,id,name,val){
+    function modifyFromStorage(type,id,name,val,typeParam,priority){
         $("#"+type+id+" td:nth-child(2)").html(name);
         $("#"+type+id+" td:nth-child(3)").html(val);
+        $("#"+type+id+" td:nth-child(4)").html(typeParam?"SPLITTER":"NON_SPLITTER");
+        $("#"+type+id+" td:nth-child(5)").html(priority);
         switch (type){
             case 'RE':
                 $.each(reList,function (index, re) {
                     if(re.id === id){
                         reList[index].name = name;
                         reList[index].regex = val;
+                        reList[index].type = typeParam?2:1;
+                        reList[index].priority = priority;
                         return false;
                     }
                 });
@@ -921,20 +1100,33 @@
                     }
                 });
                 break;
+            case 'Action':
+                $.each(actionList,function (index, ac) {
+                    if(ac.id === id){
+                        actionList[index].actionName = name;
+                        actionList[index].actionContent = val;
+                        return false;
+                    }
+                });
+                break;
         }
     }
 
     // 编辑一个条目（新添数据）
-    function modifyFromNewStorage(type,id,name,val){
+    function modifyFromNewStorage(type,id,name,val,typeParam,priority){
         //更新显示表格
         $("#"+type+id+" td:nth-child(2)").html(name);
         $("#"+type+id+" td:nth-child(3)").html(val);
+        $("#"+type+id+" td:nth-child(4)").html(typeParam?"SPLITTER":"NON_SPLITTER");
+        $("#"+type+id+" td:nth-child(5)").html(priority);
         switch (type){
             case 'NRE':
                 $.each(newRE,function (index, re) {
                     if(re.id===id){
                         newRE[index].name = name;
                         newRE[index].regex = val;
+                        newRE[index].type = typeParam?2:1;
+                        newRE[index].priority = priority;
                         return false;
                     }
                 });
@@ -953,6 +1145,15 @@
                     if(ag.id===id){
                         newAG[index].agName = name;
                         newAG[index].agContent = val;
+                        return false;
+                    }
+                });
+                break;
+            case 'Action':
+                $.each(newAction,function (index, ac) {
+                    if(ac.id===id){
+                        newAction[index].actionName = name;
+                        newAction[index].actionContent = val;
                         return false;
                     }
                 });
@@ -984,6 +1185,14 @@
                 $.each(newAG,function (index, item) {
                     if(item.id === id){
                         newAG.splice(index,1);
+                        return false;
+                    }
+                });
+                break;
+            case 'Action':
+                $.each(newAction,function (index, item) {
+                    if(item.id === id){
+                        newAction.splice(index,1);
                         return false;
                     }
                 });

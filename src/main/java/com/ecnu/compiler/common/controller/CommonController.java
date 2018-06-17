@@ -16,7 +16,6 @@
  */
 package com.ecnu.compiler.common.controller;
 
-import com.ecnu.compiler.common.domain.CompilerConfiguration;
 import com.ecnu.compiler.common.domain.DfaVO;
 import com.ecnu.compiler.common.domain.NfaVO;
 import com.ecnu.compiler.common.service.CommonService;
@@ -24,7 +23,7 @@ import com.ecnu.compiler.lexical.service.LexicalService;
 import com.ecnu.compiler.rbac.domain.Compiler;
 import com.ecnu.compiler.rbac.domain.User;
 import com.ecnu.compiler.rbac.service.UserService;
-import com.ecnu.compiler.rbac.utils.UserUtils;
+import com.ecnu.compiler.utils.UserUtils;
 import com.ecnu.compiler.utils.domain.HttpRespCode;
 import com.ecnu.compiler.utils.domain.Resp;
 import org.springframework.http.HttpStatus;
@@ -104,11 +103,14 @@ public class CommonController {
         if(ObjectUtils.isEmpty(id)){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Resp());
         }
-        CompilerConfiguration cf = commonService.getSystemCompilerConfiguration(id);
-        if(ObjectUtils.isEmpty(cf)){
-            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE).body(new Resp());
+        Resp resp = commonService.getCompilerConfiguration(id);
+        if(resp.getResCode().equals(HttpRespCode.UNAUTHORIZED.getCode())){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new Resp());
+        } else if(resp.getResCode().equals(HttpRespCode.FORBIDDEN.getCode())){
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new Resp());
+        } else if (resp.getResCode().equals(HttpRespCode.NOT_FOUND)){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new Resp());
         }
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(new Resp(HttpRespCode.SUCCESS,cf));
+        return ResponseEntity.status(HttpStatus.OK).body(resp);
     }
 }

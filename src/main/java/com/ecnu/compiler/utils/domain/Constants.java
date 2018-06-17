@@ -13,4 +13,8 @@ public class Constants {
     public static final int VOLUME_COMMON = 5;
     public static final int VOLUME_STANDARD_VIP = 20;
 
+    /**Log History*/
+    public static final int LOG_TYPE_LEXER = 0;
+    public static final int LOG_TYPE_PARSER = 1;
+    public static final int LOG_TYPE_SEMANTIC = 2;
 }

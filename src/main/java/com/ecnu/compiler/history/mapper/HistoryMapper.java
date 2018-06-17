@@ -15,4 +15,5 @@ import java.util.List;
 public interface HistoryMapper extends BaseMapper<History> {
     List<History> getUserHistory(@Param("uid")Integer uid);
 
+    void log(@Param("his")History history);
 }

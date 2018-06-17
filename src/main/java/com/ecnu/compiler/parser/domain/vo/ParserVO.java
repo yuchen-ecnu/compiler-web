@@ -1,8 +1,7 @@
-package com.ecnu.compiler.parser.domain;
+package com.ecnu.compiler.parser.domain.vo;
 
 import com.ecnu.compiler.component.parser.domain.ParsingTable.ParsingTable;
 import com.ecnu.compiler.component.parser.domain.PredictTable.PredictTable;
-import com.ecnu.compiler.component.parser.domain.TD;
 
 public class ParserVO {
     private TimeTableVO timeTableVO;

@@ -2,6 +2,7 @@ package com.ecnu.compiler.rbac.domain;
 
 import com.baomidou.mybatisplus.activerecord.Model;
 import com.baomidou.mybatisplus.annotations.TableField;
+import com.baomidou.mybatisplus.annotations.TableId;
 import com.baomidou.mybatisplus.annotations.TableName;
 
 import java.io.Serializable;
@@ -12,6 +13,7 @@ import java.sql.Timestamp;
  */
 @TableName("compiler")
 public class Compiler extends Model<Compiler> {
+    @TableId
     private Integer id;
     private Integer userId;
     private String compilerName;

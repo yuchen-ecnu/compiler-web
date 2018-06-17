@@ -1,3 +1,5 @@
+package com.ecnu.compiler.semantic.controller;
+
 /**
  * Controller编写规则：
  *   1、所有路径均按节划分，每一节均为 单个 名词
@@ -14,16 +16,15 @@
  *
  *   @author Michael Chen
  */
-package com.ecnu.compiler.history.controller;
 
-import com.ecnu.compiler.history.service.HistoryService;
-import com.ecnu.compiler.rbac.domain.User;
-import com.ecnu.compiler.utils.UserUtils;
+import com.ecnu.compiler.lexical.domain.LanguageParam;
+import com.ecnu.compiler.semantic.domain.SemanticVO;
+import com.ecnu.compiler.semantic.service.SemanticService;
 import com.ecnu.compiler.utils.domain.HttpRespCode;
 import com.ecnu.compiler.utils.domain.Resp;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.util.ObjectUtils;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
@@ -31,27 +32,27 @@ import org.springframework.web.bind.annotation.RestController;
 import javax.annotation.Resource;
 
 /**
- * 用户控制器，用于处理用户账户内信息处理
+ * 语义控制器
+ *
  *
  * @author Michael Chen
  */
 @RestController
-@RequestMapping(value = "/history")
-public class HistoryController {
+@RequestMapping(value = "/semantic")
+public class SemanticController {
     @Resource
-    private HistoryService historyService;
+    private SemanticService semanticService;
+
     /**
-     *  获取用户的操作历史记录
+     * 语法分析器
      */
-    @RequestMapping(value = "/list/", method = RequestMethod.GET)
-    public ResponseEntity<Resp> getUserHistory() {
-        User user = UserUtils.getCurrentUser();
-        if(ObjectUtils.isEmpty(user)){
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new Resp());
+    @RequestMapping(value = "/analyser/", method = RequestMethod.POST)
+    public ResponseEntity<Resp> text2ParserTable(@RequestBody LanguageParam languageParam) {
+        //params error
+        if(!languageParam.isVaild()){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Resp());
         }
-        return ResponseEntity.status(HttpStatus.OK)
-                .body(new Resp(HttpRespCode.SUCCESS,historyService.getUserHistory(user.getId())));
+        SemanticVO parserVO = semanticService.semanticAnalyser(languageParam.getLan(), languageParam.getTxt());
+        return ResponseEntity.status(HttpStatus.OK).body(new Resp(HttpRespCode.SUCCESS,parserVO));
     }
-
-
 }

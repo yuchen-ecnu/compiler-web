@@ -2,7 +2,7 @@ package com.ecnu.compiler.lexical.domain;
 
 import org.springframework.util.ObjectUtils;
 
-public class LexerParam {
+public class LanguageParam {
     Integer lan;
     String txt;
 

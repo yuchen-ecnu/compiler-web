@@ -17,11 +17,8 @@ package com.ecnu.compiler.parser.controller;
  *   @author Lucto
  */
 
-import com.ecnu.compiler.lexical.domain.LexerParam;
-import com.ecnu.compiler.lexical.domain.SymbolTableVO;
-import com.ecnu.compiler.parser.domain.ParserTableVO;
-import com.ecnu.compiler.parser.domain.ParserVO;
-import com.ecnu.compiler.parser.domain.TimeTableVO;
+import com.ecnu.compiler.lexical.domain.LanguageParam;
+import com.ecnu.compiler.parser.domain.vo.ParserVO;
 import com.ecnu.compiler.parser.service.ParserService;
 import com.ecnu.compiler.utils.domain.HttpRespCode;
 import com.ecnu.compiler.utils.domain.Resp;
@@ -50,12 +47,12 @@ public class ParserController {
      * 语法分析器
      */
     @RequestMapping(value = "/parser/", method = RequestMethod.POST)
-    public ResponseEntity<Resp> text2ParserTable(@RequestBody LexerParam lexerParam) {
+    public ResponseEntity<Resp> text2ParserTable(@RequestBody LanguageParam languageParam) {
         //params error
-        if(!lexerParam.isVaild()){
+        if(!languageParam.isVaild()){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Resp());
         }
-        ParserVO parserVO = parserService.generateParserTable(lexerParam.getLan(), lexerParam.getTxt());
+        ParserVO parserVO = parserService.generateParserTable(languageParam.getLan(), languageParam.getTxt());
         return ResponseEntity.status(HttpStatus.OK).body(new Resp(HttpRespCode.SUCCESS,parserVO));
     }
 }
