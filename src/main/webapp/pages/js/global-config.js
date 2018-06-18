@@ -1,6 +1,12 @@
+/**
+ * Please include this file after jquery
+ * @type {string}
+ */
+
 var base_url = "/compiler/";
 var api_login = "session/login/";
 var api_register = "session/register/";
+var api_current_user = "user/current/";
 var api_re2nfa = "common/re2nfa/";
 var api_re2dfa = "common/re2dfa/";
 var api_lexer = "lexical/lexer/";
@@ -49,6 +55,34 @@ function showNotification(type,msg){
     });
 }
 
+/**
+ * 初始化用户信息
+ * @param name
+ */
+function initUserInfo(){
+    var node = $("#user-name");
+    $.ajax({
+        url: base_url + api_current_user,
+        type : "get",
+        dataType : "json",
+        headers: {'Content-type': 'application/json;charset=UTF-8'},
+        success : function(res){
+            if(res.resCode === '200'){
+                var arr = res.data;
+                node.html("<a data-toggle=\"collapse\" href=\"#collapseExample\" class=\"collapsed\">" +
+                    ""+arr.nickName+"<b class=\"caret\"></b></a>" +
+                    "<div class=\"collapse\" id=\"collapseExample\"><ul class=\"nav\"><li>" +
+                    "<a href=\"user.html\">Edit Profile</a></li><li><a href=\"#\">Settings</a>" +
+                    "</li></ul></div>");
+                return;
+            }
+            node.html("<a href='login/login.html'><button class=\"btn btn-info\">Login</button></a>");
+        },
+        error : function(data){
+            node.html("<a href='login/login.html'><button class=\"btn btn-info\">Login</button></a>");
+        }
+    });
+}
 
 
 /**

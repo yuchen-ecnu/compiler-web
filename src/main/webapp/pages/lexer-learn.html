@@ -46,21 +46,7 @@
                 <div class="photo">
                     <img src="../assets/img/faces/avatar.jpg"/>
                 </div>
-                <div class="info">
-                    <a data-toggle="collapse" href="#collapseExample" class="collapsed">
-                        Default User
-                        <b class="caret"></b>
-                    </a>
-                    <div class="collapse" id="collapseExample">
-                        <ul class="nav">
-                            <li>
-                                <a href="user.html">Edit Profile</a>
-                            </li>
-                            <li>
-                                <a href="#">Settings</a>
-                            </li>
-                        </ul>
-                    </div>
+                <div class="info" id="user-name">
                 </div>
             </div>
             <ul class="nav">
@@ -376,6 +362,7 @@
         initToolTip();
         //获取用户可选择的语法器
         initSelector();
+        initUserInfo();
     });
 </script>
 

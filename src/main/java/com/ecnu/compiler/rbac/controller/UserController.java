@@ -57,6 +57,20 @@ public class UserController {
     }
 
     /**
+     *  获取当前用户资料
+     */
+    @RequestMapping(value = "/current/", method = RequestMethod.GET)
+    public ResponseEntity<Resp> getCurrentUser() {
+        User user = UserUtils.getCurrentUser();
+        if(ObjectUtils.isEmpty(user)){
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new Resp());
+        }
+        user.setPwd("");
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new Resp(HttpRespCode.SUCCESS,user));
+    }
+
+    /**
      *  修改用户自定义的编译器
      */
     @RequestMapping(value = "/compiler/modify/", method = RequestMethod.POST)
