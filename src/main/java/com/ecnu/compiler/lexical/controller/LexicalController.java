@@ -17,6 +17,7 @@ package com.ecnu.compiler.lexical.controller;
  */
 
 import com.ecnu.compiler.common.domain.DfaVO;
+import com.ecnu.compiler.component.storage.ErrorList;
 import com.ecnu.compiler.lexical.domain.LanguageParam;
 import com.ecnu.compiler.lexical.domain.Regex;
 import com.ecnu.compiler.lexical.domain.SymbolTableVO;
@@ -89,7 +90,13 @@ public class LexicalController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Resp());
         }
         Resp resp = lexicalService.generateSymbolTable(languageParam.getLan(), languageParam.getTxt());
-        return ResponseEntity.status(HttpStatus.OK).body(resp);
+        if(resp.getResCode().equals(HttpRespCode.SUCCESS.getCode())){
+            SymbolTableVO symbolTable = (SymbolTableVO)resp.getData();
+            return ResponseEntity.status(HttpStatus.OK).body(new Resp(HttpRespCode.SUCCESS,symbolTable));
+        }else{
+            ErrorList errorList = (ErrorList)resp.getData();
+            return ResponseEntity.status(HttpStatus.OK).body(new Resp(HttpRespCode.PRECONDITION_FAILED,errorList));
+        }
     }
 
 }

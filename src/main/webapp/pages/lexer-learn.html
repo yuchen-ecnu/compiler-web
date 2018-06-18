@@ -103,6 +103,55 @@
         <div class="content">
             <div class="container-fluid">
                 <div class="row">
+                    <div class="col-lg-3 col-md-6 col-sm-6">
+                        <div class="card card-stats">
+                            <div class="card-header" data-background-color="orange">
+                                <i class="material-icons">weekend</i>
+                            </div>
+                            <div class="card-content">
+                                <p style="font-size: larger">Lexer Time</p>
+                                <h3 class="card-title" id="lexerTime">Waiting..</h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6 col-sm-6">
+                        <div class="card card-stats">
+                            <div class="card-header" data-background-color="rose">
+                                <i class="material-icons">equalizer</i>
+                            </div>
+                            <div class="card-content">
+                                <p style="font-size:larger">Parser Time</p>
+                                <h3 class="card-title" id="parserTime">Waiting..</h3>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="col-lg-3 col-md-6 col-sm-6">
+                        <div class="card card-stats">
+                            <div class="card-header" data-background-color="blue">
+                                <i class="fa fa-twitter"></i>
+                            </div>
+                            <div class="card-content">
+                                <p style="font-size: larger">Preprocessor Time</p>
+                                <h3 class="card-title" id="preTime">Waiting..</h3>
+                            </div>
+
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6 col-sm-6">
+                        <div class="card card-stats">
+                            <div class="card-header" data-background-color="rose">
+                                <i class="material-icons">equalizer</i>
+                            </div>
+                            <div class="card-content">
+                                <p style="font-size:larger">Semantic Analysis Time</p>
+                                <h3 class="card-title" id="semanticTime">Waiting..</h3>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
                     <div class="col-md-7">
                         <div class="card">
                             <div class="card-header card-header-icon" data-background-color="blue">
@@ -184,6 +233,30 @@
                                         </thead>
                                         <tbody id="tableBody">
 
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <!-- end content-->
+                        </div>
+                        <div class="card">
+                            <div class="card-header card-header-icon" data-background-color="purple">
+                                <i class="material-icons">assignment</i>
+                            </div>
+                            <div class="card-content">
+                                <h4 class="card-title">Error Table</h4>
+                                <div class="toolbar">
+                                    <!--        Here you can write extra buttons/actions for the toolbar              -->
+                                </div>
+                                <div class="material-datatables" id="table-holder">
+                                    <table id="errorTable" class="table table-hover" border="1">
+                                        <thead>
+                                        <th>Code</th>
+                                        <th>Message</th>
+                                        <th>Time</th>
+                                        <th>StatusCode</th>
+                                        </thead>
+                                        <tbody>
                                         </tbody>
                                     </table>
                                 </div>
@@ -278,7 +351,6 @@
         initUserInfo();
     });
 </script>
-
 
 <script type="text/javascript">
     $("#sel-lan").change(function () {
@@ -392,6 +464,27 @@
                     $("#tableBody").html(sHtml);
                     $("#buttonBody").html(bHtml);
                     initTable("datatables");
+                }else{
+                    var errArr = res.data.errorMsgList;
+                    var eHtml = "<thead>\n" +
+                    " <th>Code</th>\n" +
+                    "<th>Message</th>\n" +
+                    "<th>Time</th>\n" +
+                    "<th>StatusCode</th>\n" +
+                    "</thead>\n";
+                    $.each(errArr, function(index, error) {
+                        var time = new Date(error.time);
+                        var date = time.toLocaleString();
+                        eHtml +="<tbody>\n" +
+                            "<tr>\n" +
+                            "<td>"+error.code +"</td>\n" +
+                            "<td>"+error.msg+"</td>\n" +
+                            "<td>"+date+"</td>\n" +
+                            "<td>"+error.statusCode+"</td>\n" +
+                            "</tr>\n";
+                    });
+                    eHtml += "</tbody>";
+                    $("#errorTable").html(eHtml);
                 }
             },
             error: function (res) {
