@@ -5,8 +5,14 @@ import com.baomidou.mybatisplus.plugins.Page;
 import com.ecnu.CompilerBuilder;
 import com.ecnu.compiler.common.domain.*;
 import com.ecnu.compiler.component.CacheManager.Language;
+import com.ecnu.compiler.component.parser.domain.ParsingTable.LLParsingTable;
+import com.ecnu.compiler.component.parser.domain.ParsingTable.LRParsingTable;
 import com.ecnu.compiler.component.parser.domain.ParsingTable.ParsingTable;
 import com.ecnu.compiler.constant.Config;
+import com.ecnu.compiler.parser.domain.vo.LLParserTableVO;
+import com.ecnu.compiler.parser.domain.vo.LRParserTableVO;
+import com.ecnu.compiler.parser.domain.vo.NParserVO;
+import com.ecnu.compiler.parser.domain.vo.TDVO;
 import com.ecnu.compiler.parser.mapper.CFGMapper;
 import com.ecnu.compiler.component.lexer.domain.DFA;
 import com.ecnu.compiler.component.lexer.domain.NFA;
@@ -95,7 +101,7 @@ public class CommonService {
                 ,new EntityWrapper<User>().orderDesc(conditions));
     }
 
-    public Resp getParserTable(Integer id) {
+    public Resp getParserTable(Integer id,Integer type) {
 
         List<Regex> regexList = regexMapper.selectList(
                 new EntityWrapper<Regex>().eq("compiler_id", id)
@@ -118,15 +124,20 @@ public class CommonService {
 
         Config config = new Config();
         config.setExecuteType(com.ecnu.compiler.constant.Constants.EXECUTE_STAGE_BY_STAGE);
-        config.setParserAlgorithm(compilerVO.getParserModel());
+        config.setParserAlgorithm(type);
 
         CompilerBuilder compilerBuilder = new CompilerBuilder();
         Language language = compilerBuilder.prepareLanguage(id, reStrList, cfgStrList,new ArrayList<String>(),new HashMap<String, String>());
-        ParsingTable pb = parserService.getParsingTable(language,compilerVO.getParserModel());
+        ParsingTable pb = parserService.getParsingTable(language,type);
         if(ObjectUtils.isEmpty(pb)){
             return new Resp(HttpRespCode.PRECONDITION_FAILED,compilerBuilder.getErrorList());
         }
-        return new Resp(HttpRespCode.SUCCESS,pb);
+        if(type == com.ecnu.compiler.constant.Constants.PARSER_LL)
+            return new Resp(HttpRespCode.SUCCESS, new NParserVO(null, null, new LLParserTableVO((LLParsingTable) pb),
+                    type + "", null));
+        else
+            return new Resp(HttpRespCode.SUCCESS, new NParserVO(null, null, new LRParserTableVO((LRParsingTable) pb),
+                    type + "", null));
     }
 
     public Resp getCompilerConfiguration(int id) {

@@ -49,7 +49,7 @@ public class LLParserTableVO extends ParserTableVO{
             if(tableArr[ rowSym ][ colSym ] == null){
                 tableArr[ rowSym ][ colSym ] = productString;
             }else{
-                tableArr[ rowSym ][ colSym ] += (" !CONFLICT! " + productString);
+                tableArr[ rowSym ][ colSym ] += (" <br> " + productString);
             }
         }
     }

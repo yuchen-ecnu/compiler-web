@@ -118,13 +118,23 @@
                                 <h4 class="card-title">Parsing Table</h4>
                                 <div class="toolbar">
                                     <!--        Here you can write extra buttons/actions for the toolbar              -->
-                                    <div class="col-md-6">
+                                    <div class="col-md-4">
                                         <select id='sel-lan' class="selectpicker"
                                                 data-style="btn btn-primary btn-round" title="Choose Language"
                                                 data-size="7">
                                         </select>
                                     </div>
-                                    <div class="col-md-6">
+                                    <div class="col-md-4">
+                                        <select id='sel-type' class="selectpicker"
+                                                data-style="btn btn-primary btn-round" title="Choose Type"
+                                                data-size="7">
+                                            <option value="0">LL Algorithm</option>
+                                            <option value="1">SLR Algorithm</option>
+                                            <option value="2">LR Algorithm</option>
+                                            <option value="3">LALR Algorithm</option>
+                                        </select>
+                                    </div>
+                                    <div class="col-md-4">
                                         <button type="button" class="btn btn-rose btn-fill" id="confirm-btn">
                                             Confirm
                                         </button>
@@ -258,32 +268,50 @@
 
 <script type="text/javascript">
 
-    function draw(lan) {
+    function draw(lan,type) {
         $.ajax({
-            url: base_url + api_parser_table + "?id=" +lan,
+            url: base_url + api_parser_table,
             type: "get",
             dataType: "json",
             headers: {'Content-type': 'application/json;charset=UTF-8'},
+            data:{
+              id: lan,
+              type: type
+            },
             success: function (res) {
                 if(res.data.parsingTableName === "0") {
-                    var preTable = "<h5>Predict Table</h5>" +
+                    var totalRowNum = res.data.parsingTable.nonTermRowNum;
+                    var totalColNum = res.data.parsingTable.termColNum;
+                    var parserTableHtml = "<h5>LL Parser Table</h5>" +
                         "<table class=\"table table-hover\" border=\"1\">" +
-                        "<thead><th>Matched</th><th>Stack</th><th>Input</th>" +
-                        "<th>Action</th></thead><tbody>";
+                        "<tbody><tr><td colspan=\""+ 1 +"\">Non-Terminal</td>" +
+                        "<td colspan=\""+ totalColNum +"\">INPUT SYMBOY</td></tr>";
 
-                    var preTableArr = res.data.predictTable.tableEntryList;
-                    $.each(preTableArr, function (index, item) {
-                        console.log(item.itemList[1]);
-                        console.log(item.itemList[2]);
-                        console.log(item.itemList[3]);
-                        preTable += "<tr><td>" + item.itemList[0] + "</td>" +
-                            "<td>" + item.itemList[1] + "</td>" +
-                            "<td>" + item.itemList[2] + "</td>" +
-                            "<td>" + item.itemList[3] + "</td></tr>"
-                    });
-                    preTable += "</tbody></table>";
+                    var colNameArr = res.data.parsingTable.colArr;
+                    var rowNameArr = res.data.parsingTable.rowArr;
+                    var tableArr = res.data.parsingTable.tableArr;
 
-                    $("#table-holder").html(preTable);
+                    parserTableHtml += "<tr><td></td>";
+                    for(var i = 0; i < colNameArr.length; i++){
+                        parserTableHtml += "<td>"+ colNameArr[i] +"</td>";
+                    }
+                    parserTableHtml += "</tr>";
+
+                    for(var j = 0; j < rowNameArr.length; j++ ){
+                        parserTableHtml += "<tr>";
+                        parserTableHtml += "<td>"+ rowNameArr[j] +"</td>";
+                        for(var m = 0; m < tableArr[j].length; m++){
+                            if(tableArr[j][m] == null)
+                                parserTableHtml += "<td></td>";
+                            else
+                                parserTableHtml += "<td>"+ tableArr[j][m] +"</td>";
+                        }
+                        parserTableHtml += "</tr>";
+                    }
+
+                    parserTableHtml += "</tbody></table>";
+
+                    document.getElementById("table-holder").innerHTML = ( parserTableHtml);
 
                 }else if( res.data.parsingTableName === "1" ||
                     res.data.parsingTableName === "2" ||
@@ -291,15 +319,27 @@
 
                     var tableHeadSize = res.data.parsingTable.tableHeadSize;
                     var divPosition = res.data.parsingTable.divOfTowParts;
-
-                    var parserTableHtml = "<h5>Parser Table</h5>" +
+                    var tableName="";
+                    switch (res.data.parsingTableName){
+                        case "1":
+                            tableName = "SLR ";
+                            break;
+                        case "2":
+                            tableName = "LR ";
+                            break;
+                        case "3":
+                            tableName = "LALR ";
+                            break;
+                    }
+                    var parserTableHtml = "<h5>"+tableName+" Parser Table</h5>" +
                         "<table class=\"table table-hover\" border=\"1\">" +
                         "<tbody><tr><td colspan=\""+ (divPosition + 1) +"\">Action Table</td>" +
                         "<td colspan=\""+ (tableHeadSize - divPosition) +"\">Goto Table</td></tr>";
+
                     var tableHeadArr = res.data.parsingTable.tableHeadList;
-                    parserTableHtml += "<tr><td>State</td>\n";
+                    parserTableHtml += "<tr><td>State</td>";
                     for(var i = 0; i < tableHeadArr.length; i++){
-                        parserTableHtml += "<td>"+ tableHeadArr[i] +"</td>\n";
+                        parserTableHtml += "<td>"+ tableHeadArr[i] +"</td>";
                     }
                     parserTableHtml += "</tr>";
 
@@ -308,36 +348,17 @@
                         parserTableHtml += "<tr><td>" + stateCount + "</td>\n";
                         for(var j = 0; j < item.length ; j++){
                             if(item[j] == null)
-                                parserTableHtml += "<td></td>\n";
+                                parserTableHtml += "<td></td>";
                             else
-                                parserTableHtml += "<td>"+ item[j].operate + "" + item[j].value +"</td>\n";
+                                parserTableHtml += "<td>"+ item[j].operate + "" + item[j].value +"</td>";
                         }
                         stateCount++;
                         parserTableHtml += "</tr>";
                     });
                     parserTableHtml += "</tbody></table>";
 
-
-                    var preTable = "<h5>Predict Table</h5>" +
-                        "<table class=\"table table-hover\" border=\"1\">" +
-                        "<thead><th>Stack</th><th>Input</th><th>Action</th>" +
-                        "<th>Output</th></thead><tbody>";
-
-                    var preTableArr = res.data.predictTable.tableEntryList;
-                    $.each(preTableArr, function (index, item) {
-                        console.log(item.itemList[1]);
-                        console.log(item.itemList[2]);
-                        console.log(item.itemList[3]);
-                        preTable += "<tr><td>" + item.itemList[0] + "</td>" +
-                            "<td>" + item.itemList[1] + "</td>" +
-                            "<td>" + item.itemList[2] + "</td>" +
-                            "<td>" + item.itemList[3] + "</td></tr>"
-                    });
-                    preTable += "</tbody></table>";
-
-                    $("#table-holder").html(preTable + parserTableHtml);
+                    document.getElementById("table-holder").innerHTML = (parserTableHtml);
                 }
-
             },
             error: function (res) {
                 if (res.status === 401) {
@@ -373,8 +394,20 @@
             });
             return;
         }
+        var type = $("#sel-type").val();
+
+        if (type === "" || type === undefined) {
+            swal({
+                title: "Empty Warn",
+                text: "Please choose a compiler.",
+                timer: 2000,
+                showConfirmButton: false,
+                type: "warning"
+            });
+            return;
+        }
         // draw picture
-        draw(lan);
+        draw(lan,type);
     });
 
 

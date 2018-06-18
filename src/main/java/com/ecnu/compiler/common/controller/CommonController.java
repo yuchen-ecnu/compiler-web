@@ -69,11 +69,12 @@ public class CommonController {
     }
 
     @RequestMapping(value = "/parser/", method = RequestMethod.GET)
-    public ResponseEntity<Resp> getParserTable(@RequestParam("id")Integer compilerId) {
-        if(ObjectUtils.isEmpty(compilerId)){
+    public ResponseEntity<Resp> getParserTable(@RequestParam("id")Integer compilerId,@RequestParam("type")Integer type) {
+        if(ObjectUtils.isEmpty(compilerId)||ObjectUtils.isEmpty(type)
+                ||type<0||type>3){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Resp());
         }
-        return ResponseEntity.status(HttpStatus.OK).body(new Resp(HttpRespCode.SUCCESS,commonService.getParserTable(compilerId)));
+        return ResponseEntity.status(HttpStatus.OK).body(commonService.getParserTable(compilerId,type));
     }
 
 
