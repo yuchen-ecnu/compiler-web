@@ -18,99 +18,12 @@
     <!--     Fonts and icons     -->
     <link href="http://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Material+Icons" />
+    <link rel="import" href="menu.html" id="include">
 </head>
 
 <body>
     <div class="wrapper">
-        <div class="sidebar" data-active-color="rose" data-background-color="black" data-image="../assets/img/sidebar-1.jpg">
-            <!--
-        Tip 1: You can change the color of active element of the sidebar using: data-active-color="purple | blue | green | orange | red | rose"
-        Tip 2: you can also add an image using data-image tag
-        Tip 3: you can change the color of the sidebar with data-background-color="white | black"
-    -->
-            <div class="logo">
-                <a href="#" class="simple-text">
-                    Compile Now
-                </a>
-            </div>
-            <div class="logo logo-mini">
-                <a href="#" class="simple-text">
-                    CN
-                </a>
-            </div>
-            <div class="sidebar-wrapper">
-                <div class="user">
-                    <div class="photo">
-                        <img src="../assets/img/faces/avatar.jpg" />
-                    </div>
-                    <div class="info" id="user-name">
-
-                    </div>
-                </div>
-                <ul class="nav">
-                    <li>
-                        <a href="./dashboard.html">
-                            <i class="material-icons">dashboard</i>
-                            <p>Dashboard</p>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="./compilers.html">
-                            <i class="material-icons">apps</i>
-                            <p>Compilers</p>
-                        </a>
-                    </li>
-                    <li>
-                        <a data-toggle="collapse" href="#formsExamples">
-                            <i class="material-icons">content_paste</i>
-                            <p>Learning
-                                <b class="caret"></b>
-                            </p>
-                        </a>
-                        <div class="collapse in" id="formsExamples">
-                            <ul class="nav">
-                                <li>
-                                    <a href="lexer-learn.html">Lexer</a>
-                                </li>
-                                <li>
-                                    <a href="parser-learn.html">Parser</a>
-                                </li>
-                                <li class="active">
-                                    <a href="semantic-learn.html">Semantic Analyser</a>
-                                </li>
-                            </ul>
-                        </div>
-                    </li>
-                    <li>
-                        <a data-toggle="collapse" href="#componentsExamples">
-                            <i class="material-icons">widgets</i>
-                            <p>Utils
-                                <b class="caret"></b>
-                            </p>
-                        </a>
-                        <div class="collapse" id="componentsExamples">
-                            <ul class="nav">
-                                <li>
-                                    <a href="calendar.html">Calendar</a>
-                                </li><li>                                     <a href="re-tester.html">RE Tester</a>                                 </li>                                 <li>                                     <a href="nfa-generator.html">NFA Generator</a>                                 </li>                                 <li>                                     <a href="dfa-generator.html">DFA Generator</a>                                 </li>
-                            </ul>
-                        </div>
-                    </li>
-                    <li>
-                        <a href="history.html">
-                            <i class="material-icons">place</i>
-                            <p>History</p>
-                        </a>
-                    </li>
-                    <li>
-                        <a href="../pages/price/pricing.html">
-                            <i class="material-icons">timeline</i>
-                            <p>Pricing</p>
-                        </a>
-                    </li>
-                </ul>
-            </div>
-        </div>
+        <div id="page1"></div>
         <div class="main-panel">
             <nav class="navbar navbar-transparent navbar-absolute">
                 <div class="container-fluid">
@@ -367,6 +280,9 @@
 <!--Global Configure -->
 <script src="js/global-config.js"></script>
 <script type="text/javascript">
+    $("#page1").html(include.import.body.innerHTML);
+    $("#learn").addClass("in");
+    $("#semantic").addClass("active");
     //初始化编辑器
     var editor = ace.edit("editor");
     editor.setTheme("ace/theme/twilight");
