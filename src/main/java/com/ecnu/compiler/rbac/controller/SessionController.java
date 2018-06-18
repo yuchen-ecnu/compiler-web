@@ -22,6 +22,7 @@ import com.ecnu.compiler.utils.domain.HttpRespCode;
 import com.ecnu.compiler.utils.domain.Resp;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -66,5 +67,22 @@ public class SessionController {
     public ResponseEntity<Resp> logout(HttpSession session) {
         session.invalidate();
         return ResponseEntity.status(HttpStatus.OK).body(new Resp(HttpRespCode.SUCCESS));
+    }
+
+    /**
+     * 注册
+     */
+    @RequestMapping(value = "/register/", method = RequestMethod.POST)
+    public ResponseEntity<Resp> register(@RequestBody User userParam) {
+        if(!userParam.isRegisterValid()){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Resp());
+        }
+        User user = sessionService.registerUser(userParam);
+        if(ObjectUtils.isEmpty(user)){
+            return ResponseEntity.status(HttpStatus.NOT_ACCEPTABLE)
+                    .body(new Resp(HttpRespCode.SUCCESS));
+        }
+        return ResponseEntity.status(HttpStatus.OK)
+                .body(new Resp(HttpRespCode.SUCCESS,user));
     }
 }

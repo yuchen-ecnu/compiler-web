@@ -104,19 +104,19 @@
                                                 <span class="input-group-addon">
                                                     <i class="material-icons">face</i>
                                                 </span>
-                                                <input type="text" class="form-control" placeholder="Nick Name..." required="true">
+                                                <input type="text" class="form-control" id="nickname" placeholder="Nick Name..." required="true">
                                             </div>
                                             <div class="input-group">
                                                 <span class="input-group-addon">
                                                     <i class="material-icons">email</i>
                                                 </span>
-                                                <input type="text" class="form-control" placeholder="Email..." required="true">
+                                                <input type="text" class="form-control" id="email"  placeholder="Email..." required="true">
                                             </div>
                                             <div class="input-group">
                                                 <span class="input-group-addon">
                                                     <i class="material-icons">lock_outline</i>
                                                 </span>
-                                                <input type="password" placeholder="Password..." class="form-control" required="true"/>
+                                                <input type="password" placeholder="Password..." id="pwd" class="form-control" required="true"/>
                                             </div>
                                             <!-- If you want to add a checkbox to this form, uncomment this code -->
                                             <div class="checkbox">
@@ -127,7 +127,7 @@
                                             </div>
                                         </div>
                                         <div class="footer text-center">
-                                            <a href="#pablo" class="btn btn-primary btn-round">Get Started</a>
+                                            <a href="#pablo" class="btn btn-primary btn-round" onclick="register()">Get Started</a>
                                         </div>
                                     </form>
                                 </div>
@@ -194,9 +194,59 @@
 <!-- Material Dashboard DEMO methods, don't include it in your project! -->
 <script src="../../assets/js/demo.js"></script>
 <script type="text/javascript">
+    function register() {
+        var nickname = $("#nickname").value();
+        var email = $("#email").value();
+        var pwd = $("#pwd").value();
+
+
+        if (nickname === "" || nickname === undefined ||
+            email === "" || email === undefined ||
+            pwd === "" || pwd === undefined) {
+            swal({
+                title: "Empty Warn",
+                text: "Please input all input.",
+                timer: 2000,
+                showConfirmButton: false,
+                type: "warning"
+            });
+            return;
+        }
+        $.ajax({
+            url: base_url + api_register,
+            type: "post",
+            dataType: "json",
+            headers: {'Content-type': 'application/json;charset=UTF-8'},
+            data: JSON.stringify({
+                'email': email,
+                'nickName': nickname,
+                'pwd': pwd
+            }),
+            success: function (res) {
+                swal({
+                    title: "Register Success",
+                    text: "The page will redirct to login page after 2s.",
+                    timer: 1200,
+                    showConfirmButton: false,
+                    type: "success"
+                }).then(function () {},
+                    function (reason) {
+                        location.href = base_url + url_login;
+                    });
+            },
+            error : function(data){
+                swal({ title: "Email Was Already Register",
+                    text: "please check and retry.",
+                    timer: 2000,
+                    showConfirmButton: false
+                });
+            }
+        });
+    }
+</script>
+<script type="text/javascript">
     $().ready(function() {
         demo.checkFullPageBackgroundImage();
-
         setTimeout(function() {
             // after 1000 ms we add the class animated to the login/register card
             $('.card').removeClass('card-hidden');

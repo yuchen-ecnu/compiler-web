@@ -120,6 +120,12 @@ public class User  extends Model<User> {
                 || ObjectUtils.isEmpty(pwd));
     }
 
+    public boolean isRegisterValid(){
+        return !(ObjectUtils.isEmpty(email)
+                || ObjectUtils.isEmpty(pwd)
+                || ObjectUtils.isEmpty(nickName));
+    }
+
     /**
      * check password is correct or not
      * @param pwd 明文
