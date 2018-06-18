@@ -241,7 +241,7 @@
                                             <h4>Annotation syntax tree</h4>
                                         </div>
                                         <div class="form-group label-floating">
-                                            <p id="re-output" style="min-height:250px"></p>
+                                            <p id="semantic-tree"  style="width: 100%;height: 450px;"></p>
                                         </div>
                                     </div>
                                 </div>
@@ -263,19 +263,9 @@
                                             <thead>
                                             <tr>
                                                 <th>#id</th>
-                                                <th>type</th>
-                                                <th>token</th>
-                                                <th class="disabled-sorting text-right">Actions</th>
+                                                <th>Action</th>
                                             </tr>
                                             </thead>
-                                            <tfoot>
-                                            <tr>
-                                                <th>#id</th>
-                                                <th>type</th>
-                                                <th>token</th>
-                                                <th class="text-right">Actions</th>
-                                            </tr>
-                                            </tfoot>
                                             <tbody id="tableBody">
 
                                             </tbody>
@@ -336,6 +326,8 @@
 <script src="../assets/src-noconflict/ace.js" type="text/javascript" charset="utf-8"></script>
 <!-- load ace language tools -->
 <script src="../assets/src-noconflict/ext-language_tools.js"></script>
+<!-- vis -->
+<script src="../assets/js/vis.min.js"></script>
 <!--Global Configure -->
 <script src="js/global-config.js"></script>
 <script type="text/javascript">
@@ -387,15 +379,17 @@
                 }),
                 success: function (data) {
                     draw(data);
-                    $("#tableBody").html("<tr>\n" +
-                        "<td>1</td>\n" +
-                        "<td>identify</td>\n" +
-                        "<td>id1</td>\n" +
-                        "<td class=\"text-right\">\n" +
-                        "<a href=\"#\" class=\"btn btn-simple btn-warning btn-icon edit\"><i\n" +
-                        "class=\"material-icons\">dvr</i></a>\n" +
-                        "</td>\n" +
-                        "</tr>");
+                    var sHtml = "";
+
+                    $.each(data.data.actionList, function(index, action) {
+                        sHtml+="<tr>\n" +
+                            "<td>"+index+"</td>\n" +
+                            "<td>"+action+"</td>\n" +
+                            "</tr>";
+                    });
+                    $("#datatables").dataTable().fnDestroy();
+                    $("#tableBody").html(sHtml);
+                    initTable("datatables");
                 },
                 error: function (res) {
                     if (res.status === 401) {
@@ -422,7 +416,7 @@
         };
 
         // create a network
-        var container = document.getElementById('parsing-tree');
+        var container = document.getElementById('semantic-tree');
 
         var options = {
             layout: {
@@ -445,53 +439,63 @@
         //获取用户可选择的语法器
         $.ajax({
             url: base_url + api_compiler_select,
-            type : "get",
-            dataType : "json",
+            type: "get",
+            dataType: "json",
             headers: {'Content-type': 'application/json;charset=UTF-8'},
-            success : function(res){
-                if(res.resCode === '200'){
+            success: function (res) {
+                if (res.resCode === '200') {
                     var arr = res.data;
                     var selector = $("#sel-lan");
                     selector.append("<option disabled>Default Compiler</option>");
-                    $.each(arr, function(index, compiler) {
-                        if(compiler.userId === -1){
-                            selector.append("<option value="+compiler.id+">"+compiler.compilerName+"</option>");
+                    $.each(arr, function (index, compiler) {
+                        if (compiler.userId === -1) {
+                            selector.append("<option value=" + compiler.id + ">" + compiler.compilerName + "</option>");
                         }
                     });
                     selector.append("<option disabled>Your Compiler</option>");
-                    $.each(arr, function(index, compiler) {
-                        if(compiler.userId !== -1){
-                            selector.append("<option value="+compiler.id+">"+compiler.compilerName+"</option>");
+                    $.each(arr, function (index, compiler) {
+                        if (compiler.userId !== -1) {
+                            selector.append("<option value=" + compiler.id + ">" + compiler.compilerName + "</option>");
                         }
                     });
                     selector.selectpicker('refresh');
                 }
             },
-            error : function(data){
-                swal({ title: "Get Compilers Error",
+            error: function (data) {
+                swal({
+                    title: "Get Compilers Error",
                     text: "Please refresh page and retry.",
                     timer: 2000,
                     showConfirmButton: false
-                }).then(function () {}, function (reason) {});
+                }).then(function () {
+                }, function (reason) {
+                });
             }
-        })
+        });
+    })
+</script>
 
+<script type="text/javascript">
 
+    function initTable(id) {
         //init Table
-        $('#datatables').DataTable({
+        $('#'+id+'').DataTable({
             "pagingType": "full_numbers",
             "lengthMenu": [
                 [10, 25, 50, -1],
                 [10, 25, 50, "All"]
             ],
             responsive: true,
+            destroy:true,
             language: {
                 search: "_INPUT_",
-                searchPlaceholder: "Search records",
+                searchPlaceholder: "Search records"
             }
 
         });
-        var table = $('#datatables').DataTable();
+
+
+        var table = $('#'+id+'').DataTable();
 
         // Edit record
         table.on('click', '.edit', function () {
@@ -502,7 +506,7 @@
         });
 
         $('.card .material-datatables label').addClass('form-group');
-    });
+    }
 
     function showProcess(data) {
         console.log('You press on Row: ' + data[0] + ' ' + data[1] + ' ' + data[2] + '\'s row.');

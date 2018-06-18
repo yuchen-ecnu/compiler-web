@@ -71,7 +71,7 @@ public class SemanticService {
         }
         List<String> agStrList = new ArrayList<>();
         for(Ag ag : agList){
-            cfgStrList.add(ag.getAgContent());
+            agStrList.add(ag.getAgContent());
         }
         Map acList = new HashMap<String,String>();
         for(Action ac : actionList){

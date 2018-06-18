@@ -25,7 +25,7 @@ public class TDVO {
         int index = 0, nowNodeListIndex = index;
         while(queue.size() > 0){
             tNode = queue.poll();
-            this.nodeVOList.add(new NodeVO(nowNodeListIndex, tNode.getContent()));
+            this.nodeVOList.add(new NodeVO(nowNodeListIndex, tNode.getContent()==null?((TD.ActionNode)tNode).getAction():tNode.getContent()));
             for(TD.TNode x : tNode.getChildren()){
                 index++;
                 this.edgeVOList.add(new EdgeVO(nowNodeListIndex, index));
