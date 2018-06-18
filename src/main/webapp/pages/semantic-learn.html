@@ -187,6 +187,55 @@
             </nav>
             <div class="content">
                 <div class="container-fluid">
+
+                    <div class="row">
+                        <div class="col-lg-3 col-md-6 col-sm-6">
+                            <div class="card card-stats">
+                                <div class="card-header" data-background-color="blue">
+                                    <i class="fa fa-twitter"></i>
+                                </div>
+                                <div class="card-content">
+                                    <p style="font-size: larger">Preprocessor Time</p>
+                                    <h3 class="card-title" id="preTime">Waiting..</h3>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-6 col-sm-6">
+                            <div class="card card-stats">
+                                <div class="card-header" data-background-color="orange">
+                                    <i class="material-icons">weekend</i>
+                                </div>
+                                <div class="card-content">
+                                    <p style="font-size: larger">Lexer Time</p>
+                                    <h3 class="card-title" id="lexerTime">Waiting..</h3>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-6 col-sm-6">
+                            <div class="card card-stats">
+                                <div class="card-header" data-background-color="green">
+                                    <i class="material-icons">store</i>
+                                </div>
+                                <div class="card-content">
+                                    <p style="font-size:larger">Parser Time</p>
+                                    <h3 class="card-title" id="parserTime">Waiting..</h3>
+                                </div>
+
+                            </div>
+                        </div>
+                        <div class="col-lg-3 col-md-6 col-sm-6">
+                            <div class="card card-stats">
+                                <div class="card-header" data-background-color="rose">
+                                    <i class="material-icons">equalizer</i>
+                                </div>
+                                <div class="card-content">
+                                    <p style="font-size:larger">Semantic Analysis Time</p>
+                                    <h3 class="card-title" id="semanticTime">Waiting..</h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <div class="row">
                         <div class="col-md-6">
                             <div class="card">
@@ -365,9 +414,24 @@
                     lan: lan
                 }),
                 success: function (data) {
-                    draw(data);
-                    var sHtml = "";
+                    // TimeTable
+                    if(data.data===null||data.data.timeTableVO===null){
+                        $("#lexerTime").html("N/A ms");
+                        $("#parserTime").html("N/A ms");
+                        $("#preTime").html("N/A ms");
+                        $("#semanticTime").html("N/A ms");
+                    }else{
+                        $("#lexerTime").html(data.data.timeTableVO.lexerTime + "" + "ms");
+                        $("#parserTime").html(data.data.timeTableVO.parserTime + "" + "ms");
+                        $("#preTime").html(data.data.timeTableVO.preprocessorTime + "" + "ms");
+                        $("#semanticTime").html(data.data.timeTableVO.semanticTime + "" + "ms");
+                    }
 
+                    //Annotation Syntax Tree
+                    draw(data);
+
+                    //Action List
+                    var sHtml = "";
                     $.each(data.data.actionList, function(index, action) {
                         sHtml+="<tr>\n" +
                             "<td>"+index+"</td>\n" +

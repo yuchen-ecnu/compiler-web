@@ -6,11 +6,13 @@ public class TimeTableVO {
     private long preprocessorTime;
     private long lexerTime;
     private long parserTime;
+    private long semanticTime;
 
-    public TimeTableVO(long preprocessorTime, long lexerTime, long parserTime) {
+    public TimeTableVO(long preprocessorTime, long lexerTime, long parserTime, long semanticTime) {
         this.preprocessorTime = preprocessorTime;
         this.lexerTime = lexerTime;
         this.parserTime = parserTime;
+        this.semanticTime = semanticTime;
     }
 
     public TimeTableVO(Compiler.TimeHolder timeHolder) {
@@ -18,6 +20,15 @@ public class TimeTableVO {
         this.preprocessorTime = timeHolder.getPreprocessorTime();
         this.lexerTime = timeHolder.getLexerTime();
         this.parserTime = timeHolder.getParserTime();
+        this.semanticTime = timeHolder.getSemanticTime();
+    }
+
+    public long getSemanticTime() {
+        return semanticTime;
+    }
+
+    public void setSemanticTime(long semanticTime) {
+        this.semanticTime = semanticTime;
     }
 
     public long getPreprocessorTime() {

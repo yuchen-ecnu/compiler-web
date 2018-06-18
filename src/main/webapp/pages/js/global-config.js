@@ -76,10 +76,10 @@ function initUserInfo(){
                     "</li></ul></div>");
                 return;
             }
-            node.html("<a href='login/login.html'><button class=\"btn btn-info\">Login</button></a>");
+            node.html("<a href='login/login.html'><button class=\"btn btn-info btn-sm\">Login</button></a>");
         },
         error : function(data){
-            node.html("<a href='login/login.html'><button class=\"btn btn-info\">Login</button></a>");
+            node.html("<a href='login/login.html'><button class=\"btn btn-info btn-sm\">Login</button></a>");
         }
     });
 }

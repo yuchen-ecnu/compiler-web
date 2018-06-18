@@ -196,7 +196,7 @@
             <div class="container-fluid">
 
                 <div class="row">
-                    <div class="col-lg-4 col-md-6 col-sm-6">
+                    <div class="col-lg-3 col-md-6 col-sm-6">
                         <div class="card card-stats">
                             <div class="card-header" data-background-color="orange">
                                 <i class="material-icons">weekend</i>
@@ -207,7 +207,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="col-lg-4 col-md-6 col-sm-6">
+                    <div class="col-lg-3 col-md-6 col-sm-6">
                         <div class="card card-stats">
                             <div class="card-header" data-background-color="rose">
                                 <i class="material-icons">equalizer</i>
@@ -220,7 +220,7 @@
                         </div>
                     </div>
 
-                    <div class="col-lg-4 col-md-6 col-sm-6">
+                    <div class="col-lg-3 col-md-6 col-sm-6">
                         <div class="card card-stats">
                             <div class="card-header" data-background-color="blue">
                                 <i class="fa fa-twitter"></i>
@@ -230,6 +230,17 @@
                                 <h3 class="card-title" id="preTime">Waiting..</h3>
                             </div>
 
+                        </div>
+                    </div>
+                    <div class="col-lg-3 col-md-6 col-sm-6">
+                        <div class="card card-stats">
+                            <div class="card-header" data-background-color="rose">
+                                <i class="material-icons">equalizer</i>
+                            </div>
+                            <div class="card-content">
+                                <p style="font-size:larger">Semantic Analysis Time</p>
+                                <h3 class="card-title" id="semanticTime">Waiting..</h3>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -448,27 +459,6 @@
 
     function draw(lan ,txt) {
         destroy();
-        console.log("?????");
-        /*nodes = [];
-        edges = [];
-        for (var i = 0; i < 15; i++) {
-            nodes.push({id: i, label: String(i)});
-        }
-        edges.push({from: 0, to: 1});
-        edges.push({from: 0, to: 6});
-        edges.push({from: 0, to: 13});
-        edges.push({from: 0, to: 11});
-        edges.push({from: 1, to: 2});
-        edges.push({from: 2, to: 3});
-        edges.push({from: 2, to: 4});
-        edges.push({from: 3, to: 5});
-        edges.push({from: 1, to: 10});
-        edges.push({from: 1, to: 7});
-        edges.push({from: 2, to: 8});
-        edges.push({from: 2, to: 9});
-        edges.push({from: 3, to: 14});
-        edges.push({from: 1, to: 12});
-        */
         $.ajax({
             url: base_url + api_parser,
             type: "post",
@@ -506,9 +496,10 @@
                 }
 
                 //draw time table
-                document.getElementById("lexerTime").innerHTML = res.data.timeTableVO.lexerTime + "" + "s";
-                document.getElementById("parserTime").innerHTML = res.data.timeTableVO.parserTime + "" + "s";
-                document.getElementById("preTime").innerHTML = res.data.timeTableVO.preprocessorTime + "" + "s";
+                document.getElementById("lexerTime").innerHTML = res.data.timeTableVO.lexerTime + "" + "ms";
+                document.getElementById("parserTime").innerHTML = res.data.timeTableVO.parserTime + "" + "ms";
+                document.getElementById("preTime").innerHTML = res.data.timeTableVO.preprocessorTime + "" + "ms";
+                document.getElementById("semanticTime").innerHTML = "N/A " + "ms";
 
                 if(res.data.parsingTableName == "0") {
                     preTable = "<h5>Predict Table</h5>" +

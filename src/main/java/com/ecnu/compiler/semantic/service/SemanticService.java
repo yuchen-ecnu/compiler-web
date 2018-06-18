@@ -73,7 +73,7 @@ public class SemanticService {
         for(Ag ag : agList){
             agStrList.add(ag.getAgContent());
         }
-        Map acList = new HashMap<String,String>();
+        Map<String,String> acList = new HashMap<>();
         for(Action ac : actionList){
             acList.put(ac.getActionName(),ac.getActionContent());
         }
@@ -96,9 +96,7 @@ public class SemanticService {
             compiler.next();
         }
 
-        Compiler.TimeHolder timeHolder = compiler.getTimeHolder();
-        TimeTableVO timeTable = new TimeTableVO(timeHolder.getPreprocessorTime(),
-                timeHolder.getLexerTime(),timeHolder.getParserTime());
+        TimeTableVO timeTable = new TimeTableVO(compiler.getTimeHolder());
         List<String> compilerActionList = compiler.getActionList();
         TD td = compiler.getSyntaxTree();
 
