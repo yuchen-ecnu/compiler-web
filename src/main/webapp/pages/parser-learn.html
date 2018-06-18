@@ -194,6 +194,47 @@
         </nav>
         <div class="content">
             <div class="container-fluid">
+
+                <div class="row">
+                    <div class="col-lg-4 col-md-6 col-sm-6">
+                        <div class="card card-stats">
+                            <div class="card-header" data-background-color="orange">
+                                <i class="material-icons">weekend</i>
+                            </div>
+                            <div class="card-content">
+                                <p style="font-size: larger">Lexer Time</p>
+                                <h3 class="card-title" id="lexerTime">Waiting..</h3>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-lg-4 col-md-6 col-sm-6">
+                        <div class="card card-stats">
+                            <div class="card-header" data-background-color="rose">
+                                <i class="material-icons">equalizer</i>
+                            </div>
+                            <div class="card-content">
+                                <p style="font-size:larger">Parser Time</p>
+                                <h3 class="card-title" id="parserTime">Waiting..</h3>
+                            </div>
+
+                        </div>
+                    </div>
+
+                    <div class="col-lg-4 col-md-6 col-sm-6">
+                        <div class="card card-stats">
+                            <div class="card-header" data-background-color="blue">
+                                <i class="fa fa-twitter"></i>
+                            </div>
+                            <div class="card-content">
+                                <p style="font-size: larger">Preprocessor Time</p>
+                                <h3 class="card-title" id="preTime">Waiting..</h3>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+
+
                 <div class="row">
                     <div class="col-md-6">
                         <div class="card">
@@ -392,6 +433,9 @@
 </script>
 
 <script type="text/javascript">
+</script>
+
+<script type="text/javascript">
     var nodes = null;
     var edges = null;
     var network = null;
@@ -435,6 +479,7 @@
                 'txt':txt
             }),
             success: function (res) {
+                //draw pictrue
                 if (res.resCode === '200') {
                     var nodes = new vis.DataSet(res.data.td.nodeVOList);
                     var edges = new vis.DataSet(res.data.td.edgeVOList);
@@ -459,6 +504,42 @@
                     };
                     network = new vis.Network(container, data, options);
                 }
+
+                //draw time table
+                document.getElementById("lexerTime").innerHTML = res.data.timeTableVO.lexerTime + "" + "s";
+                document.getElementById("parserTime").innerHTML = res.data.timeTableVO.parserTime + "" + "s";
+                document.getElementById("preTime").innerHTML = res.data.timeTableVO.preprocessorTime + "" + "s";
+
+                if(res.data.parsingTableName == "0") {
+                    preTable = "<h5>Predict Table</h5>" +
+                        "<table class=\"table table-hover\" border=\"1\">\n" +
+                        "                                        <thead>\n" +
+                        "                                        <th>Stack</th>\n" +
+                        "                                        <th>Input</th>\n" +
+                        "                                        <th>Output</th>\n" +
+                        "                                        </thead>\n" +
+                        "                                        <tbody>";
+
+                    preTableArr = res.data.predictTable.tableEntryList;
+                    $.each(preTableArr, function (index, item) {
+                        console.log(item.itemList[1]);
+                        console.log(item.itemList[2]);
+                        console.log(item.itemList[3]);
+                        preTable += "<tr>\n" +
+                            "                                            <td>" + item.itemList[1] + "</td>\n" +
+                            "                                            <td>" + item.itemList[2] + "</td>\n" +
+                            "                                            <td>" + item.itemList[3] + "</td>\n" +
+                            "                                        </tr>"
+                    });
+                    preTable += "</tbody>\n" +
+                        "                                    </table>";
+
+                    document.getElementById("table-holder").innerHTML = preTable;
+                }else if(res.data.parsingTableName == "2" ||
+                    res.data.parsingTableName == "3"){
+
+                }
+
             },
             error: function (res) {
                 if (res.status === 401) {
