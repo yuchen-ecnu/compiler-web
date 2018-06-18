@@ -6,24 +6,28 @@
 var base_url = "/compiler/";
 var api_login = "session/login/";
 var api_register = "session/register/";
-var api_current_user = "user/current/";
 var api_re2nfa = "common/re2nfa/";
 var api_re2dfa = "common/re2dfa/";
+var api_parser_table = "common/parser/";
+var api_system_compiler = "common/system/compiler/";
+var api_compiler_select = "common/compiler/option/";
+var api_user_rank = "common/rank/";
+var api_system_compiler_config = "common/system/configuration/";
+
 var api_lexer = "lexical/lexer/";
 var api_parser = "parser/parser/";
 var api_user_compiler = "user/compiler/";
-var api_system_compiler = "common/system/compiler/";
-var api_compiler_select = "common/compiler/option/";
-var api_user_history = "history/list/";
-var api_user_rank = "common/rank/";
+var api_current_user = "user/current/";
 var api_save_compiler = "user/compiler/modify/";
 var api_create_compiler = "user/compiler/new/";
-var api_system_compiler_config = "common/system/configuration/";
+
+var api_user_history = "history/list/";
 var api_semantic_analyser = "semantic/analyser/";
 
 var url_dashboard = "pages/dashboard.html";
 var url_login = "pages/login/login.html";
 var url_compiler_list = "pages/compilers.html";
+
 var colors = [
     "btn btn-primary btn-xs",
     "btn btn-success btn-xs",

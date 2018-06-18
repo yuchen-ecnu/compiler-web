@@ -101,7 +101,7 @@ public class ParserService {
         //return new Resp(HttpRespCode.SUCCESS,new NParserVO(timeTable, new TDVO(td), new LRParserTableVO((LRParsingTable) pt),compilerVO.getParserModel()+"",pd));
     }
 
-    private ParsingTable getParsingTable(Language language, Integer parserModel) {
+    public ParsingTable getParsingTable(Language language, Integer parserModel) {
         switch(parserModel){
             case Constants.PARSER_LL:
                 return language.getLLParsingTable();
