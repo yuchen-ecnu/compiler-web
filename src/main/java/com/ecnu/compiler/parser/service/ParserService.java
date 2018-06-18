@@ -5,6 +5,7 @@ import com.ecnu.compiler.common.domain.Cfg;
 import com.ecnu.CompilerBuilder;
 import com.ecnu.compiler.component.CacheManager.Language;
 import com.ecnu.compiler.component.lexer.domain.RE;
+import com.ecnu.compiler.component.parser.domain.ParsingTable.LRParsingTable;
 import com.ecnu.compiler.component.parser.domain.ParsingTable.ParsingTable;
 import com.ecnu.compiler.component.parser.domain.PredictTable.PredictTable;
 import com.ecnu.compiler.component.parser.domain.TD;
@@ -16,9 +17,7 @@ import com.ecnu.compiler.history.service.HistoryService;
 import com.ecnu.compiler.lexical.domain.Regex;
 import com.ecnu.compiler.lexical.mapper.CompilerMapper;
 import com.ecnu.compiler.lexical.mapper.RegexMapper;
-import com.ecnu.compiler.parser.domain.vo.ParserVO;
-import com.ecnu.compiler.parser.domain.vo.TDVO;
-import com.ecnu.compiler.parser.domain.vo.TimeTableVO;
+import com.ecnu.compiler.parser.domain.vo.*;
 import com.ecnu.compiler.parser.mapper.CFGMapper;
 import com.ecnu.compiler.rbac.domain.History;
 import com.ecnu.compiler.rbac.domain.User;
@@ -99,6 +98,7 @@ public class ParserService {
         historyService.logUserHistory(new History(user.getId(),compilerVO.getId(),text,
                 com.ecnu.compiler.utils.domain.Constants.LOG_TYPE_PARSER));
         return new Resp(HttpRespCode.SUCCESS,new ParserVO(timeTable, new TDVO(td), pt,compilerVO.getParserModel()+"",pd));
+        //return new Resp(HttpRespCode.SUCCESS,new NParserVO(timeTable, new TDVO(td), new LRParserTableVO((LRParsingTable) pt),compilerVO.getParserModel()+"",pd));
     }
 
     private ParsingTable getParsingTable(Language language, Integer parserModel) {
