@@ -439,7 +439,43 @@
                     preTable += "</tbody>\n" +
                         "                                    </table>";
 
-                    document.getElementById("table-holder").innerHTML = preTable;
+                    var totalRowNum = res.data.parsingTable.nonTermRowNum;
+                    var totalColNum = res.data.parsingTable.termColNum;
+                    var parserTableHtml = "<h5>Parser Table</h5>\n" +
+                        "                                    <table class=\"table table-hover\" border=\"1\">\n" +
+                        "                                        <tbody>\n" +
+                        "                                        <tr>\n" +
+                        "                                            <td colspan=\""+ 1 +"\">Non-Terminal</td>\n" +
+                        "                                            <td colspan=\""+ totalColNum +"\">INPUT SYMBOY</td>\n" +
+                        "                                        </tr>"
+
+                    var colNameArr = res.data.parsingTable.colArr;
+                    var rowNameArr = res.data.parsingTable.rowArr;
+                    var tableArr = res.data.parsingTable.tableArr;
+
+                    parserTableHtml += "<tr>\n" +
+                        "                                            <td></td>\n";
+                    for(var i = 0; i < colNameArr.length; i++){
+                        parserTableHtml += "<td>"+ colNameArr[i] +"</td>\n";
+                    }
+                    parserTableHtml += " </tr>";
+
+                    for(var j = 0; j < rowNameArr.length; j++ ){
+                        parserTableHtml += "<tr>\n";
+                        parserTableHtml += "<td>"+ rowNameArr[j] +"</td>\n"
+                        for(var m = 0; m < tableArr[j].length; m++){
+                            if(tableArr[j][m] == null)
+                                parserTableHtml += "<td></td>\n";
+                            else
+                                parserTableHtml += "<td>"+ tableArr[j][m] +"</td>\n";
+                        }
+                        parserTableHtml += " </tr>";
+                    }
+
+                    parserTableHtml += "</tbody>\n" +
+                        "                                    </table>"
+
+                    document.getElementById("table-holder").innerHTML = (preTable + parserTableHtml);
 
                 }else if( res.data.parsingTableName == "1" ||
                     res.data.parsingTableName == "2" ||
