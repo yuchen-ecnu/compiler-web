@@ -432,12 +432,12 @@
                         map.forEach(function (value,key,map) {
                             if(symbol.type === key){
                                 if(symbol.rowNumber === lastRow){
-                                    bHtml += "<button style='text-transform:lowercase'  data-tip=\"ID="+symbol.id+"<br/>"+symbol.type+"\" " +
+                                    bHtml += "<button style='text-transform:none'  data-tip=\"ID="+symbol.id+"<br/>"+symbol.type+"\" " +
                                         "class=\"tip-hotspot "+value+"\">"+symbol.attr+"</button>\n";
                                 }else {
                                     bHtml += "</div>";
                                     bHtml += "<div>";
-                                    bHtml += "<button style='text-transform:lowercase'  data-tip=\"ID=" + symbol.id + "<br/>" + symbol.type + "\" " +
+                                    bHtml += "<button style='text-transform:none'  data-tip=\"ID=" + symbol.id + "<br/>" + symbol.type + "\" " +
                                         "class=\"tip-hotspot " + value + "\">" + symbol.attr + "</button>\n";
                                 }
                                 flag = 1;
@@ -445,12 +445,12 @@
                         });
                         if(flag === 0){
                             if(symbol.rowNumber === lastRow) {
-                                bHtml += "<button style='text-transform:lowercase' data-tip=\"ID=" + symbol.id + "<br/>" + symbol.type + "\" " +
+                                bHtml += "<button style='text-transform:none' data-tip=\"ID=" + symbol.id + "<br/>" + symbol.type + "\" " +
                                     "class=\"tip-hotspot " + colors[count] + "\">" + symbol.attr + "</button>\n";
                             }else{
                                 bHtml += "</div>";
                                 bHtml += "<div>";
-                                bHtml += "<button style='text-transform:lowercase' data-tip=\"ID=" + symbol.id + "<br/>" + symbol.type + "\" " +
+                                bHtml += "<button style='text-transform:none' data-tip=\"ID=" + symbol.id + "<br/>" + symbol.type + "\" " +
                                     "class=\"tip-hotspot " + colors[count] + "\">" + symbol.attr + "</button>\n";
                             }
                             map.set(symbol.type,colors[count]);

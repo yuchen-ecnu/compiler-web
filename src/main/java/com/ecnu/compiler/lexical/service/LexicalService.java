@@ -59,11 +59,13 @@ public class LexicalService{
         compilerMapper.updateById(compilerVO);
 
         //init re
-        List<Regex> regexList = regexMapper.selectList(
-                new EntityWrapper<Regex>().eq("compiler_id", id));
+        List<String> conditions = new ArrayList<String>();
+        conditions.add("priority");
+        List<Regex> regexList = regexMapper.selectList(new EntityWrapper<Regex>()
+                .eq("compiler_id", id)
+                .orderDesc(conditions));
         List<RE> reStrList = new ArrayList<>();
         for (Regex reg : regexList) {
-
             reStrList.add(new RE(reg.getName(), reg.getRegex(), reg.getType()));
         }
 

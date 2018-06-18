@@ -148,7 +148,8 @@ function showLoginDialog(){
             text: 'Your will redirect to Login Page right now.',
             type: 'success',
             confirmButtonClass: "btn btn-success",
-            buttonsStyling: false
+            buttonsStyling: false,
+            showConfirmButton: false
         });
         location.href = base_url + url_login;
     });
