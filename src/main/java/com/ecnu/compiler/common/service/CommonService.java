@@ -2,7 +2,11 @@ package com.ecnu.compiler.common.service;
 
 import com.baomidou.mybatisplus.mapper.EntityWrapper;
 import com.baomidou.mybatisplus.plugins.Page;
+import com.ecnu.CompilerBuilder;
 import com.ecnu.compiler.common.domain.*;
+import com.ecnu.compiler.component.CacheManager.Language;
+import com.ecnu.compiler.component.parser.domain.ParsingTable.ParsingTable;
+import com.ecnu.compiler.constant.Config;
 import com.ecnu.compiler.parser.mapper.CFGMapper;
 import com.ecnu.compiler.component.lexer.domain.DFA;
 import com.ecnu.compiler.component.lexer.domain.NFA;
@@ -10,6 +14,7 @@ import com.ecnu.compiler.component.lexer.domain.RE;
 import com.ecnu.compiler.lexical.domain.Regex;
 import com.ecnu.compiler.lexical.mapper.CompilerMapper;
 import com.ecnu.compiler.lexical.mapper.RegexMapper;
+import com.ecnu.compiler.parser.service.ParserService;
 import com.ecnu.compiler.rbac.domain.Compiler;
 import com.ecnu.compiler.rbac.domain.User;
 import com.ecnu.compiler.rbac.mapper.UserMapper;
@@ -26,6 +31,7 @@ import org.springframework.util.ObjectUtils;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 @Service
@@ -33,6 +39,8 @@ public class CommonService {
 
     @Resource
     private UserService userService;
+    @Resource
+    private ParserService parserService;
 
     @Resource
     private CompilerMapper compilerMapper;
@@ -79,6 +87,48 @@ public class CommonService {
         return userService.getUserCompilers(Constants.SYSTEM_ID);
     }
 
+    public List<User> getSiteRank() {
+        List<String> conditions =  new ArrayList<>();
+        conditions.add("times");
+        return userMapper.selectPage(
+                new Page<User>(1, 5)
+                ,new EntityWrapper<User>().orderDesc(conditions));
+    }
+
+    public Resp getParserTable(Integer id) {
+
+        List<Regex> regexList = regexMapper.selectList(
+                new EntityWrapper<Regex>().eq("compiler_id", id)
+        );
+        List<Cfg> cfgList = cfgMapper.selectList(
+                new EntityWrapper<Cfg>().eq("compiler_id",id)
+        );
+        List<RE> reStrList = new ArrayList<>();
+        for (Regex reg : regexList) {
+            reStrList.add(new RE(reg.getName(),reg.getRegex(),reg.getType()));
+        }
+        List<String> cfgStrList = new ArrayList<>();
+        for(Cfg cfg : cfgList){
+            cfgStrList.add(cfg.getCfgContent());
+        }
+
+        com.ecnu.compiler.rbac.domain.Compiler compilerVO = compilerMapper.selectById(id);
+        compilerVO.setUsedTime(compilerVO.getUsedTime()+1);
+        compilerMapper.updateById(compilerVO);
+
+        Config config = new Config();
+        config.setExecuteType(com.ecnu.compiler.constant.Constants.EXECUTE_STAGE_BY_STAGE);
+        config.setParserAlgorithm(compilerVO.getParserModel());
+
+        CompilerBuilder compilerBuilder = new CompilerBuilder();
+        Language language = compilerBuilder.prepareLanguage(id, reStrList, cfgStrList,new ArrayList<String>(),new HashMap<String, String>());
+        ParsingTable pb = parserService.getParsingTable(language,compilerVO.getParserModel());
+        if(ObjectUtils.isEmpty(pb)){
+            return new Resp(HttpRespCode.PRECONDITION_FAILED,compilerBuilder.getErrorList());
+        }
+        return new Resp(HttpRespCode.SUCCESS,pb);
+    }
+
     public Resp getCompilerConfiguration(int id) {
         Compiler compiler = compilerMapper.selectById(id);
         if(ObjectUtils.isEmpty(compiler)){ return new Resp(HttpRespCode.NOT_FOUND); }
@@ -104,13 +154,5 @@ public class CommonService {
         );
 
         return new Resp(HttpRespCode.SUCCESS,new CompilerConfiguration(compiler,reList,cfgList,agList,actionList));
-    }
-
-    public List<User> getSiteRank() {
-        List<String> conditions =  new ArrayList<>();
-        conditions.add("times");
-        return userMapper.selectPage(
-                new Page<User>(1, 5)
-                ,new EntityWrapper<User>().orderDesc(conditions));
     }
 }

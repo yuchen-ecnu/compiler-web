@@ -107,7 +107,7 @@ public class ParserService {
                     compilerVO.getParserModel() + "", pd));
     }
 
-    private ParsingTable getParsingTable(Language language, Integer parserModel) {
+    public ParsingTable getParsingTable(Language language, Integer parserModel) {
         switch(parserModel){
             case Constants.PARSER_LL:
                 return language.getLLParsingTable();

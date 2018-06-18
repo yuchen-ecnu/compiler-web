@@ -68,6 +68,14 @@ public class CommonController {
         return ResponseEntity.status(HttpStatus.OK).body(new Resp(HttpRespCode.SUCCESS,commonService.getSiteRank()));
     }
 
+    @RequestMapping(value = "/parser/", method = RequestMethod.GET)
+    public ResponseEntity<Resp> getParserTable(@RequestParam("id")Integer compilerId) {
+        if(ObjectUtils.isEmpty(compilerId)){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(new Resp());
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(new Resp(HttpRespCode.SUCCESS,commonService.getParserTable(compilerId)));
+    }
+
 
 
     @RequestMapping(value = "/re2dfa/", method = RequestMethod.GET)
