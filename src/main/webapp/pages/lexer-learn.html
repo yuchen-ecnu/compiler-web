@@ -250,14 +250,6 @@
                                 </div>
                                 <div class="material-datatables" id="table-holder">
                                     <table id="errorTable" class="table table-hover" border="1">
-                                        <thead>
-                                        <th>Code</th>
-                                        <th>Message</th>
-                                        <th>Time</th>
-                                        <th>StatusCode</th>
-                                        </thead>
-                                        <tbody>
-                                        </tbody>
                                     </table>
                                 </div>
                             </div>
@@ -460,23 +452,25 @@
                         lastRow = symbol.rowNumber;
                     });
                     bHtml += "</div>";
+                    var emHtml= "<h5 style=\"text-align:center\">Empty</h5>";
+                    $("#errorTable").html(emHtml);
                     $("#history-table").dataTable().fnDestroy();
                     $("#tableBody").html(sHtml);
                     $("#buttonBody").html(bHtml);
                     initTable("datatables");
                 }else{
                     var errArr = res.data.errorMsgList;
-                    var eHtml = "<thead>\n" +
+                     var eHtml = "<thead>\n" +
                     " <th>Code</th>\n" +
                     "<th>Message</th>\n" +
                     "<th>Time</th>\n" +
                     "<th>StatusCode</th>\n" +
-                    "</thead>\n";
+                    "</thead>\n" +
+                     "<tbody>\n";
                     $.each(errArr, function(index, error) {
                         var time = new Date(error.time);
                         var date = time.toLocaleString();
-                        eHtml +="<tbody>\n" +
-                            "<tr>\n" +
+                        eHtml += "<tr>\n" +
                             "<td>"+error.code +"</td>\n" +
                             "<td>"+error.msg+"</td>\n" +
                             "<td>"+date+"</td>\n" +
