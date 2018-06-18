@@ -502,21 +502,23 @@
                 document.getElementById("semanticTime").innerHTML = "N/A " + "ms";
 
                 if(res.data.parsingTableName == "0") {
-                    preTable = "<h5>Predict Table</h5>" +
+                    var preTable = "<h5>Predict Table</h5>" +
                         "<table class=\"table table-hover\" border=\"1\">\n" +
                         "                                        <thead>\n" +
+                        "                                        <th>Matched</th>\n" +
                         "                                        <th>Stack</th>\n" +
                         "                                        <th>Input</th>\n" +
-                        "                                        <th>Output</th>\n" +
+                        "                                        <th>Action</th>\n" +
                         "                                        </thead>\n" +
                         "                                        <tbody>";
 
-                    preTableArr = res.data.predictTable.tableEntryList;
+                    var preTableArr = res.data.predictTable.tableEntryList;
                     $.each(preTableArr, function (index, item) {
                         console.log(item.itemList[1]);
                         console.log(item.itemList[2]);
                         console.log(item.itemList[3]);
                         preTable += "<tr>\n" +
+                            "                                            <td>" + item.itemList[0] + "</td>\n" +
                             "                                            <td>" + item.itemList[1] + "</td>\n" +
                             "                                            <td>" + item.itemList[2] + "</td>\n" +
                             "                                            <td>" + item.itemList[3] + "</td>\n" +
@@ -526,9 +528,73 @@
                         "                                    </table>";
 
                     document.getElementById("table-holder").innerHTML = preTable;
-                }else if(res.data.parsingTableName == "2" ||
+
+                }else if( res.data.parsingTableName == "1" ||
+                    res.data.parsingTableName == "2" ||
                     res.data.parsingTableName == "3"){
 
+                    var tableHeadSize = res.data.parsingTable.tableHeadSize;
+                    var divPosition = res.data.parsingTable.divOfTowParts;
+
+                    var parserTableHtml = "<h5>Parser Table</h5>\n" +
+                        "                                    <table class=\"table table-hover\" border=\"1\">\n" +
+                        "                                        <tbody>\n" +
+                        "                                        <tr>\n" +
+                        "                                            <td colspan=\""+ (divPosition + 1) +"\">Action Table</td>\n" +
+                        "                                            <td colspan=\""+ (tableHeadSize - divPosition) +"\">Goto Table</td>\n" +
+                        "                                        </tr>"
+
+                    var tableHeadArr = res.data.parsingTable.tableHeadList;
+                    parserTableHtml += "<tr>\n" +
+                        "                                            <td>State</td>\n";
+                    for(var i = 0; i < tableHeadArr.length; i++){
+                        parserTableHtml += "<td>"+ tableHeadArr[i] +"</td>\n";
+                    }
+                    parserTableHtml += " </tr>";
+
+                    var stateCount = 0;
+                    $.each(res.data.parsingTable.table, function (index, item) {
+                        parserTableHtml += "<tr>\n" +
+                            "                                            <td>" + stateCount + "</td>\n";
+                        for(var j = 0; j < item.length ; j++){
+                            if(item[j] == null)
+                                parserTableHtml += "<td> </td>\n";
+                            else
+                                parserTableHtml += "<td>"+ item[j].operate + "" + item[j].value +"</td>\n";
+                        }
+                        stateCount++;
+                        parserTableHtml += " </tr>";
+                    });
+                    parserTableHtml += "</tbody>\n" +
+                        "                                    </table>"
+
+
+                    var preTable = "<h5>Predict Table</h5>" +
+                        "<table class=\"table table-hover\" border=\"1\">\n" +
+                        "                                        <thead>\n" +
+                        "                                        <th>Stack</th>\n" +
+                        "                                        <th>Input</th>\n" +
+                        "                                        <th>Action</th>\n" +
+                        "                                        <th>Output</th>\n" +
+                        "                                        </thead>\n" +
+                        "                                        <tbody>";
+
+                    var preTableArr = res.data.predictTable.tableEntryList;
+                    $.each(preTableArr, function (index, item) {
+                        console.log(item.itemList[1]);
+                        console.log(item.itemList[2]);
+                        console.log(item.itemList[3]);
+                        preTable += "<tr>\n" +
+                            "                                            <td>" + item.itemList[0] + "</td>\n" +
+                            "                                            <td>" + item.itemList[1] + "</td>\n" +
+                            "                                            <td>" + item.itemList[2] + "</td>\n" +
+                            "                                            <td>" + item.itemList[3] + "</td>\n" +
+                            "                                        </tr>"
+                    });
+                    preTable += "</tbody>\n" +
+                        "                                    </table>";
+
+                    document.getElementById("table-holder").innerHTML = (preTable + parserTableHtml);
                 }
 
             },
