@@ -17,6 +17,7 @@ import com.ecnu.compiler.lexical.domain.SymbolTableVO;
 import com.ecnu.compiler.lexical.domain.SymbolVO;
 import com.ecnu.compiler.lexical.mapper.CompilerMapper;
 import com.ecnu.compiler.lexical.mapper.RegexMapper;
+import com.ecnu.compiler.parser.domain.vo.TimeTableVO;
 import com.ecnu.compiler.parser.mapper.CFGMapper;
 import com.ecnu.compiler.rbac.domain.History;
 import com.ecnu.compiler.rbac.domain.User;
@@ -89,6 +90,10 @@ public class LexicalService{
         if(compiler.getStatus().getCode()<0){
             return new Resp(HttpRespCode.PRECONDITION_FAILED,compiler.getErrorList());
         }
+
+        Compiler.TimeHolder timeHolder = compiler.getTimeHolder();
+        TimeTableVO timeTable = new TimeTableVO(timeHolder);
+
         SymbolTable sb = compiler.getSymbolTable();
         if(sb == null){
             return null;
@@ -102,7 +107,7 @@ public class LexicalService{
         User user = UserUtils.getCurrentUser();
         historyService.logUserHistory(new History(user.getId(),compilerVO.getId(),text,
                 com.ecnu.compiler.utils.domain.Constants.LOG_TYPE_LEXER));
-        return new Resp(HttpRespCode.SUCCESS,new SymbolTableVO(listVO, regexList,compiler.getErrorList()));
+        return new Resp(HttpRespCode.SUCCESS,new SymbolTableVO(timeTable,listVO, regexList,compiler.getErrorList()));
     }
 
     public DfaVO getDFAbyRegexId(Integer id){

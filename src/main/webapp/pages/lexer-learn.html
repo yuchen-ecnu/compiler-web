@@ -458,6 +458,10 @@
                     $("#tableBody").html(sHtml);
                     $("#buttonBody").html(bHtml);
                     initTable("datatables");
+                    document.getElementById("lexerTime").innerHTML = res.data.timeTableVO.lexerTime + "" + "ms";
+                    document.getElementById("parserTime").innerHTML = "N/A " + "ms";
+                    document.getElementById("preTime").innerHTML = res.data.timeTableVO.preprocessorTime + "" + "ms";
+                    document.getElementById("semanticTime").innerHTML = "N/A " + "ms";
                 }else{
                     document.getElementById("lexerTime").innerHTML = "N/A "+ "ms";
                     document.getElementById("parserTime").innerHTML = "N/A " + "" + "ms";
