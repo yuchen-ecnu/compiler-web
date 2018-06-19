@@ -99,12 +99,14 @@ public class ParserService {
         historyService.logUserHistory(new History(user.getId(),compilerVO.getId(),text,
                 com.ecnu.compiler.utils.domain.Constants.LOG_TYPE_PARSER));
 
-        if(compilerVO.getParserModel() == Constants.PARSER_LL)
+        if(compilerVO.getParserModel() == Constants.PARSER_LL) {
             return new Resp(HttpRespCode.SUCCESS, new NParserVO(timeTable, new TDVO(td), new LLParserTableVO((LLParsingTable) pt),
                     compilerVO.getParserModel() + "", pd));
-        else
+        }
+        else {
             return new Resp(HttpRespCode.SUCCESS, new NParserVO(timeTable, new TDVO(td), new LRParserTableVO((LRParsingTable) pt),
                     compilerVO.getParserModel() + "", pd));
+        }
     }
 
     public ParsingTable getParsingTable(Language language, Integer parserModel) {

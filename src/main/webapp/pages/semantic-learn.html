@@ -197,7 +197,7 @@
                             </div>
                         </div>
                         <div class="col-md-6">
-                            <div class="card">
+                            <div id="topTable" class="card">
                                 <div class="card-header card-header-icon" data-background-color="purple">
                                     <i class="material-icons">assignment</i>
                                 </div>
@@ -218,22 +218,6 @@
                                             <tbody id="tableBody">
 
                                             </tbody>
-                                        </table>
-                                    </div>
-                                </div>
-                                <!-- end content-->
-                            </div>
-                            <div id="bottomTable" class="card">
-                                <div class="card-header card-header-icon" data-background-color="purple">
-                                    <i class="material-icons">assignment</i>
-                                </div>
-                                <div class="card-content">
-                                    <h4 class="card-title">Error Table</h4>
-                                    <div class="toolbar">
-                                        <!--        Here you can write extra buttons/actions for the toolbar              -->
-                                    </div>
-                                    <div class="material-datatables" id="table-holder">
-                                        <table id="errorTable" class="table table-hover" border="1">
                                         </table>
                                     </div>
                                 </div>
@@ -347,12 +331,12 @@
                 }),
                 success: function (data) {
                     // TimeTable
-                    if(data.data===null||data.data.timeTableVO===null){
+                    if (data.data === null || data.data.timeTableVO === null) {
                         $("#lexerTime").html("N/A ms");
                         $("#parserTime").html("N/A ms");
                         $("#preTime").html("N/A ms");
                         $("#semanticTime").html("N/A ms");
-                    }else{
+                    } else {
                         $("#lexerTime").html(data.data.timeTableVO.lexerTime + "" + "ms");
                         $("#parserTime").html(data.data.timeTableVO.parserTime + "" + "ms");
                         $("#preTime").html(data.data.timeTableVO.preprocessorTime + "" + "ms");
@@ -364,10 +348,10 @@
 
                     //Action List
                     var sHtml = "";
-                    $.each(data.data.actionList, function(index, action) {
-                        sHtml+="<tr>\n" +
-                            "<td>"+index+"</td>\n" +
-                            "<td>"+action+"</td>\n" +
+                    $.each(data.data.actionList, function (index, action) {
+                        sHtml += "<tr>\n" +
+                            "<td>" + index + "</td>\n" +
+                            "<td>" + action + "</td>\n" +
                             "</tr>";
                     });
                     $("#datatables").dataTable().fnDestroy();

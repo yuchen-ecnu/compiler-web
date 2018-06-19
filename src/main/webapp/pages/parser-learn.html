@@ -205,7 +205,7 @@
                         </div>
                     </div>
                     <div class="col-md-6">
-                        <div class="card">
+                        <div id="topTable" class="card">
                             <div class="card-header card-header-icon" data-background-color="purple">
                                 <i class="material-icons">assignment</i>
                             </div>
@@ -365,6 +365,36 @@
                         }
                     };
                     network = new vis.Network(container, data, options);
+                }else{
+                    var errArr = res.data.errorMsgList;
+                    var eHtml = "<thead>\n" +
+                        " <th>Code</th>\n" +
+                        "<th>Message</th>\n" +
+                        "<th>Time</th>\n" +
+                        "<th>StatusCode</th>\n" +
+                        "</thead>\n" +
+                        "<tbody>\n";
+                    $.each(errArr, function(index, error) {
+                        var time = new Date(error.time);
+                        var date = time.toLocaleString();
+                        eHtml += "<tr>\n" +
+                            "<td>"+error.code +"</td>\n" +
+                            "<td>"+error.msg+"</td>\n" +
+                            "<td>"+date+"</td>\n" +
+                            "<td>"+error.statusCode+"</td>\n" +
+                            "</tr>\n";
+                    });
+                    eHtml += "</tbody>";
+                    $("#errorTable").html(eHtml);
+                    var tmp1 = $("#topTable").html();
+                    var tmp2 = $("#bottomTable").html();
+                    $("#topTable").html(tmp2);
+                    $("#bottomTable").html(tmp1);
+
+                    document.getElementById("lexerTime").innerHTML = "N/A " + "ms";
+                    document.getElementById("parserTime").innerHTML = "N/A " + "ms";
+                    document.getElementById("preTime").innerHTML = "N/A " + "ms";
+                    document.getElementById("semanticTime").innerHTML = "N/A " + "ms";
                 }
 
                 //draw time table
