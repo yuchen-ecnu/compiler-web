@@ -107,19 +107,19 @@ public class CommonService {
                 new EntityWrapper<Regex>().eq("compiler_id", id)
         );
         List<Cfg> cfgList = cfgMapper.selectList(
-                new EntityWrapper<Cfg>().eq("compiler_id",id)
+                new EntityWrapper<Cfg>().eq("compiler_id", id)
         );
         List<RE> reStrList = new ArrayList<>();
         for (Regex reg : regexList) {
-            reStrList.add(new RE(reg.getName(),reg.getRegex(),reg.getType()));
+            reStrList.add(new RE(reg.getName(), reg.getRegex(), reg.getType()));
         }
         List<String> cfgStrList = new ArrayList<>();
-        for(Cfg cfg : cfgList){
+        for (Cfg cfg : cfgList) {
             cfgStrList.add(cfg.getCfgContent());
         }
 
         com.ecnu.compiler.rbac.domain.Compiler compilerVO = compilerMapper.selectById(id);
-        compilerVO.setUsedTime(compilerVO.getUsedTime()+1);
+        compilerVO.setUsedTime(compilerVO.getUsedTime() + 1);
         compilerMapper.updateById(compilerVO);
 
         Config config = new Config();
@@ -127,17 +127,18 @@ public class CommonService {
         config.setParserAlgorithm(type);
 
         CompilerBuilder compilerBuilder = new CompilerBuilder();
-        Language language = compilerBuilder.prepareLanguage(id, reStrList, cfgStrList,new ArrayList<String>(),new HashMap<String, String>());
-        ParsingTable pb = parserService.getParsingTable(language,type);
-        if(ObjectUtils.isEmpty(pb)){
-            return new Resp(HttpRespCode.PRECONDITION_FAILED,compilerBuilder.getErrorList());
+        Language language = compilerBuilder.prepareLanguage(id, reStrList, cfgStrList, new ArrayList<String>(), new HashMap<String, String>());
+        ParsingTable pb = parserService.getParsingTable(language, type);
+        if (ObjectUtils.isEmpty(pb)) {
+            return new Resp(HttpRespCode.PRECONDITION_FAILED, compilerBuilder.getErrorList());
         }
-        if(type == com.ecnu.compiler.constant.Constants.PARSER_LL)
+        if (type == com.ecnu.compiler.constant.Constants.PARSER_LL) {
             return new Resp(HttpRespCode.SUCCESS, new NParserVO(null, null, new LLParserTableVO((LLParsingTable) pb),
                     type + "", null));
-        else
+        } else {
             return new Resp(HttpRespCode.SUCCESS, new NParserVO(null, null, new LRParserTableVO((LRParsingTable) pb),
                     type + "", null));
+        }
     }
 
     public Resp getCompilerConfiguration(int id) {

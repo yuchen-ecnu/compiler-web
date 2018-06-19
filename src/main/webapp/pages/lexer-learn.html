@@ -452,17 +452,21 @@
                         lastRow = symbol.rowNumber;
                     });
                     bHtml += "</div>";
-                    var emHtml= "<h5 style=\"text-align:center\">Empty</h5>";
+                    var emHtml= "<h5 style=\"text-align:center;color: green\">Success</h5>";
                     $("#errorTable").html(emHtml);
                     $("#history-table").dataTable().fnDestroy();
                     $("#tableBody").html(sHtml);
                     $("#buttonBody").html(bHtml);
-                    initTable("datatables");
+                    //initTable("datatables");
                     document.getElementById("lexerTime").innerHTML = res.data.timeTableVO.lexerTime + "" + "ms";
                     document.getElementById("parserTime").innerHTML = "N/A " + "ms";
                     document.getElementById("preTime").innerHTML = res.data.timeTableVO.preprocessorTime + "" + "ms";
                     document.getElementById("semanticTime").innerHTML = "N/A " + "ms";
                 }else{
+                    var ssHtml ="";
+                    var bbHtml="";
+                    $("#tableBody").html(ssHtml);
+                    $("#buttonBody").html(bbHtml);
                     document.getElementById("lexerTime").innerHTML = "N/A "+ "ms";
                     document.getElementById("parserTime").innerHTML = "N/A " + "" + "ms";
                     document.getElementById("preTime").innerHTML ="N/A " + "ms";
