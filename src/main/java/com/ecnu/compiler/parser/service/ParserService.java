@@ -96,8 +96,8 @@ public class ParserService {
         PredictTable pd = compiler.getPredictTable();
 
         User user = UserUtils.getCurrentUser();
-        historyService.logUserHistory(new History(user.getId(),compilerVO.getId(),text,
-                com.ecnu.compiler.utils.domain.Constants.LOG_TYPE_PARSER));
+//        historyService.logUserHistory(new History(user.getId(),compilerVO.getId(),text,
+//                com.ecnu.compiler.utils.domain.Constants.LOG_TYPE_PARSER));
 
         if(compilerVO.getParserModel() == Constants.PARSER_LL) {
             return new Resp(HttpRespCode.SUCCESS, new NParserVO(timeTable, new TDVO(td), new LLParserTableVO((LLParsingTable) pt),

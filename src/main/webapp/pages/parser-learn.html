@@ -105,6 +105,19 @@
             <div class="container-fluid">
 
                 <div class="row">
+
+                    <div class="col-lg-3 col-md-6 col-sm-6">
+                        <div class="card card-stats">
+                            <div class="card-header" data-background-color="blue">
+                                <i class="fa fa-twitter"></i>
+                            </div>
+                            <div class="card-content">
+                                <p style="font-size: larger">Preprocessor Time</p>
+                                <h3 class="card-title" id="preTime">Waiting..</h3>
+                            </div>
+
+                        </div>
+                    </div>
                     <div class="col-lg-3 col-md-6 col-sm-6">
                         <div class="card card-stats">
                             <div class="card-header" data-background-color="orange">
@@ -124,19 +137,6 @@
                             <div class="card-content">
                                 <p style="font-size:larger">Parser Time</p>
                                 <h3 class="card-title" id="parserTime">Waiting..</h3>
-                            </div>
-
-                        </div>
-                    </div>
-
-                    <div class="col-lg-3 col-md-6 col-sm-6">
-                        <div class="card card-stats">
-                            <div class="card-header" data-background-color="blue">
-                                <i class="fa fa-twitter"></i>
-                            </div>
-                            <div class="card-content">
-                                <p style="font-size: larger">Preprocessor Time</p>
-                                <h3 class="card-title" id="preTime">Waiting..</h3>
                             </div>
 
                         </div>
@@ -500,7 +500,7 @@
                             if(item[j] == null)
                                 parserTableHtml += "<td> </td>\n";
                             else
-                                parserTableHtml += "<td>"+ item[j].operate + "" + item[j].value +"</td>\n";
+                                parserTableHtml += "<td>"+ item[j].stringItem +"</td>\n";
                         }
                         stateCount++;
                         parserTableHtml += " </tr>";
