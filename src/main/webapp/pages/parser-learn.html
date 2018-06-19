@@ -365,6 +365,8 @@
                         }
                     };
                     network = new vis.Network(container, data, options);
+                    var emHtml= "<h5 style=\"text-align:center;color: green\">Success</h5>";
+                    $("#errorTable").html(emHtml);
                 }else{
                     var errArr = res.data.errorMsgList;
                     var eHtml = "<thead>\n" +
